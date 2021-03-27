@@ -1,0 +1,12 @@
+# file options
+
+# format options
+
+--allman false
+--swiftversion 5
+--self init-only
+--commas inline
+--stripunusedargs closure-only
+
+# rules
+-disable wrapMultilineStatementBraces
