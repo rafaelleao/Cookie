@@ -1,16 +1,21 @@
-//
-//  ContentView.swift
-//  Cookie
-//
-//  Created by Rafael Leao on 27.03.21.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var viewModel = ContentViewModel()
+
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        VStack(alignment: .center, spacing: 30, content: {
+            Button("Show") {
+                viewModel.show()
+            }
+
+            Button("Send Requests") {
+                viewModel.sendTestRequests()
+            }
+            Toggle("Enabled", isOn: $viewModel.enabled)
+
+        })
+        .padding()
     }
 }
 

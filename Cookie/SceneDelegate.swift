@@ -1,10 +1,3 @@
-//
-//  SceneDelegate.swift
-//  Cookie
-//
-//  Created by Rafael Leao on 27.03.21.
-//
-
 import UIKit
 import SwiftUI
 
