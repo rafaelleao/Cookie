@@ -27,17 +27,23 @@ struct RequestDetail: View {
     @ObservedObject var viewModel: RequestDetailViewModel
 
     var body: some View {
-        TabView {
+        let tabview = TabView {
             RequestDetailTabSummary(viewModel: viewModel.summaryViewModel())
             RequestDetailTabRequest(viewModel: viewModel.requestTabViewModel())
             RequestDetailTabResponse(viewModel: viewModel.responseTabViewModel())
-        }.navigationBarTitle(viewModel.title)
+        }
+        #if os(iOS)
+            return tabview
+                .navigationBarTitle(viewModel.title)
+        #else
+            return tabview
+        #endif
     }
 }
 
 struct RequestDetails_Previews: PreviewProvider {
     static var previews: some View {
-        RequestDetail(viewModel: RequestDetailViewModel(request: TestRequest.test2()))
+        RequestDetail(viewModel: RequestDetailViewModel(request: TestRequest.completedTestRequest))
     }
 }
 

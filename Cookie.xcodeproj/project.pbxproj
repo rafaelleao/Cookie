@@ -10,6 +10,9 @@
 		8054E360261A4D580096AC32 /* RequestDetailTabSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */; };
 		8054E362261A621C0096AC32 /* RequestDetailTabRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */; };
 		8054E364261A62F20096AC32 /* RequestDetailTabResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E363261A62F20096AC32 /* RequestDetailTabResponse.swift */; };
+		8054E365261B19B90096AC32 /* RequestDetailTabSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */; };
+		8054E366261B19BC0096AC32 /* RequestDetailTabRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */; };
+		8054E367261B19BF0096AC32 /* RequestDetailTabResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E363261A62F20096AC32 /* RequestDetailTabResponse.swift */; };
 		8067E080261700070055ED3D /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E07F261700070055ED3D /* MainCoordinator.swift */; };
 		8067E0B5261702500055ED3D /* RequestListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0AA261702500055ED3D /* RequestListViewModel.swift */; };
 		8067E0B6261702500055ED3D /* RequestDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0AB261702500055ED3D /* RequestDetail.swift */; };
@@ -36,6 +39,22 @@
 		806BB8A8260FCEE3002BCA40 /* CookieURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BB86E260FCEE2002BCA40 /* CookieURLProtocol.swift */; };
 		80A6C86E2617521F002DB811 /* ContentViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A6C86D2617521F002DB811 /* ContentViewViewModel.swift */; };
 		80A6C870261762C4002DB811 /* RequestRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A6C86F261762C4002DB811 /* RequestRow.swift */; };
+		80A6C878261A1ECB002DB811 /* CookieMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A6C877261A1ECB002DB811 /* CookieMacApp.swift */; };
+		80A6C87A261A1ECB002DB811 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A6C879261A1ECB002DB811 /* ContentView.swift */; };
+		80A6C87C261A1ECE002DB811 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 80A6C87B261A1ECE002DB811 /* Assets.xcassets */; };
+		80A6C87F261A1ECE002DB811 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 80A6C87E261A1ECE002DB811 /* Preview Assets.xcassets */; };
+		80A6C885261A20B3002DB811 /* RequestList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0AD261702500055ED3D /* RequestList.swift */; };
+		80A6C887261A20B3002DB811 /* RequestRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80A6C86F261762C4002DB811 /* RequestRow.swift */; };
+		80A6C888261A20B3002DB811 /* RequestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0B1261702500055ED3D /* RequestViewModel.swift */; };
+		80A6C889261A20B3002DB811 /* SearchableListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0B4261702500055ED3D /* SearchableListViewController.swift */; };
+		80A6C88A261A21A1002DB811 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BB86B260FCEE2002BCA40 /* HTTPRequest.swift */; };
+		80A6C88C261A21A1002DB811 /* HTTPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BB86C260FCEE2002BCA40 /* HTTPResponse.swift */; };
+		80A6C88E261A21A1002DB811 /* KeyValuePair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BB86A260FCEE2002BCA40 /* KeyValuePair.swift */; };
+		80A6C891261A21A1002DB811 /* RequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BB867260FCEE2002BCA40 /* RequestDelegate.swift */; };
+		80A6C892261A2224002DB811 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806BB83E260FCEE2002BCA40 /* Data.swift */; };
+		80A6C894261A2669002DB811 /* RequestDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0AB261702500055ED3D /* RequestDetail.swift */; };
+		80A6C895261A269F002DB811 /* TextViewerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0AE261702500055ED3D /* TextViewerViewModel.swift */; };
+		80A6C896261A26A1002DB811 /* TextViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8067E0B2261702500055ED3D /* TextViewer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,10 +89,24 @@
 		806BB86E260FCEE2002BCA40 /* CookieURLProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CookieURLProtocol.swift; sourceTree = "<group>"; };
 		80A6C86D2617521F002DB811 /* ContentViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewViewModel.swift; sourceTree = "<group>"; };
 		80A6C86F261762C4002DB811 /* RequestRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestRow.swift; sourceTree = "<group>"; };
+		80A6C875261A1ECB002DB811 /* CookieMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CookieMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		80A6C877261A1ECB002DB811 /* CookieMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieMacApp.swift; sourceTree = "<group>"; };
+		80A6C879261A1ECB002DB811 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		80A6C87B261A1ECE002DB811 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		80A6C87E261A1ECE002DB811 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		80A6C880261A1ECE002DB811 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		80A6C881261A1ECE002DB811 /* CookieMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CookieMac.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		806BB81F260FB579002BCA40 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		80A6C872261A1ECB002DB811 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -97,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				806BB824260FB579002BCA40 /* Cookie */,
+				80A6C876261A1ECB002DB811 /* CookieMac */,
 				806BB823260FB579002BCA40 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -105,6 +139,7 @@
 			isa = PBXGroup;
 			children = (
 				806BB822260FB579002BCA40 /* Cookie.app */,
+				80A6C875261A1ECB002DB811 /* CookieMac.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -207,6 +242,28 @@
 			path = RequestDetails;
 			sourceTree = "<group>";
 		};
+		80A6C876261A1ECB002DB811 /* CookieMac */ = {
+			isa = PBXGroup;
+			children = (
+				806AC2D1261A40F900E75CB3 /* RequestListViewModel.swift */,
+				80A6C877261A1ECB002DB811 /* CookieMacApp.swift */,
+				80A6C879261A1ECB002DB811 /* ContentView.swift */,
+				80A6C87B261A1ECE002DB811 /* Assets.xcassets */,
+				80A6C880261A1ECE002DB811 /* Info.plist */,
+				80A6C881261A1ECE002DB811 /* CookieMac.entitlements */,
+				80A6C87D261A1ECE002DB811 /* Preview Content */,
+			);
+			path = CookieMac;
+			sourceTree = "<group>";
+		};
+		80A6C87D261A1ECE002DB811 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				80A6C87E261A1ECE002DB811 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -227,6 +284,23 @@
 			productReference = 806BB822260FB579002BCA40 /* Cookie.app */;
 			productType = "com.apple.product-type.application";
 		};
+		80A6C874261A1ECB002DB811 /* CookieMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 80A6C882261A1ECE002DB811 /* Build configuration list for PBXNativeTarget "CookieMac" */;
+			buildPhases = (
+				80A6C871261A1ECB002DB811 /* Sources */,
+				80A6C872261A1ECB002DB811 /* Frameworks */,
+				80A6C873261A1ECB002DB811 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CookieMac;
+			productName = CookieMac;
+			productReference = 80A6C875261A1ECB002DB811 /* CookieMac.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -237,6 +311,9 @@
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					806BB821260FB579002BCA40 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					80A6C874261A1ECB002DB811 = {
 						CreatedOnToolsVersion = 12.5;
 					};
 				};
@@ -255,6 +332,7 @@
 			projectRoot = "";
 			targets = (
 				806BB821260FB579002BCA40 /* Cookie */,
+				80A6C874261A1ECB002DB811 /* CookieMac */,
 			);
 		};
 /* End PBXProject section */
@@ -267,6 +345,15 @@
 				806BB832260FB57B002BCA40 /* LaunchScreen.storyboard in Resources */,
 				806BB82F260FB57B002BCA40 /* Preview Assets.xcassets in Resources */,
 				806BB82C260FB57B002BCA40 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		80A6C873261A1ECB002DB811 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80A6C87F261A1ECE002DB811 /* Preview Assets.xcassets in Resources */,
+				80A6C87C261A1ECE002DB811 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +389,31 @@
 				806BB8A7260FCEE3002BCA40 /* Cookie.swift in Sources */,
 				8067E0B6261702500055ED3D /* RequestDetail.swift in Sources */,
 				806BB82A260FB579002BCA40 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		80A6C871261A1ECB002DB811 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80A6C896261A26A1002DB811 /* TextViewer.swift in Sources */,
+				80A6C888261A20B3002DB811 /* RequestViewModel.swift in Sources */,
+				80A6C889261A20B3002DB811 /* SearchableListViewController.swift in Sources */,
+				80A6C88C261A21A1002DB811 /* HTTPResponse.swift in Sources */,
+				80A6C87A261A1ECB002DB811 /* ContentView.swift in Sources */,
+				8054E367261B19BF0096AC32 /* RequestDetailTabResponse.swift in Sources */,
+				80A6C894261A2669002DB811 /* RequestDetail.swift in Sources */,
+				806AC2D2261A40F900E75CB3 /* RequestListViewModel.swift in Sources */,
+				80A6C887261A20B3002DB811 /* RequestRow.swift in Sources */,
+				80A6C885261A20B3002DB811 /* RequestList.swift in Sources */,
+				8054E365261B19B90096AC32 /* RequestDetailTabSummary.swift in Sources */,
+				80A6C88A261A21A1002DB811 /* HTTPRequest.swift in Sources */,
+				80A6C892261A2224002DB811 /* Data.swift in Sources */,
+				8054E366261B19BC0096AC32 /* RequestDetailTabRequest.swift in Sources */,
+				80A6C878261A1ECB002DB811 /* CookieMacApp.swift in Sources */,
+				80A6C891261A21A1002DB811 /* RequestDelegate.swift in Sources */,
+				80A6C88E261A21A1002DB811 /* KeyValuePair.swift in Sources */,
+				80A6C895261A269F002DB811 /* TextViewerViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -481,6 +593,56 @@
 			};
 			name = Release;
 		};
+		80A6C883261A1ECE002DB811 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CookieMac/CookieMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"CookieMac/Preview Content\"";
+				DEVELOPMENT_TEAM = 2B7FPWLUBX;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = CookieMac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rleao.Cookie;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		80A6C884261A1ECE002DB811 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CookieMac/CookieMac.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_ASSET_PATHS = "\"CookieMac/Preview Content\"";
+				DEVELOPMENT_TEAM = 2B7FPWLUBX;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = CookieMac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rleao.Cookie;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -498,6 +660,15 @@
 			buildConfigurations = (
 				806BB837260FB57B002BCA40 /* Debug */,
 				806BB838260FB57B002BCA40 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		80A6C882261A1ECE002DB811 /* Build configuration list for PBXNativeTarget "CookieMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				80A6C883261A1ECE002DB811 /* Debug */,
+				80A6C884261A1ECE002DB811 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

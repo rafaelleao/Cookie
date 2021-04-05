@@ -13,7 +13,8 @@ struct RequestList: View {
                 NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: request))) {
                     RequestRow(viewModel: RequestViewModel(request: request))
                 }
-            }.navigationBarTitle("Requests", displayMode: .inline)
+            }.listStyle(SidebarListStyle())
+            //.navigationBarTitle("Requests", displayMode: .inline)
         }
     }
 }
@@ -22,7 +23,7 @@ struct Requests_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = RequestListViewModel()
 
-        viewModel.source = [TestRequest.testRequest, TestRequest.test2()]
+        viewModel.source = [TestRequest.testRequest, TestRequest.completedTestRequest]
         return RequestList(viewModel: viewModel)
     }
 }
@@ -35,7 +36,7 @@ struct TestRequest {
         return httpOperation
     }
 
-    static func test2() -> HTTPRequest {
+    static var completedTestRequest: HTTPRequest {
         let url = URL(string: "www.test.com/path?foo=bar&c&a=b")!
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = ["header": "test"]

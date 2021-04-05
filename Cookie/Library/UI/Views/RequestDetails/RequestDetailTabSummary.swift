@@ -14,7 +14,8 @@ struct RequestDetailTabSummary: View {
             }
         }.tabItem {
             Text("Summary")
-        }.listStyle(GroupedListStyle())
+        }
+        //.listStyle(GroupedListStyle())
     }
 }
 

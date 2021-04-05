@@ -4,6 +4,7 @@ struct RequestDetailTabResponse: View {
     @ObservedObject var viewModel: RequestDetailTabResponseViewModel
     @State private var showingSheet = false
 
+    #if os(iOS)
     var body: some View {
         VStack {
             if viewModel.canShowResponse() {
@@ -26,14 +27,35 @@ struct RequestDetailTabResponse: View {
         }.tabItem {
             Text("Response")
         }
-        //.listStyle(GroupedListStyle())
+        .listStyle(GroupedListStyle())
     }
-
+    #else
+    var body: some View {
+        VStack {
+            List {
+                ForEach(viewModel.data, id: \.self) { row in
+                    //if row.pairs.count > 0 {
+                        Section(header: Text(row.title)) {
+                            ForEach(row.pairs, id: \.key) { pair in
+                                RequestDetailItem(pair: pair)
+                            }
+                        }
+                    //}
+                }
+            }
+            if viewModel.canShowResponse() {
+                TextViewer(viewModel: viewModel.textViewerViewModel()!)
+            }
+        }.tabItem {
+            Text("Response")
+        }
+    }
+    #endif
 }
 
 struct RequestDetailTabResponse_Previews: PreviewProvider {
     static var previews: some View {
-        RequestDetailTabResponse(viewModel: RequestDetailTabResponseViewModel(request: TestRequest.testRequest))
+        RequestDetailTabResponse(viewModel: RequestDetailTabResponseViewModel(request: TestRequest.completedTestRequest))
     }
 }
 
