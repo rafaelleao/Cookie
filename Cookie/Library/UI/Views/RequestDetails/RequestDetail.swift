@@ -1,4 +1,5 @@
 import SwiftUI
+import Core
 
 struct SectionData {
     let id = UUID()

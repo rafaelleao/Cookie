@@ -1,4 +1,5 @@
 import SwiftUI
+import Core
 
 struct RequestDetailTabRequest: View {
     @ObservedObject var viewModel: RequestDetailTabRequestViewModel

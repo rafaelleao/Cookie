@@ -1,6 +1,6 @@
 import Foundation
 
-public class HTTPRequest {
+public class HTTPRequest: NSObject {
 
     public let urlRequest: URLRequest
     public let requestDate: Date
@@ -31,12 +31,21 @@ public class HTTPRequest {
 
     public var tag: String?
 
-    init(request: URLRequest) {
+    public init(request: URLRequest, date: Date = Date()) {
         self.urlRequest = request
-        self.requestDate = Date()
+        self.requestDate = date
+    }
+
+    public required convenience init?(coder: NSCoder)
+    {
+        guard let urlRequest = coder.decodeObject(forKey: "urlRequest") as? URLRequest,
+              let date = coder.decodeObject(forKey: "requestDate") as? Date
+        else { return nil }
+
+        self.init(request: urlRequest, date: date)
     }
 }
-
+/*
 extension HTTPRequest: Equatable {
     public static func == (lhs: HTTPRequest, rhs: HTTPRequest) -> Bool {
         return lhs.urlRequest == rhs.urlRequest && lhs.requestDate == rhs.requestDate
@@ -46,5 +55,13 @@ extension HTTPRequest: Equatable {
 extension HTTPRequest: CustomStringConvertible {
     public var description: String {
         return "<\(type(of: self)): requestDate: \(requestDate) URL: \(urlRequest.url!)>"
+    }
+}
+*/
+extension HTTPRequest: NSCoding {
+
+    public func encode(with coder: NSCoder) {
+        coder.encode(urlRequest, forKey: "urlRequest")
+        coder.encode(requestDate, forKey: "requestDate")
     }
 }

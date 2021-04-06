@@ -1,4 +1,5 @@
 import Foundation
+import Core
 
 class RequestListViewModel: ObservableObject {
 

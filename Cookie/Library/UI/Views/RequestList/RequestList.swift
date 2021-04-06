@@ -1,4 +1,5 @@
 import SwiftUI
+import Core
 
 extension HTTPRequest: Identifiable {
 
@@ -13,7 +14,8 @@ struct RequestList: View {
                 NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: request))) {
                     RequestRow(viewModel: RequestViewModel(request: request))
                 }
-            }.listStyle(SidebarListStyle())
+            }
+//            .listStyle(SidebarListStyle())
             //.navigationBarTitle("Requests", displayMode: .inline)
         }
     }

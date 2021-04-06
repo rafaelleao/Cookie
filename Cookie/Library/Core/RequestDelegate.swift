@@ -1,4 +1,5 @@
 import Foundation
+import Core
 
 public protocol RequestDelegate: AnyObject {
 

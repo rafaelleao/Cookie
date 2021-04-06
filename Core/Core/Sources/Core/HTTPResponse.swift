@@ -4,7 +4,7 @@ public enum HTTPResponse {
     case success(response: HTTPURLResponse, data: Data?)
     case failure(response: HTTPURLResponse?, error: Error?)
     
-    var urlResponse: HTTPURLResponse? {
+    public var urlResponse: HTTPURLResponse? {
         switch self {
         case .success(let response, _):
             return response
@@ -13,7 +13,7 @@ public enum HTTPResponse {
         }
     }
     
-    var responseData: Data? {
+    public var responseData: Data? {
         guard case .success(_, let data) = self else {
             return nil
         }
@@ -21,7 +21,7 @@ public enum HTTPResponse {
         return data
     }
     
-    var responseString: String? {
+    public var responseString: String? {
         guard let responseData = responseData else {
             return nil
         }
