@@ -1,12 +1,16 @@
 import Foundation
+import UIKit.UIDevice
 import Core
 
 class RequestListViewModel: ObservableObject {
     
     @Published var source: [HTTPRequest] = []
+    private let dataTransferService: DataTransferService
 
     init() {
         source = Cookie.shared.requests
+        dataTransferService = DataTransferService(deviceName: UIDevice.current.name)
+        dataTransferService.delegate = self
         Cookie.shared.internalDelegate = self
     }
 
@@ -32,5 +36,20 @@ extension RequestListViewModel: RequestDelegate {
     
     func didCompleteRequest(_ httpRequest: HTTPRequest) {
         reloadRequests()
+    }
+}
+
+extension RequestListViewModel: DataTransferServiceDelegate {
+    func connectedDevicesChanged(service: DataTransferService, connectedDevices: [String]) {
+        print(connectedDevices)
+        if let master = connectedDevices.first {
+            if let encodedData = try? NSKeyedArchiver.archivedData(withRootObject: source, requiringSecureCoding: false) {
+                dataTransferService.sendData(encodedData)
+            }
+        }
+    }
+
+    func didReceiveData(service: DataTransferService, data: Data) {
+        print(data)
     }
 }
