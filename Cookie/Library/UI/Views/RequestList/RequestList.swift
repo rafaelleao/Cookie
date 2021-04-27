@@ -8,15 +8,30 @@ extension HTTPRequest: Identifiable {
 struct RequestList: View {
     @ObservedObject var viewModel: RequestListViewModel
 
+    var list: some View {
+        List(viewModel.source) { request in
+            NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: request))) {
+                RequestRow(viewModel: RequestViewModel(request: request))
+            }
+        }
+    }
+
     var body: some View {
         NavigationView {
-            List(viewModel.source) { request in
-                NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: request))) {
-                    RequestRow(viewModel: RequestViewModel(request: request))
-                }
+            VStack {
+                #if os(iOS)
+                    list
+                        .listStyle(GroupedListStyle())
+                        .navigationBarTitle("Requests", displayMode: .inline)
+                        if viewModel.connectedClient != nil {
+                            Text("Connected to \(viewModel.connectedClient!)")
+                        }
+                #else
+                    list
+                #endif
+
             }
-//            .listStyle(SidebarListStyle())
-            //.navigationBarTitle("Requests", displayMode: .inline)
+
         }
     }
 }
@@ -24,8 +39,10 @@ struct RequestList: View {
 struct Requests_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = RequestListViewModel()
-
         viewModel.source = [TestRequest.testRequest, TestRequest.completedTestRequest]
+        #if os(iOS)
+        viewModel.connectedClient = "MacOS"
+        #endif
         return RequestList(viewModel: viewModel)
     }
 }

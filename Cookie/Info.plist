@@ -58,5 +58,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Exchange data with Cookie MacOS app</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_cookie._tcp</string>
+	</array>
 </dict>
 </plist>

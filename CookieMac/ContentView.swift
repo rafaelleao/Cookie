@@ -1,16 +1,30 @@
 import SwiftUI
 import Core
 
+struct ConnectedDeviceRow: View {
+    @ObservedObject var peer: ConnectedPeer
+
+    var body: some View {
+        Text(peer.peerId.displayName).foregroundColor(peer.connected ? .green : .orange)
+    }
+}
+
 struct ContentView: View {
     @ObservedObject var viewModel = ContentViewModel()
 
     var body: some View {
         HStack {
             //Spacer()
-            RequestList(viewModel: viewModel.requestListViewModel)//.frame(minWidth: 700, minHeight: 300)
-            //TextViewer(viewModel: TextViewerViewModel(text: "bla bla", filename: "fil"))
-
-
+            VStack {
+                RequestList(viewModel: viewModel.requestListViewModel)//.frame(minWidth: 700, minHeight: 300)
+                //Text(viewModel.browser.connectedPeers.first?.peerId.displayName ?? "")
+                //if !(viewModel.connectedDevices?.isEmpty ?? true) {
+                   // Text((viewModel.connectedDevices?.joined())!)
+                //}
+                List(viewModel.connectedDevices ?? [], id: \.self) { peer in
+                    ConnectedDeviceRow(peer: peer)
+                }
+            }
         }
     }
 }
@@ -21,26 +35,37 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-
+import Combine
 class ContentViewModel: ObservableObject {
 
-    let dataTransferService: DataTransferService
+    let browser: Browser
     var requestListViewModel = RequestListViewModel()
+    private var bindings = [AnyCancellable]()
+   // @Published var connectedDevices: [String]?
+    @Published var connectedDevices: [ConnectedPeer]?
 
     init() {
-        dataTransferService = DataTransferService(deviceName: "MacOS")
-        dataTransferService.delegate = self
+        browser = Browser(deviceName: "MacOS")
+        browser.delegate = self
+
+        browser.$connectedPeers
+            .receive(on: DispatchQueue.main)
+            //.assign(to: \.connectedDevices, on: self)
+            .sink { (peerIds) in
+                //self.connectedDevices = peerIds.map( { $0.peerId.displayName })
+                print(peerIds)
+                self.connectedDevices = peerIds
+            }.store(in: &bindings)
     }
 }
 
 extension ContentViewModel: DataTransferServiceDelegate {
-    func connectedDevicesChanged(service: DataTransferService, connectedDevices: [String]) {
-        print(connectedDevices)
-    }
-
-    func didReceiveData(service: DataTransferService, data: Data) {
+    func didReceiveData(data: Data) {
         if let decodedData = try! NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) {
-            requestListViewModel.source = decodedData as! [HTTPRequest]
+            DispatchQueue.main.async {
+                self.requestListViewModel.source = decodedData as! [HTTPRequest]
+            }
         }
     }
 }
+

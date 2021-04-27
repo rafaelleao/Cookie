@@ -16,6 +16,10 @@ struct ContentView: View {
 
         })
         .padding()
+        .onAppear(perform: {
+            viewModel.sendTestRequests()
+            viewModel.show()
+        })
     }
 }
 
