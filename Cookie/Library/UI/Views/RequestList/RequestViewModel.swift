@@ -1,7 +1,7 @@
 import Foundation
 import Core
 
-struct RequestViewModel: SearchableListItem {
+class RequestViewModel: ObservableObject, SearchableListItem {
 
     private let request: HTTPRequest
 
@@ -45,7 +45,7 @@ struct RequestViewModel: SearchableListItem {
         return nil
     }
     
-    private var error: Error? {
+    var error: Error? {
         if case .failure(_, let error) = request.response {
             return error
         }

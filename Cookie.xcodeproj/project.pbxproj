@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		13EA406126EBA1FF00FFD0F7 /* RequestDetailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13EA406026EBA1FF00FFD0F7 /* RequestDetailItem.swift */; };
 		8054E360261A4D580096AC32 /* RequestDetailTabSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */; };
 		8054E362261A621C0096AC32 /* RequestDetailTabRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */; };
 		8054E364261A62F20096AC32 /* RequestDetailTabResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E363261A62F20096AC32 /* RequestDetailTabResponse.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		13EA406026EBA1FF00FFD0F7 /* RequestDetailItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RequestDetailItem.swift; path = Cookie/Library/UI/Views/RequestDetailItem/RequestDetailItem.swift; sourceTree = SOURCE_ROOT; };
 		8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailTabSummary.swift; sourceTree = "<group>"; };
 		8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailTabRequest.swift; sourceTree = "<group>"; };
 		8054E363261A62F20096AC32 /* RequestDetailTabResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailTabResponse.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				8067E0AB261702500055ED3D /* RequestDetail.swift */,
+				13EA406026EBA1FF00FFD0F7 /* RequestDetailItem.swift */,
 				8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */,
 				8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */,
 				8054E363261A62F20096AC32 /* RequestDetailTabResponse.swift */,
@@ -367,6 +370,7 @@
 				8067E0BF261702500055ED3D /* SearchableListViewController.swift in Sources */,
 				8054E364261A62F20096AC32 /* RequestDetailTabResponse.swift in Sources */,
 				806BB826260FB579002BCA40 /* AppDelegate.swift in Sources */,
+				13EA406126EBA1FF00FFD0F7 /* RequestDetailItem.swift in Sources */,
 				8067E0B9261702500055ED3D /* TextViewerViewModel.swift in Sources */,
 				806BB8A1260FCEE3002BCA40 /* RequestDelegate.swift in Sources */,
 				80A6C870261762C4002DB811 /* RequestRow.swift in Sources */,

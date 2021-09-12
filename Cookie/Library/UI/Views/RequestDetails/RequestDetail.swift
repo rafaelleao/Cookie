@@ -13,17 +13,6 @@ extension SectionData: Hashable {
     }
 }
 
-struct RequestDetailItem: View {
-    @State var pair: KeyValuePair
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10, content: {
-            Text(pair.key).font(.system(.headline, design: .monospaced))
-            Text(pair.value ?? "").font(.system(.subheadline, design: .monospaced))
-        })
-    }
-}
-
 struct RequestDetail: View {
     @ObservedObject var viewModel: RequestDetailViewModel
 
