@@ -3,8 +3,12 @@ import Core
 
 class RequestListViewModel: ObservableObject {
     
-    private var requests: [HTTPRequest] = []
-    @Published var source: [HTTPRequest] = []
+    private var requests: [HTTPRequest] = [] {
+        didSet {
+            update()
+        }
+    }
+    @Published var source: [RequestViewModel] = []
     
     var searchString: String? {
         didSet {
@@ -18,12 +22,23 @@ class RequestListViewModel: ObservableObject {
 
     init() {
         requests = Cookie.shared.requests
-        source = Cookie.shared.requests
         Cookie.shared.internalDelegate = self
+        update()
+    }
+    
+    private func update(requestsToFilter: [HTTPRequest]? = nil) {
+        let allRequests = requestsToFilter ?? requests
+        var results: [RequestViewModel] = []
+        for request in allRequests {
+            results.append(RequestViewModel(request: request))
+        }
+        DispatchQueue.main.async {
+            self.source = results
+        }
     }
 
     private func clearSearch() {
-        source = requests
+        update()
     }
     
     private func search(_ query: String) {
@@ -36,7 +51,7 @@ class RequestListViewModel: ObservableObject {
                 results.append(request)
             }
         }
-        source = results
+        update(requestsToFilter: results)
     }
     
     func clearRequests() {
@@ -45,8 +60,8 @@ class RequestListViewModel: ObservableObject {
     }
 
     private func reloadRequests() {
-        source = Cookie.shared.requests
         requests = Cookie.shared.requests
+        update()
     }
 }
 
@@ -63,4 +78,7 @@ extension RequestListViewModel: RequestDelegate {
     func didCompleteRequest(_ httpRequest: HTTPRequest) {
         reloadRequests()
     }
+}
+
+extension RequestViewModel: Identifiable {
 }

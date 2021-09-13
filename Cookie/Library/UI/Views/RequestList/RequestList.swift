@@ -1,10 +1,6 @@
 import SwiftUI
 import Core
 
-extension HTTPRequest: Identifiable {
-
-}
-
 struct RequestList: View {
     @ObservedObject var viewModel: RequestListViewModel
     @State var searchString = ""
@@ -22,15 +18,16 @@ struct RequestList: View {
      
     var body: some View {
         SearchNavigation(text: $searchString, textChanged: textChanged, search: search, cancel: cancel) {
-            List(viewModel.source) { request in
-                NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: request))) {
-                    RequestRow(viewModel: RequestViewModel(request: request))
+            List(viewModel.source) { requestViewModel in
+                NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: requestViewModel.request))) {
+                    RequestRow(viewModel: requestViewModel)
                 }
                 //.background(Color(.secondarySystemBackground))
                 //.cornerRadius(8)
             }
-             .listStyle(GroupedListStyle())
+            .listStyle(GroupedListStyle())
             .navigationBarTitle("Requests", displayMode: .inline)
+            
         }
         .edgesIgnoringSafeArea(.top)
     }
@@ -45,7 +42,7 @@ struct Requests_Previews: PreviewProvider {
             TestRequest.completedTestRequest,
             TestRequest.serverErrorRequest,
             TestRequest.failedRequest
-        ]
+        ].map({ RequestViewModel(request: $0) })
         return RequestList(viewModel: viewModel)
     }
     

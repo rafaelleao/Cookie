@@ -4,7 +4,7 @@ import SwiftUI
 
 class RequestViewModel: ObservableObject, SearchableListItem {
 
-    private let request: HTTPRequest
+    let request: HTTPRequest
 
     init(request: HTTPRequest) {
         self.request = request
