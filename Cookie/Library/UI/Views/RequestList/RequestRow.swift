@@ -7,6 +7,10 @@ struct RequestRow: View {
         VStack(alignment: .leading, spacing: 10, content: {
             Text(viewModel.value).font(.system(.subheadline))
             HStack {
+                if viewModel.isLoading {
+                    LoadingIndicator()
+                }
+
                 Text(viewModel.key)
                     .font(.system(.caption))
 
@@ -15,17 +19,11 @@ struct RequestRow: View {
                     .bold()
                     .modifier(RoundedLabel(backgroundColor: .white))
                 
-                if viewModel.statusCode != nil {
-                    Text("\(viewModel.statusCode!)")
+                if let (code, color) = viewModel.result {
+                    Text(code)
                         .bold()
-                        .foregroundColor(.white)
-                        .modifier(RoundedLabel(backgroundColor: .green))
-                } else {
-                    if viewModel.error != nil {
-                        Text("Error")
-                            .bold()
-                            .modifier(RoundedLabel(backgroundColor: .red))
-                    }
+                        //.foregroundColor(.white)
+                        .modifier(RoundedLabel(backgroundColor: color))
                 }
             }
         })
@@ -50,14 +48,19 @@ struct RequestRow_Previews: PreviewProvider {
         VStack {
             RequestRow(viewModel: RequestViewModel(request: TestRequest.completedTestRequest))
             RequestRow(viewModel: RequestViewModel(request: TestRequest.testRequest))
+            RequestRow(viewModel: RequestViewModel(request: TestRequest.serverErrorRequest))
+            RequestRow(viewModel: RequestViewModel(request: TestRequest.failedRequest))
+
         }
     }
 
     static var previews: some View {
         Group {
             makePreview()
+                .previewLayout(.sizeThatFits)
                 .preferredColorScheme(.light)
             makePreview()
+                .previewLayout(.sizeThatFits)
                 .preferredColorScheme(.dark)
         }
     }

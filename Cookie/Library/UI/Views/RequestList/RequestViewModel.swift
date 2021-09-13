@@ -1,5 +1,6 @@
 import Foundation
 import Core
+import SwiftUI
 
 class RequestViewModel: ObservableObject, SearchableListItem {
 
@@ -11,7 +12,7 @@ class RequestViewModel: ObservableObject, SearchableListItem {
 
     var value: String {
         var urlComponents = URLComponents(url: request.urlRequest.url!, resolvingAgainstBaseURL: false)!
-            urlComponents.query = nil
+        urlComponents.query = nil
         return "\(urlComponents)"
     }
 
@@ -26,6 +27,13 @@ class RequestViewModel: ObservableObject, SearchableListItem {
         return String(request.urlRequest.httpMethod ?? "")
     }
 
+    var isLoading: Bool {
+        if case .loading = requestStatus {
+            return true
+        }
+        return false
+    }
+    
     var requestStatus: RequestStatus? {
         if let statusCode = statusCode {
             return .completed(statusCode: statusCode)
@@ -34,6 +42,17 @@ class RequestViewModel: ObservableObject, SearchableListItem {
             return .error
         }
         return .loading
+    }
+    
+    var result: (String, Color)? {
+        if let code = statusCode {
+            let color = (code >= 200 && code < 300) ? Color.green : Color.red
+            return ("\(code)", color)
+        }
+        if error != nil {
+            return ("Error", Color.red)
+        }
+        return nil
     }
     
     var statusCode: Int? {
@@ -45,7 +64,7 @@ class RequestViewModel: ObservableObject, SearchableListItem {
         return nil
     }
     
-    var error: Error? {
+    private var error: Error? {
         if case .failure(_, let error) = request.response {
             return error
         }

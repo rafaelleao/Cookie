@@ -22,5 +22,7 @@ struct RequestDetailItem: View {
 struct RequestDetailItem_Previews: PreviewProvider {
     static var previews: some View {
         RequestDetailItem(pair: KeyValuePair("foo", "bar"))
+            .previewLayout(.sizeThatFits)
+            .padding()
     }
 }
