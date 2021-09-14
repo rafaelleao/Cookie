@@ -1,10 +1,11 @@
 import Foundation
+import Combine
 
-public class HTTPRequest: NSObject {
+public class HTTPRequest {
 
     public let urlRequest: URLRequest
     public let requestDate: Date
-    public var response: HTTPResponse?
+    @Published public var response: HTTPResponse?
     public var responseDate: Date?
     public var requestBodyData: Data? {
         if let httpBody = urlRequest.httpBody {

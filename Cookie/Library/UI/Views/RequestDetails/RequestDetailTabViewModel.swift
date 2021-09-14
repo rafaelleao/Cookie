@@ -23,6 +23,7 @@ extension SectionData: Hashable {
 
 protocol TabDescriptor {
     init(request: HTTPRequest)
+    var request: HTTPRequest { get }
     var title: String { get }
     func sections() -> [SectionData]
     func action() -> Action?
@@ -44,7 +45,7 @@ class RequestDetailTabViewModel: ObservableObject {
     @Published var action: Action?
     private(set) var title: String
     
-    private let sections: [SectionData]
+    private var sections: [SectionData]
     private var bindings: [AnyCancellable] = []
     
     init(descriptor: TabDescriptor) {
@@ -55,6 +56,17 @@ class RequestDetailTabViewModel: ObservableObject {
             print(text)
             self.filter(searchString: text)
         }.store(in: &bindings)
+        
+        if descriptor.request.response == nil {
+            descriptor.request.$response
+                .receive(on: RunLoop.main)
+                .dropFirst()
+                .sink { response in
+                    self.sections = descriptor.sections()
+                    self.filter(searchString: self.searchText)
+                }
+            .store(in: &bindings)
+        }
     }
 
     private func filter(searchString: String) {

@@ -5,7 +5,7 @@ enum RequestStatus {
     case completed(statusCode: Int)
     case error
 }
-
+/*
 protocol SearchableListItem {
     var key: String {get}
     var value: String {get}
@@ -14,3 +14,4 @@ protocol SearchableListItem {
     var customLabel: String? {get}
     var requestStatus: RequestStatus? {get}
 }
+*/

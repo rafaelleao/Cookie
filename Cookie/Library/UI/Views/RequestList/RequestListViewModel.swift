@@ -66,7 +66,6 @@ class RequestListViewModel: ObservableObject {
 
     private func reloadRequests() {
         requests = Cookie.shared.requests
-        update()
     }
 }
 
@@ -81,7 +80,7 @@ extension RequestListViewModel: RequestDelegate {
     }
     
     func didCompleteRequest(_ httpRequest: HTTPRequest) {
-        reloadRequests()
+        //reloadRequests()
     }
 }
 
