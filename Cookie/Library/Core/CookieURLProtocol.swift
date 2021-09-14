@@ -35,9 +35,8 @@ class CookieURLProtocol: URLProtocol {
     }
 
     override func startLoading() {
-        RequestInterceptor.shared.willFireRequest(request)
-
         sessionTask = session.dataTask(with: request)
+        RequestInterceptor.shared.willFireRequest(request, hash: hash)
         sessionTask?.resume()
     }
 
@@ -51,13 +50,14 @@ extension CookieURLProtocol: URLSessionDataDelegate {
 
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
-            RequestInterceptor.shared.didComplete(request: request, response: task.response as? HTTPURLResponse, error: error)
+            RequestInterceptor.shared.didComplete(request: request, response: task.response as? HTTPURLResponse, error: error, hash: hash)
             client?.urlProtocol(self, didFailWithError: error)
         } else {
             guard let response = task.response as? HTTPURLResponse else {
                 fatalError()
             }
-            RequestInterceptor.shared.didReceiveResponse(urlRequest: request, response: response, data: internalResponseData)
+            print(request, sessionTask, self.hash)
+            RequestInterceptor.shared.didReceiveResponse(urlRequest: request, response: response, data: internalResponseData, hash: hash)
             client?.urlProtocolDidFinishLoading(self)
         }
     }

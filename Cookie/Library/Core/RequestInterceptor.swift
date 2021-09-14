@@ -27,16 +27,16 @@ class RequestInterceptor {
         return delegate?.shouldFireRequest(urlRequest: urlRequest) ?? false
     }
 
-    func willFireRequest(_ urlRequest: URLRequest) {
-        delegate?.willFireRequest(urlRequest: urlRequest)
+    func willFireRequest(_ urlRequest: URLRequest, hash: Int) {
+        delegate?.willFireRequest(urlRequest: urlRequest, hash: hash)
     }
 
-    func didReceiveResponse(urlRequest: URLRequest, response: HTTPURLResponse, data: Data) {
-        delegate?.didReceiveResponse(urlRequest: urlRequest, response: response, data: data)
+    func didReceiveResponse(urlRequest: URLRequest, response: HTTPURLResponse, data: Data, hash: Int) {
+        delegate?.didReceiveResponse(urlRequest: urlRequest, response: response, data: data, hash: hash)
     }
 
-    func didComplete(request: URLRequest, response: HTTPURLResponse?, error: Error?) {
-        delegate?.didComplete(request: request, response: response, error: error)
+    func didComplete(request: URLRequest, response: HTTPURLResponse?, error: Error?, hash: Int) {
+        delegate?.didComplete(request: request, response: response, error: error, hash: hash)
     }
 
     private func swizzleProtocolClasses() {
