@@ -9,7 +9,8 @@ class RequestListViewModel: ObservableObject {
         }
     }
     @Published var source: [RequestViewModel] = []
-    
+    @Published var title = ""
+
     var searchString: String? {
         didSet {
             if let query = searchString, query != "" {
@@ -32,8 +33,12 @@ class RequestListViewModel: ObservableObject {
         for request in allRequests {
             results.append(RequestViewModel(request: request))
         }
+        
+        let totalCount = "\(self.requests.count)"
+        let counter = (requestsToFilter != nil) ? "\(allRequests.count) / " + totalCount : totalCount
         DispatchQueue.main.async {
             self.source = results
+            self.title = "Requests \(counter)"
         }
     }
 

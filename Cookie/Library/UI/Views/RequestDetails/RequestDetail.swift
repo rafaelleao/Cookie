@@ -48,8 +48,8 @@ class RequestDetailViewModel: ObservableObject {
         request.urlRequest.url?.host ?? "Request Details"
     }
 
-    func summaryViewModel() -> RequestDetailTabSummaryViewModel {
-        RequestDetailTabSummaryViewModel(request: request)
+    func summaryViewModel() -> RequestDetailTabViewModel {
+        RequestDetailTabViewModel(sections: SummaryTabDescriptor(request: request).sections())
     }
 
     func requestTabViewModel() -> RequestDetailTabRequestViewModel {

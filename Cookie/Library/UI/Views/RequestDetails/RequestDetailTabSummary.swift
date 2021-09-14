@@ -1,42 +1,51 @@
 import SwiftUI
 import Core
+import Combine
 
 struct RequestDetailTabSummary: View {
-    @ObservedObject var viewModel: RequestDetailTabSummaryViewModel
-
+    @ObservedObject var viewModel: RequestDetailTabViewModel
+    
     var body: some View {
-        List {
-            ForEach(viewModel.data, id: \.self) { row in
-                Section(header: Text(row.title)) {
-                    ForEach(row.pairs, id: \.key) { pair in
-                        RequestDetailItem(pair: pair)
+        VStack {
+            SearchBar(text: $viewModel.searchText, placeholder: "Search")
+            List {
+                ForEach(viewModel.data, id: \.self) { row in
+                    Section(header: Text(row.title)) {
+                        ForEach(row.pairs, id: \.key) { pair in
+                            RequestDetailItem(pair: pair)
+                        }
                     }
                 }
             }
         }.tabItem {
             Text("Summary")
         }
-        //.listStyle(GroupedListStyle())
+        .listStyle(GroupedListStyle())
     }
 }
 
 struct RequestDetailTabSummary_Previews: PreviewProvider {
+    
     static var previews: some View {
-        RequestDetailTabSummary(viewModel: RequestDetailTabSummaryViewModel(request: TestRequest.testRequest))
+        let x = SummaryTabDescriptor(request: TestRequest.testRequest)
+        let viewModel = RequestDetailTabViewModel(sections: x.sections())
+        return RequestDetailTabSummary(viewModel: viewModel)
     }
 }
 
-class RequestDetailTabSummaryViewModel: ObservableObject {
+protocol TabDescriptor {
+    init(request: HTTPRequest)
+    func sections() -> [SectionData]
+}
+
+struct SummaryTabDescriptor: TabDescriptor {
     let request: HTTPRequest
-
-    @Published var data: [SectionData] = []
-
-    init(request: HTTPRequest) {
-        self.request = request
-        data = [SectionData(title: "", pairs: loadData())]
+    
+    func sections() -> [SectionData] {
+        [SectionData(title: "", pairs: summary())]
     }
 
-    func loadData() -> [KeyValuePair] {
+    private func summary() -> [KeyValuePair] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm:ss.SSS"
         let requestDate = dateFormatter.string(from: request.requestDate)
@@ -75,5 +84,40 @@ class RequestDetailTabSummaryViewModel: ObservableObject {
         }
 
         return requestData
+    }
+}
+
+class RequestDetailTabViewModel: ObservableObject {
+    private let sections: [SectionData]
+    @Published var data: [SectionData] = []
+    @Published var searchText: String = ""
+    private var bindings: [AnyCancellable] = []
+    
+    init(sections: [SectionData]) {
+        self.sections = sections
+        $searchText.sink { [unowned self] text in
+            print(text)
+            self.filter(searchString: text)
+        }.store(in: &bindings)
+    }
+
+    private func filter(searchString: String) {
+        if searchString.isEmpty {
+            data = sections
+            return
+        }
+        var results: [SectionData] = []
+        for section in sections {
+            var pairs: [KeyValuePair] = []
+            for pair in section.pairs {
+                if pair.key.lowercased().range(of: searchString) != nil ||
+                    pair.value?.lowercased().range(of: searchString) != nil {
+                    pairs.append(pair)
+                }
+            }
+            let section = SectionData(title: section.title, pairs: pairs)
+            results.append(section)
+        }
+        self.data = results
     }
 }
