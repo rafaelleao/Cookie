@@ -18,9 +18,9 @@ struct RequestDetail: View {
 
     var body: some View {
         let tabview = TabView {
-            RequestDetailTabSummary(viewModel: viewModel.summaryViewModel())
-            RequestDetailTabRequest(viewModel: viewModel.requestTabViewModel())
-            RequestDetailTabResponse(viewModel: viewModel.responseTabViewModel())
+            RequestDetailTab(viewModel: viewModel.summaryViewModel())
+            RequestDetailTab(viewModel: viewModel.requestTabViewModel())
+            RequestDetailTab(viewModel: viewModel.responseTabViewModel())
         }
         #if os(iOS)
             return tabview
@@ -49,14 +49,14 @@ class RequestDetailViewModel: ObservableObject {
     }
 
     func summaryViewModel() -> RequestDetailTabViewModel {
-        RequestDetailTabViewModel(sections: SummaryTabDescriptor(request: request).sections())
+        RequestDetailTabViewModel(descriptor: SummaryTabDescriptor(request: request))
     }
 
-    func requestTabViewModel() -> RequestDetailTabRequestViewModel {
-        RequestDetailTabRequestViewModel(request: request)
+    func requestTabViewModel() -> RequestDetailTabViewModel {
+        RequestDetailTabViewModel(descriptor: RequestTabDescriptor(request: request))
     }
 
-    func responseTabViewModel() -> RequestDetailTabResponseViewModel {
-        RequestDetailTabResponseViewModel(request: request)
+    func responseTabViewModel() -> RequestDetailTabViewModel {
+        RequestDetailTabViewModel(descriptor: ResponseTabDescriptor(request: request))
     }
 }

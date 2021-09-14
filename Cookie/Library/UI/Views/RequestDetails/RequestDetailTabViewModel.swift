@@ -2,60 +2,65 @@
 //  RequestDetailTabViewModel.swift
 //  Cookie
 //
-//  Created by Rafael Leão on 13.09.21.
+//  Created by Rafael Leão on 14.09.21.
 //
 
+import Combine
 import Core
-import SwiftUI
 
-class RequestDetailTabRequestViewModel: ObservableObject {
-    let request: HTTPRequest
+protocol TabDescriptor {
+    init(request: HTTPRequest)
+    var title: String { get }
+    func sections() -> [SectionData]
+    func action() -> Action?
+}
 
+class Action {
+    let title: String
+    let handler: (() -> TextViewerViewModel)
+    
+    init(title: String, handler: @escaping (() -> TextViewerViewModel)) {
+        self.title = title
+        self.handler = handler
+    }
+}
+
+class RequestDetailTabViewModel: ObservableObject {
     @Published var data: [SectionData] = []
-    @State var searchText : String = ""
-
-    init(request: HTTPRequest) {
-        self.request = request
-        data = [
-            SectionData(title: "Request Headers", pairs: headers()),
-            SectionData(title: "Query Parameters", pairs: queryParams())
-        ]
+    @Published var searchText: String = ""
+    @Published var action: Action?
+    private(set) var title: String
+    
+    private let sections: [SectionData]
+    private var bindings: [AnyCancellable] = []
+    
+    init(descriptor: TabDescriptor) {
+        self.sections = descriptor.sections()
+        self.action = descriptor.action()
+        self.title = descriptor.title
+        $searchText.sink { [unowned self] text in
+            print(text)
+            self.filter(searchString: text)
+        }.store(in: &bindings)
     }
 
-    func canShowRequestBody() -> Bool {
-        return request.requestBodyString != nil
-    }
-
-    func textViewerViewModel() -> TextViewerViewModel? {
-        guard let body = request.requestBodyString else {
-            return nil
+    private func filter(searchString: String) {
+        if searchString.isEmpty {
+            data = sections
+            return
         }
-        let viewModel = TextViewerViewModel(text: body, filename: "")
-        return viewModel
-    }
-
-    private func headers() -> [KeyValuePair] {
-        var pairs: [KeyValuePair] = []
-        if let allHTTPHeaderFields = request.urlRequest.allHTTPHeaderFields {
-            for (key, value) in allHTTPHeaderFields {
-                pairs.append(KeyValuePair(key, value))
+        var results: [SectionData] = []
+        for section in sections {
+            var pairs: [KeyValuePair] = []
+            for pair in section.pairs {
+                if pair.key.lowercased().range(of: searchString) != nil ||
+                    pair.value?.lowercased().range(of: searchString) != nil {
+                    pairs.append(pair)
+                }
             }
+            let section = SectionData(title: section.title, pairs: pairs)
+            results.append(section)
         }
-
-        return pairs.sorted()
-    }
-
-    private func queryParams() -> [KeyValuePair] {
-        var pairs: [KeyValuePair] = []
-
-        if let url = request.urlRequest.url,
-            let urlComponents = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
-            let queryItems = urlComponents.queryItems, !queryItems.isEmpty {
-            for (param) in queryItems {
-                pairs.append(KeyValuePair(param.name, param.value ?? ""))
-            }
-        }
-
-        return pairs.sorted()
+        self.data = results
     }
 }

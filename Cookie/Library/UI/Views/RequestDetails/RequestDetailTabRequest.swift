@@ -1,31 +1,30 @@
 import SwiftUI
 
 struct RequestDetailTabRequest: View {
-    @ObservedObject var viewModel: RequestDetailTabRequestViewModel
+    @ObservedObject var viewModel: RequestDetailTabViewModel
     
     var body: some View {
         VStack {
-            SearchBar(text: viewModel.$searchText, placeholder: "Search")
+            SearchBar(text: $viewModel.searchText, placeholder: "Search")
             
-            if viewModel.canShowRequestBody() {
-                NavigationLink(destination: TextViewer(viewModel: viewModel.textViewerViewModel()!)) {
-                    Text("View Request Body")
+            if let action = viewModel.action {
+                NavigationLink(destination: TextViewer(viewModel: action.handler())) {
+                    Text(action.title)
                         .padding()
                 }
             }
+            
             List {
                 ForEach(viewModel.data, id: \.self) { row in
-                    //if row.pairs.count > 0 {
                     Section(header: Text(row.title)) {
                         ForEach(row.pairs, id: \.key) { pair in
                             RequestDetailItem(pair: pair)
                         }
                     }
-                    // }
                 }
             }
         }.tabItem {
-            Text("Request")
+            Text(viewModel.title)
         }
         .listStyle(GroupedListStyle())
     }
@@ -33,6 +32,8 @@ struct RequestDetailTabRequest: View {
 
 struct RequestDetailTabRequest_Previews: PreviewProvider {
     static var previews: some View {
-        RequestDetailTabRequest(viewModel: RequestDetailTabRequestViewModel(request: TestRequest.testRequest))
+        let descriptor = SummaryTabDescriptor(request: TestRequest.testRequest)
+        let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
+        RequestDetailTabRequest(viewModel: viewModel)
     }
 }

@@ -2,12 +2,20 @@ import SwiftUI
 import Core
 import Combine
 
-struct RequestDetailTabSummary: View {
+struct RequestDetailTab: View {
     @ObservedObject var viewModel: RequestDetailTabViewModel
     
     var body: some View {
         VStack {
             SearchBar(text: $viewModel.searchText, placeholder: "Search")
+            
+            if let action = viewModel.action {
+                NavigationLink(destination: TextViewer(viewModel: action.handler())) {
+                    Text(action.title)
+                        .padding()
+                }
+            }
+            
             List {
                 ForEach(viewModel.data, id: \.self) { row in
                     Section(header: Text(row.title)) {
@@ -18,7 +26,7 @@ struct RequestDetailTabSummary: View {
                 }
             }
         }.tabItem {
-            Text("Summary")
+            Text(viewModel.title)
         }
         .listStyle(GroupedListStyle())
     }
@@ -27,22 +35,25 @@ struct RequestDetailTabSummary: View {
 struct RequestDetailTabSummary_Previews: PreviewProvider {
     
     static var previews: some View {
-        let x = SummaryTabDescriptor(request: TestRequest.testRequest)
-        let viewModel = RequestDetailTabViewModel(sections: x.sections())
-        return RequestDetailTabSummary(viewModel: viewModel)
+        let descriptor = SummaryTabDescriptor(request: TestRequest.testRequest)
+        let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
+        RequestDetailTab(viewModel: viewModel)
     }
-}
-
-protocol TabDescriptor {
-    init(request: HTTPRequest)
-    func sections() -> [SectionData]
 }
 
 struct SummaryTabDescriptor: TabDescriptor {
     let request: HTTPRequest
     
+    var title: String {
+        "Summary"
+    }
+    
     func sections() -> [SectionData] {
         [SectionData(title: "", pairs: summary())]
+    }
+    
+    func action() -> Action? {
+        nil
     }
 
     private func summary() -> [KeyValuePair] {
@@ -84,40 +95,5 @@ struct SummaryTabDescriptor: TabDescriptor {
         }
 
         return requestData
-    }
-}
-
-class RequestDetailTabViewModel: ObservableObject {
-    private let sections: [SectionData]
-    @Published var data: [SectionData] = []
-    @Published var searchText: String = ""
-    private var bindings: [AnyCancellable] = []
-    
-    init(sections: [SectionData]) {
-        self.sections = sections
-        $searchText.sink { [unowned self] text in
-            print(text)
-            self.filter(searchString: text)
-        }.store(in: &bindings)
-    }
-
-    private func filter(searchString: String) {
-        if searchString.isEmpty {
-            data = sections
-            return
-        }
-        var results: [SectionData] = []
-        for section in sections {
-            var pairs: [KeyValuePair] = []
-            for pair in section.pairs {
-                if pair.key.lowercased().range(of: searchString) != nil ||
-                    pair.value?.lowercased().range(of: searchString) != nil {
-                    pairs.append(pair)
-                }
-            }
-            let section = SectionData(title: section.title, pairs: pairs)
-            results.append(section)
-        }
-        self.data = results
     }
 }

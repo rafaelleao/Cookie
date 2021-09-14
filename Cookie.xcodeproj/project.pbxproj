@@ -11,7 +11,8 @@
 		1305481826EEA9EF00BD7720 /* SearchNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1305481726EEA9EF00BD7720 /* SearchNavigation.swift */; };
 		1305481A26EF417E00BD7720 /* TestRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1305481926EF417E00BD7720 /* TestRequest.swift */; };
 		1305481C26EFF6BB00BD7720 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1305481B26EFF6BB00BD7720 /* SearchBar.swift */; };
-		1305481E26EFFB5900BD7720 /* RequestDetailTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1305481D26EFFB5900BD7720 /* RequestDetailTabViewModel.swift */; };
+		1305481E26EFFB5900BD7720 /* RequestTabDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1305481D26EFFB5900BD7720 /* RequestTabDescriptor.swift */; };
+		1305482026F090C200BD7720 /* RequestDetailTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1305481F26F090C200BD7720 /* RequestDetailTabViewModel.swift */; };
 		13EA406126EBA1FF00FFD0F7 /* RequestDetailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13EA406026EBA1FF00FFD0F7 /* RequestDetailItem.swift */; };
 		8054E360261A4D580096AC32 /* RequestDetailTabSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */; };
 		8054E362261A621C0096AC32 /* RequestDetailTabRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */; };
@@ -62,7 +63,8 @@
 		1305481726EEA9EF00BD7720 /* SearchNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchNavigation.swift; sourceTree = "<group>"; };
 		1305481926EF417E00BD7720 /* TestRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRequest.swift; sourceTree = "<group>"; };
 		1305481B26EFF6BB00BD7720 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
-		1305481D26EFFB5900BD7720 /* RequestDetailTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailTabViewModel.swift; sourceTree = "<group>"; };
+		1305481D26EFFB5900BD7720 /* RequestTabDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestTabDescriptor.swift; sourceTree = "<group>"; };
+		1305481F26F090C200BD7720 /* RequestDetailTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailTabViewModel.swift; sourceTree = "<group>"; };
 		13EA406026EBA1FF00FFD0F7 /* RequestDetailItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RequestDetailItem.swift; path = Cookie/Library/UI/Views/RequestDetailItem/RequestDetailItem.swift; sourceTree = SOURCE_ROOT; };
 		8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailTabSummary.swift; sourceTree = "<group>"; };
 		8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestDetailTabRequest.swift; sourceTree = "<group>"; };
@@ -242,10 +244,11 @@
 			children = (
 				8067E0AB261702500055ED3D /* RequestDetail.swift */,
 				13EA406026EBA1FF00FFD0F7 /* RequestDetailItem.swift */,
+				1305481D26EFFB5900BD7720 /* RequestTabDescriptor.swift */,
 				8054E361261A621C0096AC32 /* RequestDetailTabRequest.swift */,
 				8054E363261A62F20096AC32 /* RequestDetailTabResponse.swift */,
 				8054E35F261A4D580096AC32 /* RequestDetailTabSummary.swift */,
-				1305481D26EFFB5900BD7720 /* RequestDetailTabViewModel.swift */,
+				1305481F26F090C200BD7720 /* RequestDetailTabViewModel.swift */,
 			);
 			path = RequestDetails;
 			sourceTree = "<group>";
@@ -382,7 +385,7 @@
 				806BB8A8260FCEE3002BCA40 /* CookieURLProtocol.swift in Sources */,
 				806BB8A3260FCEE3002BCA40 /* RequestInterceptorDelegate.swift in Sources */,
 				80A6C86E2617521F002DB811 /* ContentViewViewModel.swift in Sources */,
-				1305481E26EFFB5900BD7720 /* RequestDetailTabViewModel.swift in Sources */,
+				1305481E26EFFB5900BD7720 /* RequestTabDescriptor.swift in Sources */,
 				8067E080261700070055ED3D /* MainCoordinator.swift in Sources */,
 				8067E0BF261702500055ED3D /* SearchableListViewController.swift in Sources */,
 				8054E364261A62F20096AC32 /* RequestDetailTabResponse.swift in Sources */,
@@ -395,6 +398,7 @@
 				1305481C26EFF6BB00BD7720 /* SearchBar.swift in Sources */,
 				8067E0BC261702500055ED3D /* RequestViewModel.swift in Sources */,
 				1305481A26EF417E00BD7720 /* TestRequest.swift in Sources */,
+				1305482026F090C200BD7720 /* RequestDetailTabViewModel.swift in Sources */,
 				806BB8A2260FCEE3002BCA40 /* RequestInterceptor.swift in Sources */,
 				1305481826EEA9EF00BD7720 /* SearchNavigation.swift in Sources */,
 				8067E0B8261702500055ED3D /* RequestList.swift in Sources */,

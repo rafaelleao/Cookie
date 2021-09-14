@@ -1,75 +1,28 @@
-import SwiftUI
 import Core
+import Foundation
 
-struct RequestDetailTabResponse: View {
-    @ObservedObject var viewModel: RequestDetailTabResponseViewModel
-    @State private var showingSheet = false
-
-    #if os(iOS)
-    var body: some View {
-        VStack {
-            if viewModel.canShowResponse() {
-                NavigationLink(destination: TextViewer(viewModel: viewModel.textViewerViewModel()!)) {
-                    Text("View Response")
-                        .padding()
-                }
-            }
-            List {
-                ForEach(viewModel.data, id: \.self) { row in
-                    //if row.pairs.count > 0 {
-                        Section(header: Text(row.title)) {
-                            ForEach(row.pairs, id: \.key) { pair in
-                                RequestDetailItem(pair: pair)
-                            }
-                        }
-                    //}
-                }
-            }
-        }.tabItem {
-            Text("Response")
-        }
-        .listStyle(GroupedListStyle())
-    }
-    #else
-    var body: some View {
-        VStack {
-            List {
-                ForEach(viewModel.data, id: \.self) { row in
-                    //if row.pairs.count > 0 {
-                        Section(header: Text(row.title)) {
-                            ForEach(row.pairs, id: \.key) { pair in
-                                RequestDetailItem(pair: pair)
-                            }
-                        }
-                    //}
-                }
-            }
-            if viewModel.canShowResponse() {
-                TextViewer(viewModel: viewModel.textViewerViewModel()!)
-            }
-        }.tabItem {
-            Text("Response")
-        }
-    }
-    #endif
-}
-
-struct RequestDetailTabResponse_Previews: PreviewProvider {
-    static var previews: some View {
-        RequestDetailTabResponse(viewModel: RequestDetailTabResponseViewModel(request: TestRequest.completedTestRequest))
-    }
-}
-
-class RequestDetailTabResponseViewModel: ObservableObject {
+class ResponseTabDescriptor: TabDescriptor {
     let request: HTTPRequest
 
-    @Published var data: [SectionData] = []
-
-    init(request: HTTPRequest) {
+    required init(request: HTTPRequest) {
         self.request = request
-        data = [
-            SectionData(title: "Response Headers", pairs: headers())
-        ]
+    }
+    
+    var title: String {
+        "Response"
+    }
+
+    func sections() -> [SectionData] {
+        [SectionData(title: "Response Headers", pairs: headers())]
+    }
+    
+    func action() -> Action? {
+        if canShowResponse(), let viewModel = textViewerViewModel() {
+            return Action(title: "View Response") {
+                viewModel
+            }
+        }
+        return nil
     }
 
     private func headers() -> [KeyValuePair] {
@@ -83,11 +36,11 @@ class RequestDetailTabResponseViewModel: ObservableObject {
         return headers.sorted()
     }
 
-    func canShowResponse() -> Bool {
+    private func canShowResponse() -> Bool {
         return responseString()?.isEmpty != nil
     }
 
-    func textViewerViewModel() -> TextViewerViewModel? {
+    private func textViewerViewModel() -> TextViewerViewModel? {
         guard let response = responseString() else {
             return nil
         }
