@@ -7,6 +7,19 @@
 
 import Combine
 import Core
+import Foundation
+
+struct SectionData {
+    let id = UUID()
+    let title: String
+    let pairs: [KeyValuePair]
+}
+
+extension SectionData: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+    }
+}
 
 protocol TabDescriptor {
     init(request: HTTPRequest)

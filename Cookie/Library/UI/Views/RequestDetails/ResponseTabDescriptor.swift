@@ -1,3 +1,10 @@
+//
+//  ResponseTabDescriptor.swift
+//  Cookie
+//
+//  Created by Rafael Leão on 13.09.21.
+//
+
 import Core
 import Foundation
 

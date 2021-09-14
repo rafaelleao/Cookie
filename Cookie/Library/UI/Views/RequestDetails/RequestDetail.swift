@@ -1,26 +1,16 @@
 import SwiftUI
 import Core
 
-struct SectionData {
-    let id = UUID()
-    let title: String
-    let pairs: [KeyValuePair]
-}
-
-extension SectionData: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(title)
-    }
-}
-
 struct RequestDetail: View {
     @ObservedObject var viewModel: RequestDetailViewModel
 
     var body: some View {
+        let tabs = viewModel.tabDescriptors().map {
+            RequestDetailTab(viewModel: RequestDetailTabViewModel(descriptor: $0))
+        }
+                
         let tabview = TabView {
-            RequestDetailTab(viewModel: viewModel.summaryViewModel())
-            RequestDetailTab(viewModel: viewModel.requestTabViewModel())
-            RequestDetailTab(viewModel: viewModel.responseTabViewModel())
+            ForEach(tabs) { $0 }
         }
         #if os(iOS)
             return tabview
@@ -31,32 +21,8 @@ struct RequestDetail: View {
     }
 }
 
-struct RequestDetails_Previews: PreviewProvider {
+struct RequestDetail_Previews: PreviewProvider {
     static var previews: some View {
         RequestDetail(viewModel: RequestDetailViewModel(request: TestRequest.completedTestRequest))
-    }
-}
-
-class RequestDetailViewModel: ObservableObject {
-    let request: HTTPRequest
-
-    init(request: HTTPRequest) {
-        self.request = request
-    }
-
-    var title: String {
-        request.urlRequest.url?.host ?? "Request Details"
-    }
-
-    func summaryViewModel() -> RequestDetailTabViewModel {
-        RequestDetailTabViewModel(descriptor: SummaryTabDescriptor(request: request))
-    }
-
-    func requestTabViewModel() -> RequestDetailTabViewModel {
-        RequestDetailTabViewModel(descriptor: RequestTabDescriptor(request: request))
-    }
-
-    func responseTabViewModel() -> RequestDetailTabViewModel {
-        RequestDetailTabViewModel(descriptor: ResponseTabDescriptor(request: request))
     }
 }
