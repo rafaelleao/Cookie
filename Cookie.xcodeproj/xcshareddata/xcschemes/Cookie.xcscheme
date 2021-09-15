@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "806BB821260FB579002BCA40"
-               BuildableName = "Cookie.app"
-               BlueprintName = "Cookie"
+               BuildableName = "CookieiOS.app"
+               BlueprintName = "CookieiOS"
                ReferencedContainer = "container:Cookie.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "806BB821260FB579002BCA40"
-            BuildableName = "Cookie.app"
-            BlueprintName = "Cookie"
+            BuildableName = "CookieiOS.app"
+            BlueprintName = "CookieiOS"
             ReferencedContainer = "container:Cookie.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "806BB821260FB579002BCA40"
-            BuildableName = "Cookie.app"
-            BlueprintName = "Cookie"
+            BuildableName = "CookieiOS.app"
+            BlueprintName = "CookieiOS"
             ReferencedContainer = "container:Cookie.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
