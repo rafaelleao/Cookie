@@ -56,7 +56,6 @@ extension CookieURLProtocol: URLSessionDataDelegate {
             guard let response = task.response as? HTTPURLResponse else {
                 fatalError()
             }
-            print(request, sessionTask, self.hash)
             RequestInterceptor.shared.didReceiveResponse(urlRequest: request, response: response, data: internalResponseData, hash: hash)
             client?.urlProtocolDidFinishLoading(self)
         }

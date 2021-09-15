@@ -26,6 +26,7 @@ struct SearchBar: UIViewRepresentable {
         
         func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
             searchBar.resignFirstResponder()
+            text = ""
         }
         
         func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

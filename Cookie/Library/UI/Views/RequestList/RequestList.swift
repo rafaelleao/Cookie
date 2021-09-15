@@ -18,15 +18,17 @@ struct RequestList: View {
      
     var body: some View {
         SearchNavigation(text: $searchString, textChanged: textChanged, search: search, cancel: cancel) {
-            List(viewModel.source) { requestViewModel in
-                NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: requestViewModel.request))) {
-                    RequestRow(viewModel: requestViewModel)
+            List {
+                Section(header: Text(viewModel.title)) {
+                    ForEach(viewModel.source) { requestViewModel in
+                        NavigationLink(destination: RequestDetail(viewModel: RequestDetailViewModel(request: requestViewModel.request))) {
+                            RequestRow(viewModel: requestViewModel)
+                        }
+                    }
                 }
-                //.background(Color(.secondarySystemBackground))
-                //.cornerRadius(8)
             }
             .listStyle(GroupedListStyle())
-            .navigationBarTitle("Requests", displayMode: .inline)
+            .navigationBarTitle("Cookie", displayMode: .inline)
             
         }
         .edgesIgnoringSafeArea(.top)

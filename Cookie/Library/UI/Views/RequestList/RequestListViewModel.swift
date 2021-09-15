@@ -3,14 +3,22 @@ import Core
 
 class RequestListViewModel: ObservableObject {
     
+    @Published var source: [RequestViewModel] = []
+    @Published var title = ""
+    @Published var searchText: String = ""
+
+    init() {
+        requests = Cookie.shared.requests
+        Cookie.shared.internalDelegate = self
+        update()
+    }
+    
     private var requests: [HTTPRequest] = [] {
         didSet {
             update()
         }
     }
-    @Published var source: [RequestViewModel] = []
-    @Published var title = ""
-
+    
     var searchString: String? {
         didSet {
             if let query = searchString, query != "" {
@@ -19,12 +27,6 @@ class RequestListViewModel: ObservableObject {
                 clearSearch()
             }
         }
-    }
-
-    init() {
-        requests = Cookie.shared.requests
-        Cookie.shared.internalDelegate = self
-        update()
     }
     
     private func update(requestsToFilter: [HTTPRequest]? = nil) {
