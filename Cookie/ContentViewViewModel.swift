@@ -1,28 +1,58 @@
 import Foundation
+import Combine
 
 class ContentViewModel: ObservableObject {
 
     @Published var enabled = true
+    private var bindings: [AnyCancellable] = []
+
+    init() {
+        $enabled.sink { enabled in
+            enabled ? Cookie.shared.enable() : Cookie.shared.disable()
+        }.store(in: &bindings)
+    }
 
     func show() {
         Cookie.shared.presentViewController()
     }
 
     func sendTestRequests() {
-        sendPut()
-        sendGet()
-        sendGetWithParameters()
-        sendPost()
-        sendDelete()
-        sendPatch()
-        sendGet401()
-        getXml()
-        getHtml()
-        getYml()
-        getRepos()
+        let requests = TestRequests().all()
+        sendRequests(requests)
     }
 
-    private func sendPost() {
+    private func sendRequests(_ requests: [URLRequest]) {
+        if let request = requests.first {
+            let task = URLSession.shared.dataTask(with: request)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
+                task.resume()
+                var new = requests
+                new.remove(at: 0)
+                sendRequests(new)
+            }
+        }
+    }
+}
+
+struct TestRequests {
+    
+    func all() -> [URLRequest] {
+        [
+            put(),
+            get(),
+            getWithParameters(),
+            post(),
+            delete(),
+            patch(),
+            get401(),
+            getXml(),
+            getHtml(),
+            getYml(),
+            getRepos()
+        ]
+    }
+    
+    private func post() -> URLRequest {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts")!
         var request = URLRequest(url: url)
 
@@ -36,10 +66,10 @@ class ContentViewModel: ObservableObject {
 
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         request.httpBody = jsonData
-        sendRequest(request)
+        return request
     }
 
-    private func sendPut() {
+    private func put() -> URLRequest  {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         var request = URLRequest(url: url)
 
@@ -51,10 +81,10 @@ class ContentViewModel: ObservableObject {
 
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         request.httpBody = jsonData
-        sendRequest(request)
+        return request
     }
 
-    private func sendPatch() {
+    private func patch() -> URLRequest {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
         var request = URLRequest(url: url)
 
@@ -63,65 +93,58 @@ class ContentViewModel: ObservableObject {
         let json: [String: Any] = ["title": "bar"]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         request.httpBody = jsonData
-        sendRequest(request)
+        return request
     }
 
-    private func sendGet() {
-        let url = URL(string: "https://postman-echo.com/delay/3")!
+    private func get() -> URLRequest {
+        let url = URL(string: "https://postman-echo.com/delay/10")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        sendRequest(request)
+        return request
     }
 
-    private func sendGetWithParameters() {
+    private func getWithParameters() -> URLRequest  {
         let url = URL(string: "http://postman-echo.com/get?foo1=bar1&foo2=bar2")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        sendRequest(request)
+        return request
     }
 
-    private func sendGet401() {
+    private func get401() -> URLRequest {
         let url = URL(string: "https://postman-echo.com/status/401")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        sendRequest(request)
+        return request
     }
 
-    private func sendDelete() {
+    private func delete() -> URLRequest {
         let url = URL(string: "https://jsonplaceholder.typicode.com/posts/0")!
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        sendRequest(request)
+        return request
     }
 
-    private func getXml() {
+    private func getXml() -> URLRequest {
         let url = URL(string: "https://schemas.xmlsoap.org/soap/envelope/")!
         let request = URLRequest(url: url)
-        sendRequest(request)
+        return request
     }
 
-    private func getRepos() {
+    private func getRepos() -> URLRequest {
         let url = URL(string: "https://api.github.com/repositories")!
         let request = URLRequest(url: url)
-        sendRequest(request)
+        return request
     }
 
-    private func getHtml() {
+    private func getHtml() -> URLRequest {
         let url = URL(string: "https://raw.githubusercontent.com/GoogleChrome/samples/gh-pages/index.html")!
         let request = URLRequest(url: url)
-        sendRequest(request)
+        return request
     }
 
-    private func getYml() {
+    private func getYml() -> URLRequest {
         let url = URL(string: "https://raw.githubusercontent.com/GoogleChrome/samples/gh-pages/.travis.yml")!
         let request = URLRequest(url: url)
-        sendRequest(request)
-    }
-
-    private func sendRequest(_ request: URLRequest) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            let task = URLSession.shared.dataTask(with: request)
-            task.resume()
-        }
+        return request
     }
 }
