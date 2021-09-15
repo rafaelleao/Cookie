@@ -4,35 +4,33 @@ public class Cookie {
 
     public static let shared = Cookie()
     public weak var delegate: RequestDelegate?
+    public var enabled = false {
+        didSet {
+            if oldValue == enabled {
+                return
+            }
+            if enabled {
+                RequestInterceptor.shared.delegate = self
+                RequestInterceptor.shared.activate()
+            } else {
+                RequestInterceptor.shared.delegate = nil
+                RequestInterceptor.shared.deactivate()
+            }
+        }
+    }
+    public private(set) var requests = [HTTPRequest]()
 
     private let queue = DispatchQueue(label: "Cookie")
-    var requests = [HTTPRequest]()
-    var openRequests = [Int: HTTPRequest]()
-    var enabled = false
+    private var openRequests = [Int: HTTPRequest]()
+    private let coordinator = MainCoordinator()
     weak var internalDelegate: RequestDelegate?
-
-    public func enable() {
-        guard !enabled else { return }
-
-        enabled = true
-        RequestInterceptor.shared.delegate = self
-        RequestInterceptor.shared.activate()
-    }
-
-    public func disable() {
-        guard enabled else { return }
-
-        enabled = false
-        RequestInterceptor.shared.delegate = nil
-        RequestInterceptor.shared.deactivate()
-    }
     
     public func clearRequests() {
         requests.removeAll()
     }
     
-    public func presentViewController() {
-        MainCoordinator.shared.start()
+    public func present() {
+        coordinator.present()
     }
 
     private func requestFor(urlRequest: URLRequest, hash: Int) -> HTTPRequest? {

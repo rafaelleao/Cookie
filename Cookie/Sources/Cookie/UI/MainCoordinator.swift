@@ -10,15 +10,28 @@ import SwiftUI
 
 class MainCoordinator {
 
-    static let shared = MainCoordinator()
-
-    func start() {
+    private weak var presentingViewController: UIViewController?
+    
+    func present() {
+        if presentingViewController != nil {
+            dimiss()
+            return
+        }
         let view = RequestList(viewModel: RequestListViewModel())
         let viewController = UIHostingController(rootView: view)
-        topViewController()?.present(viewController, animated: true, completion: nil)
+        UIViewController.top?.present(viewController, animated: true, completion: nil)
+        presentingViewController = viewController
     }
+    
+    func dimiss() {
+        presentingViewController?.dismiss(animated: true, completion: { [weak self] in
+            self?.presentingViewController = nil
+        })
+    }
+}
 
-    private func topViewController() -> UIViewController? {
+private extension UIViewController {
+    static var top: UIViewController? {
         var topViewController = UIWindow.key?.rootViewController
         while let presentedViewController = topViewController?.presentedViewController {
             topViewController = presentedViewController
@@ -27,7 +40,7 @@ class MainCoordinator {
     }
 }
 
-extension UIWindow {
+private extension UIWindow {
     static var key: UIWindow? {
         return UIApplication.shared.windows.first { $0.isKeyWindow }
     }

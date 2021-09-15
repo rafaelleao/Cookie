@@ -1,6 +1,6 @@
 import Foundation
 
-public struct KeyValuePair {
+struct KeyValuePair {
     public let key: String
     public let value: String?
     

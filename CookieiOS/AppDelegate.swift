@@ -5,7 +5,7 @@ import Cookie
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        Cookie.shared.enable()
+        Cookie.shared.enabled = true
         
         return true
     }

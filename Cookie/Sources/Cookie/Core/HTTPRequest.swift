@@ -32,12 +32,13 @@ public class HTTPRequest {
 
     public var tag: String?
 
-    public init(request: URLRequest, date: Date = Date()) {
+    init(request: URLRequest, date: Date = Date()) {
         self.urlRequest = request
         self.requestDate = date
     }
 
-    public required convenience init?(coder: NSCoder)
+    /*
+    required convenience init?(coder: NSCoder)
     {
         guard let urlRequest = coder.decodeObject(forKey: "urlRequest") as? URLRequest,
               let date = coder.decodeObject(forKey: "requestDate") as? Date
@@ -45,6 +46,7 @@ public class HTTPRequest {
 
         self.init(request: urlRequest, date: date)
     }
+ */
 }
 /*
 extension HTTPRequest: Equatable {
@@ -58,7 +60,7 @@ extension HTTPRequest: CustomStringConvertible {
         return "<\(type(of: self)): requestDate: \(requestDate) URL: \(urlRequest.url!)>"
     }
 }
-*/
+
 extension HTTPRequest: NSCoding {
 
     public func encode(with coder: NSCoder) {
@@ -66,3 +68,4 @@ extension HTTPRequest: NSCoding {
         coder.encode(requestDate, forKey: "requestDate")
     }
 }
+ */

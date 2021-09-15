@@ -8,13 +8,16 @@ class ContentViewModel: ObservableObject {
     private var bindings: [AnyCancellable] = []
 
     init() {
-        $enabled.sink { enabled in
-            enabled ? Cookie.shared.enable() : Cookie.shared.disable()
-        }.store(in: &bindings)
+        $enabled
+            .dropFirst()
+            .sink { enabled in
+                Cookie.shared.enabled = true
+            }
+            .store(in: &bindings)
     }
 
     func show() {
-        Cookie.shared.presentViewController()
+        Cookie.shared.present()
     }
 
     func sendTestRequests() {
