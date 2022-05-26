@@ -14,13 +14,9 @@ struct RequestRow: View {
             }
             HStack {
                 if viewModel.isLoading {
-                    if #available(iOS 14.0, *) {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                            .padding(.trailing, 3)
-                    } else {
-                        LoadingIndicator()
-                    }
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding(.trailing, 3)
                 }
 
                 Text(viewModel.key)
