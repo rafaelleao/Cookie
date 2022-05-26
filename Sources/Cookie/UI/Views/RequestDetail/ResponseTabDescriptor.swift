@@ -43,7 +43,7 @@ class ResponseTabDescriptor: TabDescriptor {
     }
 
     private func canShowResponse() -> Bool {
-        return responseString()?.isEmpty != nil
+        responseString()?.isEmpty != nil
     }
 
     private func textViewerViewModel() -> TextViewerViewModel? {
