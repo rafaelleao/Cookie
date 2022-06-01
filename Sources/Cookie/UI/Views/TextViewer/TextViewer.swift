@@ -23,6 +23,10 @@ struct TextViewer: View {
 
             Divider()
                 .frame(minWidth: 0, maxWidth: .infinity)
+            if viewModel.isClipped {
+                Text("Content clipped. File is too large.")
+                    .italic()
+            }
         })
         .padding()
         .navigationBarItems(trailing: navigationBarItems)
