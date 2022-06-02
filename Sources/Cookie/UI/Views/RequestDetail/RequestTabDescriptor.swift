@@ -18,6 +18,10 @@ class RequestTabDescriptor: TabDescriptor {
         "Request"
     }
 
+    var image: String {
+        "icloud.and.arrow.up"
+    }
+
     func sections() -> [SectionData] {
         [
             SectionData(title: "Request Headers", pairs: headers()),

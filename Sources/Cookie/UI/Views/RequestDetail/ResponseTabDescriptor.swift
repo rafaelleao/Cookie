@@ -18,6 +18,10 @@ class ResponseTabDescriptor: TabDescriptor {
         "Response"
     }
 
+    var image: String {
+        "icloud.and.arrow.down"
+    }
+
     func sections() -> [SectionData] {
         [SectionData(title: "Response Headers", pairs: headers())]
     }

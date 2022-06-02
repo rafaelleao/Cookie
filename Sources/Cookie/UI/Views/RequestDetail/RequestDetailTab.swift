@@ -41,6 +41,7 @@ struct RequestDetailTab: View, Identifiable {
                 }
             }
         }.tabItem {
+            Image(systemName: viewModel.image)
             Text(viewModel.title)
         }
         .listStyle(GroupedListStyle())

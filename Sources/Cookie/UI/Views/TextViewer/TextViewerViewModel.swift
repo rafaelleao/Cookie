@@ -8,7 +8,7 @@ private enum FontSize {
 }
 
 class TextViewerViewModel: ObservableObject {
-    let charLimit = 10_000
+    let charLimit = 15_000
     let text: String
     let originalText: String
     let filename: String

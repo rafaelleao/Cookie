@@ -14,6 +14,10 @@ struct SummaryTabDescriptor: TabDescriptor {
         "Summary"
     }
 
+    var image: String {
+        "network"
+    }
+    
     func sections() -> [SectionData] {
         [SectionData(title: "", pairs: summary())]
     }
