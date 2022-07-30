@@ -12,12 +12,19 @@ struct RequestDetail: View {
 
         let tabview = TabView {
             ForEach(tabs) { $0 }
-        }.onDisappear(perform: {
-            if !detailPresented {
-                onDismiss?()
+        }
+            .onAppear {
+                if #available(iOS 15.0, *) {
+                    let appearance = UITabBarAppearance()
+                    UITabBar.appearance().scrollEdgeAppearance = appearance
+                }
             }
-        })
-        .navigationBarTitle(viewModel.title)
+            .onDisappear(perform: {
+                if !detailPresented {
+                    onDismiss?()
+                }
+            })
+            .navigationBarTitle(viewModel.title)
 
         return tabview
     }

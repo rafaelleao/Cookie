@@ -1,8 +1,8 @@
 import Foundation
 
 class RequestListViewModel: ObservableObject {
-    @Published var source: [RequestViewModel] = []
-    @Published var title = ""
+    @MainActor @Published var source: [RequestViewModel] = []
+    @MainActor @Published var title = ""
     private var requests: [(HTTPRequest, RequestViewModel)] = []
     var sendUpdates = true {
         didSet {
@@ -19,18 +19,15 @@ class RequestListViewModel: ObservableObject {
     }
 
     func loadRequests() {
-        DispatchQueue.global().async { [self] in
+        Task.init {
             var viewModels = [RequestViewModel]()
             requests = []
             for request in Cookie.shared.requests {
-                let viewModel = RequestViewModel(request: request)
+                let viewModel = await RequestViewModel(request: request)
                 requests.append((request, viewModel))
                 viewModels.append(viewModel)
             }
-            DispatchQueue.main.async {
-                source = viewModels
-                self.updateTitle(counter: String(source.count))
-            }
+            await publishUpdate(requests: viewModels, counter: String(viewModels.count))
         }
     }
 
@@ -53,22 +50,21 @@ class RequestListViewModel: ObservableObject {
         if !sendUpdates {
             return
         }
-        DispatchQueue.global().async { [self] in
-            self.requests.forEach { _, viewModel in
-                viewModel.query = searchString
+        Task.init {
+            for (_, viewModel) in self.requests {
+                await viewModel.updateQuery(searchString)
             }
 
             let (filteredRequests, counter) = filteredResults(searchString)
             let results = filteredRequests.map { $0.1 }
 
-            DispatchQueue.main.async {
-                self.source = results
-                self.updateTitle(counter: counter)
-            }
+            await publishUpdate(requests: results, counter: counter)
         }
     }
 
-    private func updateTitle(counter: String) {
+    @MainActor
+    private func publishUpdate(requests: [RequestViewModel], counter: String) {
+        source = requests
         title = "Requests \(counter)"
     }
 
@@ -98,8 +94,8 @@ extension RequestListViewModel: RequestDelegate {
     }
 
     func willFireRequest(_ httpRequest: HTTPRequest) {
-        DispatchQueue.global().async { [self] in
-            let viewModel = RequestViewModel(request: httpRequest, query: searchString)
+        Task.init {
+            let viewModel = await RequestViewModel(request: httpRequest, query: searchString)
             requests.insert((httpRequest, viewModel), at: 0)
             update()
         }

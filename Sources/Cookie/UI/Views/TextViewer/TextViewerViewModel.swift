@@ -8,7 +8,9 @@ private enum FontSize {
 }
 
 class TextViewerViewModel: ObservableObject {
+    let charLimit = 15_000
     let text: String
+    let originalText: String
     let filename: String
     let minimumFontSize = FontSize.minimum
     let maximumFontSize = FontSize.maximum
@@ -18,7 +20,10 @@ class TextViewerViewModel: ObservableObject {
         }
     }
 
+    private(set) var isClipped = false
+
     @Published var currentFontSize = FontSize.initial
+
     @available(iOS 15, *)
     var attributedText: AttributedString {
         let attributedTitle = NSAttributedString(string: text).highlight(searchText, highlightedTextColor: .orange)
@@ -41,12 +46,19 @@ class TextViewerViewModel: ObservableObject {
     }
 
     init(text: String, filename: String) {
-        self.text = text
+        if text.count > charLimit {
+            self.text = String(text.prefix(charLimit))
+            self.isClipped = true
+        } else {
+            self.text = text
+            self.isClipped = false
+        }
+        self.originalText = text
         self.filename = filename
     }
 
     func share() {
-        let activityItems = [text]
+        let activityItems = [originalText]
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         if UIDevice.current.userInterfaceIdiom == .pad {
             activityViewController.popoverPresentationController?.sourceView = UIViewController.top?.presentingViewController?.view

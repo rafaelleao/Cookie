@@ -8,31 +8,29 @@ struct RequestDetailTab: View, Identifiable {
 
     var body: some View {
         VStack {
-            if #available(iOS 14.0, *) {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                }
+            if viewModel.isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
             }
 
             SearchBar(text: $viewModel.searchText, placeholder: "Search")
 
-            if let action = viewModel.action {
-                NavigationLink(destination:
-                    TextViewer(viewModel: action.handler())
-                        .onAppear(perform: {
-                            detailPresented = true
-                        })
-                        .onDisappear(perform: {
-                            detailPresented = false
-                        })
-                ) {
-                    Text(action.title)
-                        .padding()
-                }
-            }
-
             List {
+                if let action = viewModel.action {
+                    NavigationLink(destination:
+                        TextViewer(viewModel: action.handler())
+                            .onAppear(perform: {
+                                detailPresented = true
+                            })
+                            .onDisappear(perform: {
+                                detailPresented = false
+                            })
+                    ) {
+                        Text(action.title)
+                            .bold()
+                    }
+                }
+
                 ForEach(viewModel.data, id: \.self) { row in
                     Section(header: Text(row.title)) {
                         ForEach(row.pairs, id: \.key) { pair in
@@ -43,6 +41,7 @@ struct RequestDetailTab: View, Identifiable {
                 }
             }
         }.tabItem {
+            Image(systemName: viewModel.image)
             Text(viewModel.title)
         }
         .listStyle(GroupedListStyle())
@@ -50,7 +49,7 @@ struct RequestDetailTab: View, Identifiable {
 }
 
 struct RequestDetailTab_Previews: PreviewProvider {
-    static let request = TestRequest.testRequest
+    static let request = TestRequest.completedTestRequest
 
     private static func makeSummaryPreview() -> some View {
         let descriptor = SummaryTabDescriptor(request: request)

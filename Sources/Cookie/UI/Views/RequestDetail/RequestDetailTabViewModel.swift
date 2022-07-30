@@ -24,6 +24,7 @@ protocol TabDescriptor {
     init(request: HTTPRequest)
     var request: HTTPRequest { get }
     var title: String { get }
+    var image: String { get }
     func sections() -> [SectionData]
     func action() -> Action?
 }
@@ -44,6 +45,7 @@ class RequestDetailTabViewModel: ObservableObject {
     @Published var action: Action?
     @Published var isLoading: Bool
     private(set) var title: String
+    private(set) var image: String
 
     private var sections: [SectionData]
     private var bindings: [AnyCancellable] = []
@@ -52,6 +54,7 @@ class RequestDetailTabViewModel: ObservableObject {
         self.sections = descriptor.sections()
         self.action = descriptor.action()
         self.title = descriptor.title
+        self.image = descriptor.image
         self.isLoading = descriptor.request.response == nil
         if isLoading {
             descriptor.request.$response

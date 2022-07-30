@@ -2,15 +2,14 @@ import Combine
 import Foundation
 import SwiftUI
 
+@MainActor
 class RequestViewModel: ObservableObject {
     let request: HTTPRequest
     private var bindings: [AnyCancellable] = []
-    var query: String {
+    private(set) var query: String {
         didSet {
             if query != oldValue {
-                DispatchQueue.main.async {
-                    self.objectWillChange.send()
-                }
+                self.objectWillChange.send()
             }
         }
     }
@@ -25,6 +24,10 @@ class RequestViewModel: ObservableObject {
                 self.objectWillChange.send()
             }
             .store(in: &bindings)
+    }
+
+    func updateQuery(_ query: String) {
+        self.query = query
     }
 
     var value: String {
@@ -50,7 +53,7 @@ class RequestViewModel: ObservableObject {
     }
 
     var method: String? {
-        return String(request.urlRequest.httpMethod ?? "")
+        String(request.urlRequest.httpMethod ?? "")
     }
 
     var isLoading: Bool {
