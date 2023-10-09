@@ -5,6 +5,8 @@
 //  Created by Rafael Leão on 18.09.21.
 //
 
+#if os(iOS)
+
 import UIKit
 
 extension UIWindow {
@@ -21,3 +23,5 @@ extension UIWindow {
         return UIApplication.shared.windows.first { $0.isKeyWindow }
     }
 }
+
+#endif

@@ -4,13 +4,13 @@ struct TextViewer: View {
     @ObservedObject var viewModel: TextViewerViewModel
 
     var body: some View {
-        if #available(iOS 15.0, *) {
+//        if #available(iOS 15.0, *) {
+//            contentView
+//                .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
+////                .autocapitalization(.none)
+//        } else {
             contentView
-                .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
-                .autocapitalization(.none)
-        } else {
-            contentView
-        }
+//        }
     }
 
     private var contentView: some View {
@@ -29,7 +29,7 @@ struct TextViewer: View {
             }
         })
         .padding()
-        .navigationBarItems(trailing: navigationBarItems)
+//        .navigationBarItems(trailing: navigationBarItems)
     }
 
     private var text: Text {

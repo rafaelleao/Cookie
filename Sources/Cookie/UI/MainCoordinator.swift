@@ -8,6 +8,8 @@
 import Foundation
 import SwiftUI
 
+#if os(iOS)
+
 class MainCoordinator {
     private weak var presentingViewController: UIViewController?
 
@@ -31,3 +33,29 @@ class MainCoordinator {
         })
     }
 }
+
+#elseif os(macOS)
+
+class MainCoordinator {
+    private weak var presentingViewController: NSViewController?
+
+    func present(_ fullscreen: Bool) {
+        if presentingViewController != nil {
+            dismiss()
+            return
+        }
+        let view = RequestList(viewModel: RequestListViewModel())
+        let viewController = NSHostingController(rootView: view)
+//        if fullscreen {
+//            viewController.modalPresentationStyle = .fullScreen
+//        }
+        NSViewController.top?.presentAsModalWindow(viewController)
+        presentingViewController = viewController
+    }
+
+    func dismiss() {
+        presentingViewController?.dismiss(true)
+    }
+}
+
+#endif

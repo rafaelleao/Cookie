@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 public class Cookie {
     public static let shared = Cookie()
@@ -23,8 +24,31 @@ public class Cookie {
         requests.removeAll()
     }
 
+    public func makeView() -> some View {
+        RequestList(viewModel: RequestListViewModel())
+    }
+
     public func present() {
+        #if os(iOS)
+
         coordinator.present(settings.fullscreen)
+
+        #elseif os(macOS)
+
+        let contentView = RequestList(viewModel: RequestListViewModel())
+
+         // Create the window and set the content view.
+         let window = NSWindow(
+             contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),
+             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+             backing: .buffered, defer: false)
+//         window.isReleasedWhenClosed = false
+         window.center()
+         window.setFrameAutosaveName("Cookie Window")
+         window.contentView = NSHostingView(rootView: contentView)
+         window.makeKeyAndOrderFront(nil)
+
+        #endif
     }
 
     public func dimiss() {

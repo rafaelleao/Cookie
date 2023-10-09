@@ -59,11 +59,11 @@
 		53424A502AD214AA00AA7330 /* CookieTest */ = {
 			isa = PBXGroup;
 			children = (
-				53424A612AD2152900AA7330 /* ContentViewViewModel.swift */,
-				53424A512AD214AA00AA7330 /* CookieTestApp.swift */,
-				53424A532AD214AA00AA7330 /* ContentView.swift */,
 				53424A552AD214AA00AA7330 /* Assets.xcassets */,
+				53424A532AD214AA00AA7330 /* ContentView.swift */,
+				53424A612AD2152900AA7330 /* ContentViewViewModel.swift */,
 				53424A572AD214AA00AA7330 /* CookieTest.entitlements */,
+				53424A512AD214AA00AA7330 /* CookieTestApp.swift */,
 				53424A582AD214AA00AA7330 /* Preview Content */,
 			);
 			path = CookieTest;

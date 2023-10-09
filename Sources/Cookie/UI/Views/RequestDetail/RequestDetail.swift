@@ -6,25 +6,26 @@ struct RequestDetail: View {
     var onDismiss: (() -> Void)?
 
     var body: some View {
-        let tabs = viewModel.tabDescriptors().map {
-            RequestDetailTab(viewModel: RequestDetailTabViewModel(descriptor: $0), detailPresented: $detailPresented)
+        let tabs = viewModel.childViewModels.map {
+            RequestDetailTab(viewModel: $0, detailPresented: $detailPresented)
         }
 
         let tabview = TabView {
             ForEach(tabs) { $0 }
         }
+            .searchable(text: $viewModel.searchText, prompt: "Search")
             .onAppear {
-                if #available(iOS 15.0, *) {
-                    let appearance = UITabBarAppearance()
-                    UITabBar.appearance().scrollEdgeAppearance = appearance
-                }
+//                if #available(iOS 15.0, *) {
+//                    let appearance = UITabBarAppearance()
+//                    UITabBar.appearance().scrollEdgeAppearance = appearance
+//                }
             }
             .onDisappear(perform: {
                 if !detailPresented {
                     onDismiss?()
                 }
             })
-            .navigationBarTitle(viewModel.title)
+//            .navigationBarTitle(viewModel.title)
 
         return tabview
     }

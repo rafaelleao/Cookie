@@ -36,12 +36,11 @@ class RequestViewModel: ObservableObject {
         return "\(urlComponents)"
     }
 
-    @available(iOS 15, *)
     var attributedValue: AttributedString {
         var attributedString = NSAttributedString(string: "\(value)")
-        if !query.isEmpty {
-            attributedString = attributedString.highlight(query, highlightedTextColor: .orange)
-        }
+//        if !query.isEmpty {
+//            attributedString = attributedString.highlight(query, highlightedTextColor: .orange)
+//        }
         return AttributedString(attributedString)
     }
 

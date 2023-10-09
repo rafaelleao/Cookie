@@ -27,13 +27,13 @@ class RequestDetailRowViewModel: ObservableObject {
 
     @available(iOS 15, *)
     var attributedTitle: AttributedString {
-        let attributedTitle = NSAttributedString(string: title).highlight(searchText, highlightedTextColor: .orange)
+        let attributedTitle = NSAttributedString(string: title)//.highlight(searchText, highlightedTextColor: .orange)
         return AttributedString(attributedTitle)
     }
 
     @available(iOS 15, *)
     var attributedSubtitle: AttributedString {
-        let attributedTitle = NSAttributedString(string: subtitle).highlight(searchText, highlightedTextColor: .orange)
+        let attributedTitle = NSAttributedString(string: subtitle)//.highlight(searchText, highlightedTextColor: .orange)
         return AttributedString(attributedTitle)
     }
 }

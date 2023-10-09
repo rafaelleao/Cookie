@@ -26,7 +26,7 @@ class TextViewerViewModel: ObservableObject {
 
     @available(iOS 15, *)
     var attributedText: AttributedString {
-        let attributedTitle = NSAttributedString(string: text).highlight(searchText, highlightedTextColor: .orange)
+        let attributedTitle = NSAttributedString(string: text)//.highlight(searchText, highlightedTextColor: .orange)
         return AttributedString(attributedTitle)
     }
 
@@ -58,12 +58,12 @@ class TextViewerViewModel: ObservableObject {
     }
 
     func share() {
-        let activityItems = [originalText]
-        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            activityViewController.popoverPresentationController?.sourceView = UIViewController.top?.presentingViewController?.view
-        }
-
-        UIViewController.top?.present(activityViewController, animated: true, completion: nil)
+//        let activityItems = [originalText]
+//        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            activityViewController.popoverPresentationController?.sourceView = UIViewController.top?.presentingViewController?.view
+//        }
+//
+//        UIViewController.top?.present(activityViewController, animated: true, completion: nil)
     }
 }

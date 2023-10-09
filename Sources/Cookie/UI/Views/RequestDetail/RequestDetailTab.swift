@@ -13,8 +13,6 @@ struct RequestDetailTab: View, Identifiable {
                     .progressViewStyle(CircularProgressViewStyle())
             }
 
-            SearchBar(text: $viewModel.searchText, placeholder: "Search")
-
             List {
                 if let action = viewModel.action {
                     NavigationLink(destination:
@@ -40,11 +38,13 @@ struct RequestDetailTab: View, Identifiable {
                     }
                 }
             }
-        }.tabItem {
+        }
+//        .searchable(text: $viewModel.searchText, prompt: "Search")
+        .tabItem {
             Image(systemName: viewModel.image)
             Text(viewModel.title)
         }
-        .listStyle(GroupedListStyle())
+//        .listStyle(GroupedListStyle())
     }
 }
 

@@ -1,5 +1,12 @@
 import SwiftUI
 
+extension View {
+  @inlinable
+  func modify<T: View>(@ViewBuilder modifier: ( Self ) -> T) -> T {
+      modifier(self)
+  }
+}
+
 struct RequestList: View {
     @ObservedObject var viewModel: RequestListViewModel
     @State var searchString = ""
@@ -14,62 +21,94 @@ struct RequestList: View {
         viewModel.searchString = ""
     }
 
+    @State private var selectedRequest: HTTPRequest?
+
     var body: some View {
-        if #available(iOS 15.0, *) {
-            NavigationView {
+//        #if os(iOS)
+//        NavigationStack {
+//            list
+//        }
+//        #else
+        NavigationSplitView(
+            sidebar: {
                 list
-                    .searchable(text: $viewModel.searchString, placement: .navigationBarDrawer(displayMode: .always))
-                    .autocapitalization(.none)
-            }
-            .navigationViewStyle(StackNavigationViewStyle())
-            .edgesIgnoringSafeArea(.top)
-        } else {
-            SearchNavigation(text: $searchString, textChanged: textChanged, search: search, cancel: cancel) {
-                list
-            }
-            .edgesIgnoringSafeArea(.top)
+                    .searchable(text: $viewModel.searchString, placement: .sidebar)
         }
+//            , content: {
+//                list
+//                    .searchable(text: $viewModel.searchString, placement: .toolbar)
+//
+//        }
+            , detail: {
+                if let selectedRequest {
+                    RequestDetail(viewModel: RequestDetailViewModel(request: selectedRequest))
+                } else {
+                    EmptyView()
+                }
+        })
+//        #endif
+
+//        .navigationViewStyle(StackNavigationViewStyle())
+//        .edgesIgnoringSafeArea(.top)
+//        .navigationTitle("Cookie")
     }
 
     private var list: some View {
-        List {
-            Section(header: Text(viewModel.title)) {
-                ForEach(viewModel.source) { requestViewModel in
-                    NavigationLink(destination: NavigationLazyView(
-                        RequestDetail(viewModel: RequestDetailViewModel(request: requestViewModel.request), onDismiss: {
-                            viewModel.sendUpdates = true
-                        })
-                        .onAppear {
-                            viewModel.sendUpdates = false
-                        }
-                    )) {
-                        RequestRow(viewModel: requestViewModel)
-                    }
+        List(viewModel.source) { requestViewModel in
+            RequestRow(viewModel: requestViewModel)
+                .onTapGesture {
+//                                                viewModel.sendUpdates = false
+                    selectedRequest = requestViewModel.request
                 }
-            }
         }
-        .listStyle(GroupedListStyle())
-        .navigationBarTitle("Cookie", displayMode: .inline)
-        .navigationBarItems(
-            leading: Button(action: {
-                viewModel.dismiss()
-            }, label: {
-                Image(systemName: "xmark")
-            }),
-            trailing: HStack {
-//                Button(action: {
-//                    viewModel.clearRequests()
-//                }, label: {
-//                    Image(systemName: "gearshape")
-//                })
-                Spacer(minLength: 20.0)
-                Button(action: {
-                    viewModel.clearRequests()
-                }, label: {
-                    Image(systemName: "trash")
-                })
-            }
-        )
+//        List {
+//            Section(header: Text(viewModel.title)) {
+//                ForEach(viewModel.source) { requestViewModel in
+//                    NavigationLink(destination: NavigationLazyView(
+//                        RequestDetail(viewModel: RequestDetailViewModel(request: requestViewModel.request), onDismiss: {
+//                            viewModel.sendUpdates = true
+//                        })
+//                        .onAppear {
+//                            viewModel.sendUpdates = false
+//                        }
+//                    )) {
+//                        RequestRow(viewModel: requestViewModel)
+//                    }
+//                }
+//            }
+//        }
+        .modify {
+            #if os(iOS)
+            //                .autocapitalization(.none)
+
+            $0.toolbar(content: {
+                ToolbarItemGroup(placement: .navigation) {
+                    Button(action: {
+                        viewModel.dismiss()
+                    }, label: {
+                        Image(systemName: "xmark")
+                    })
+                }
+
+                ToolbarItemGroup(placement: .navigation) {
+                    Spacer(minLength: 20.0)
+                    Button(action: {
+                        viewModel.clearRequests()
+                    }, label: {
+                        Image(systemName: "trash")
+                    })
+                }
+            })
+            #endif
+        }
+//        .modify {
+//            #if os(iOS)
+//            $0.searchable(text: $viewModel.searchString, placement: .navigationBarDrawer(displayMode: .always))
+//            #else
+//            $0.searchable(text: $viewModel.searchString, placement: .automatic)
+//            #endif
+//
+//        }
     }
 }
 

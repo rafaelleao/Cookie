@@ -1,13 +1,19 @@
 import SwiftUI
+import Cookie
 
 struct ContentView: View {
     @ObservedObject var viewModel = ContentViewModel()
+    @State private var isPresented = false
 
     var body: some View {
         VStack(alignment: .center, spacing: 30, content: {
             Button("Show") {
                 viewModel.show()
+//                isPresented.toggle()
             }
+//            .sheet(isPresented: $isPresented) {
+//                Cookie.shared.makeView()
+//            }
 
             Button("Send Requests") {
                 viewModel.sendTestRequests()

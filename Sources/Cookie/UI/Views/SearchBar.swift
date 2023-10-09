@@ -4,7 +4,7 @@
 //
 //  Created by Rafael Leão on 13.09.21.
 //
-
+/*
 import SwiftUI
 
 struct SearchBar: UIViewRepresentable {
@@ -76,3 +76,4 @@ struct SearchBar_Previews: PreviewProvider {
         }
     }
 }
+*/
