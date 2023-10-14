@@ -7,8 +7,8 @@ extension View {
   }
 }
 
-struct RequestList: View {
-    @ObservedObject var viewModel: RequestListViewModel
+struct RequestList<ViewModel: RequestListViewModel>: View {
+    @ObservedObject var viewModel: ViewModel
     @State var searchString = ""
 
     func textChanged() {
@@ -24,20 +24,18 @@ struct RequestList: View {
     @State private var selectedRequest: HTTPRequest?
 
     var body: some View {
-//        #if os(iOS)
-//        NavigationStack {
-//            list
-//        }
-//        #else
+        #if os(iOS)
+        NavigationStack {
+            list
+        }
+        #else
         NavigationSplitView(
             sidebar: {
                 list
                     .searchable(text: $viewModel.searchString, placement: .sidebar)
         }
-//            , content: {
-//                list
-//                    .searchable(text: $viewModel.searchString, placement: .toolbar)
-//
+//        , content: {
+//            EmptyView()
 //        }
             , detail: {
                 if let selectedRequest {
@@ -46,7 +44,7 @@ struct RequestList: View {
                     EmptyView()
                 }
         })
-//        #endif
+        #endif
 
 //        .navigationViewStyle(StackNavigationViewStyle())
 //        .edgesIgnoringSafeArea(.top)
@@ -61,22 +59,7 @@ struct RequestList: View {
                     selectedRequest = requestViewModel.request
                 }
         }
-//        List {
-//            Section(header: Text(viewModel.title)) {
-//                ForEach(viewModel.source) { requestViewModel in
-//                    NavigationLink(destination: NavigationLazyView(
-//                        RequestDetail(viewModel: RequestDetailViewModel(request: requestViewModel.request), onDismiss: {
-//                            viewModel.sendUpdates = true
-//                        })
-//                        .onAppear {
-//                            viewModel.sendUpdates = false
-//                        }
-//                    )) {
-//                        RequestRow(viewModel: requestViewModel)
-//                    }
-//                }
-//            }
-//        }
+        /*
         .modify {
             #if os(iOS)
             //                .autocapitalization(.none)
@@ -101,38 +84,36 @@ struct RequestList: View {
             })
             #endif
         }
-//        .modify {
-//            #if os(iOS)
-//            $0.searchable(text: $viewModel.searchString, placement: .navigationBarDrawer(displayMode: .always))
-//            #else
-//            $0.searchable(text: $viewModel.searchString, placement: .automatic)
-//            #endif
-//
-//        }
+         */
     }
 }
 
-struct NavigationLazyView<Content: View>: View {
-    let build: () -> Content
-    init(_ build: @autoclosure @escaping () -> Content) {
-        self.build = build
+class RequestListViewModelMock: RequestListViewModel {
+    var source: [RequestViewModel]
+    var searchString: String
+
+    init(source: [RequestViewModel], searchString: String = "") {
+        self.source = source
+        self.searchString = searchString
     }
 
-    var body: Content {
-        build()
+    func clearRequests() {
+    }
+
+    func dismiss() {
     }
 }
 
 struct RequestList_Previews: PreviewProvider {
     private static func makePreview() -> some View {
-        let viewModel = RequestListViewModel()
-
-        viewModel.source = [
+        let source = [
             TestRequest.testRequest,
             TestRequest.completedTestRequest,
             TestRequest.serverErrorRequest,
             TestRequest.failedRequest
         ].map { RequestViewModel(request: $0) }
+        let viewModel = RequestListViewModelMock(
+            source: source)
         return RequestList(viewModel: viewModel)
     }
 

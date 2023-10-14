@@ -25,7 +25,7 @@ public class Cookie {
     }
 
     public func makeView() -> some View {
-        RequestList(viewModel: RequestListViewModel())
+        RequestList(viewModel: RequestListViewModelImpl())
     }
 
     public func present() {
@@ -35,10 +35,9 @@ public class Cookie {
 
         #elseif os(macOS)
 
-        let contentView = RequestList(viewModel: RequestListViewModel())
+        let contentView = RequestList(viewModel: RequestListViewModelImpl())
 
-         // Create the window and set the content view.
-         let window = NSWindow(
+         let window = NSPanel(
              contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),
              styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
              backing: .buffered, defer: false)

@@ -1,6 +1,14 @@
 import Foundation
 
-class RequestListViewModel: ObservableObject {
+protocol RequestListViewModel: ObservableObject {
+    var source: [RequestViewModel] { get }
+    var searchString: String { get set }
+
+    func clearRequests()
+    func dismiss()
+}
+
+class RequestListViewModelImpl: RequestListViewModel {
     @MainActor @Published var source: [RequestViewModel] = []
     @MainActor @Published var title = ""
     private var requests: [(HTTPRequest, RequestViewModel)] = []
@@ -88,7 +96,7 @@ class RequestListViewModel: ObservableObject {
     }
 }
 
-extension RequestListViewModel: RequestDelegate {
+extension RequestListViewModelImpl: RequestDelegate {
     func shouldFireURLRequest(_ urlRequest: URLRequest) -> Bool {
         return true
     }

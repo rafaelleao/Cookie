@@ -18,7 +18,7 @@ class MainCoordinator {
             dismiss()
             return
         }
-        let view = RequestList(viewModel: RequestListViewModel())
+        let view = RequestList(viewModel: RequestListViewModelImpl())
         let viewController = UIHostingController(rootView: view)
         if fullscreen {
             viewController.modalPresentationStyle = .fullScreen
@@ -44,7 +44,7 @@ class MainCoordinator {
             dismiss()
             return
         }
-        let view = RequestList(viewModel: RequestListViewModel())
+        let view = RequestList(viewModel: RequestListViewModelImpl())
         let viewController = NSHostingController(rootView: view)
 //        if fullscreen {
 //            viewController.modalPresentationStyle = .fullScreen
