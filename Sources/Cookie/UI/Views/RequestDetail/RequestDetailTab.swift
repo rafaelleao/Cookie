@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 
+@available(macOS 13, *)
 struct RequestDetailTab: View, Identifiable {
     var id = UUID()
     @ObservedObject var viewModel: RequestDetailTabViewModel
@@ -17,12 +18,12 @@ struct RequestDetailTab: View, Identifiable {
                 if let action = viewModel.action {
                     NavigationLink(destination:
                         TextViewer(viewModel: action.handler())
-                            .onAppear(perform: {
-                                detailPresented = true
-                            })
-                            .onDisappear(perform: {
-                                detailPresented = false
-                            })
+//                            .onAppear(perform: {
+//                                detailPresented = true
+//                            })
+//                            .onDisappear(perform: {
+//                                detailPresented = false
+//                            })
                     ) {
                         Text(action.title)
                             .bold()
@@ -48,6 +49,7 @@ struct RequestDetailTab: View, Identifiable {
     }
 }
 
+@available(macOS 13, *)
 struct RequestDetailTab_Previews: PreviewProvider {
     static let request = TestRequest.completedTestRequest
 

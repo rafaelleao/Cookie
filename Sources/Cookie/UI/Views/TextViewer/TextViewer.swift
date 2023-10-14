@@ -1,16 +1,14 @@
 import SwiftUI
 
+@available(macOS 13, *)
 struct TextViewer: View {
     @ObservedObject var viewModel: TextViewerViewModel
 
     var body: some View {
-//        if #available(iOS 15.0, *) {
-//            contentView
-//                .searchable(text: $viewModel.searchText, placement: .navigationBarDrawer(displayMode: .always))
-////                .autocapitalization(.none)
-//        } else {
-            contentView
-//        }
+        contentView
+            .searchable(text: $viewModel.searchText, placement: .automatic)
+//                .autocapitalization(.none)
+
     }
 
     private var contentView: some View {
@@ -55,6 +53,7 @@ struct TextViewer: View {
     }
 }
 
+@available(macOS 13, *)
 struct TextViewer_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {

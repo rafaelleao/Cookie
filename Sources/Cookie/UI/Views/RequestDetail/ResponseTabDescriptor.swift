@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(macOS 13, *)
 class ResponseTabDescriptor: TabDescriptor {
     let request: HTTPRequest
 

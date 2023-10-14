@@ -7,6 +7,7 @@ extension View {
   }
 }
 
+@available(macOS 13, *)
 struct RequestList<ViewModel: RequestListViewModel>: View {
     @ObservedObject var viewModel: ViewModel
     @State var searchString = ""
@@ -34,10 +35,10 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
                 list
                     .searchable(text: $viewModel.searchString, placement: .sidebar)
         }
-//        , content: {
-//            EmptyView()
-//        }
-            , detail: {
+        , content: {
+            EmptyView()
+        }
+        , detail: {
                 if let selectedRequest {
                     RequestDetail(viewModel: RequestDetailViewModel(request: selectedRequest))
                 } else {
@@ -88,6 +89,7 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
     }
 }
 
+@available(macOS 13, *)
 class RequestListViewModelMock: RequestListViewModel {
     var source: [RequestViewModel]
     var searchString: String
@@ -104,6 +106,7 @@ class RequestListViewModelMock: RequestListViewModel {
     }
 }
 
+@available(macOS 13, *)
 struct RequestList_Previews: PreviewProvider {
     private static func makePreview() -> some View {
         let source = [

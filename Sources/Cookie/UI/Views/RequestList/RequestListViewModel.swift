@@ -1,5 +1,6 @@
 import Foundation
 
+@available(macOS 13, *)
 protocol RequestListViewModel: ObservableObject {
     var source: [RequestViewModel] { get }
     var searchString: String { get set }
@@ -8,6 +9,7 @@ protocol RequestListViewModel: ObservableObject {
     func dismiss()
 }
 
+@available(macOS 13, *)
 class RequestListViewModelImpl: RequestListViewModel {
     @MainActor @Published var source: [RequestViewModel] = []
     @MainActor @Published var title = ""
@@ -96,6 +98,7 @@ class RequestListViewModelImpl: RequestListViewModel {
     }
 }
 
+@available(macOS 13, *)
 extension RequestListViewModelImpl: RequestDelegate {
     func shouldFireURLRequest(_ urlRequest: URLRequest) -> Bool {
         return true

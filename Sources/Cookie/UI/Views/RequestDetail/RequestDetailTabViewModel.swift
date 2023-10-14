@@ -20,6 +20,7 @@ extension SectionData: Hashable {
     }
 }
 
+@available(macOS 13, *)
 protocol TabDescriptor {
     init(request: HTTPRequest)
     var request: HTTPRequest { get }
@@ -29,6 +30,7 @@ protocol TabDescriptor {
     func action() -> Action?
 }
 
+@available(macOS 13, *)
 class Action {
     let title: String
     let handler: () -> TextViewerViewModel
@@ -39,6 +41,7 @@ class Action {
     }
 }
 
+@available(macOS 13, *)
 class RequestDetailTabViewModel: ObservableObject {
     @Published var data: [SectionData] = []
     @Published var searchText: String = ""

@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import SwiftUI
 
+@available(macOS 13, *)
 @MainActor
 class RequestViewModel: ObservableObject {
     let request: HTTPRequest
@@ -104,4 +105,5 @@ class RequestViewModel: ObservableObject {
     }
 }
 
+@available(macOS 13, *)
 extension RequestViewModel: Identifiable {}

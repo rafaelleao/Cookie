@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(macOS 13, *)
 struct RequestDetailRow: View {
     @ObservedObject var viewModel: RequestDetailRowViewModel
 
@@ -29,6 +30,7 @@ struct RequestDetailRow: View {
     }
 }
 
+@available(macOS 13, *)
 struct RequestDetailRow_Previews: PreviewProvider {
     static var previews: some View {
         RequestDetailRow(viewModel: viewModel)

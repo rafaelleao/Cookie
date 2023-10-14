@@ -36,6 +36,7 @@ class MainCoordinator {
 
 #elseif os(macOS)
 
+@available(macOS 13, *)
 class MainCoordinator {
     private weak var presentingViewController: NSViewController?
 

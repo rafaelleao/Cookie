@@ -7,6 +7,7 @@ private enum FontSize {
     static let maximum = 20
 }
 
+@available(macOS 13, *)
 class TextViewerViewModel: ObservableObject {
     let charLimit = 15_000
     let text: String

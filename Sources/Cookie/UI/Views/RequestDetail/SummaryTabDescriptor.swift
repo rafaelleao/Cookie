@@ -7,6 +7,7 @@
 
 import Foundation
 
+@available(macOS 13, *)
 struct SummaryTabDescriptor: TabDescriptor {
     let request: HTTPRequest
 

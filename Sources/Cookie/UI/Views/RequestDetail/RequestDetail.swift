@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(macOS 13, *)
 struct RequestDetail: View {
     @ObservedObject var viewModel: RequestDetailViewModel
     @State var detailPresented = false
@@ -31,12 +32,14 @@ struct RequestDetail: View {
     }
 }
 
+@available(macOS 13, *)
 extension RequestDetail: Equatable {
     static func == (lhs: RequestDetail, rhs: RequestDetail) -> Bool {
         lhs.viewModel.request == rhs.viewModel.request
     }
 }
 
+@available(macOS 13, *)
 struct RequestDetail_Previews: PreviewProvider {
     static var previews: some View {
         RequestDetail(viewModel: RequestDetailViewModel(request: TestRequest.completedTestRequest), onDismiss: nil)

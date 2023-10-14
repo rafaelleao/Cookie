@@ -7,6 +7,7 @@
 
 import Combine
 
+@available(macOS 13, *)
 class RequestDetailViewModel: ObservableObject {
     let request: HTTPRequest
     @Published var searchText: String = ""

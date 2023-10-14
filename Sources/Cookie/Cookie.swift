@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@available(macOS 13, *)
 public class Cookie {
     public static let shared = Cookie()
     public weak var delegate: RequestDelegate?
@@ -24,10 +25,12 @@ public class Cookie {
         requests.removeAll()
     }
 
+    @available(macOS 13, *)
     public func makeView() -> some View {
         RequestList(viewModel: RequestListViewModelImpl())
     }
 
+    @available(macOS 13, *)
     public func present() {
         #if os(iOS)
 
@@ -66,7 +69,10 @@ public class Cookie {
 
     internal func handleShake() {
         if settings.shakeGestureEnabled {
-            present()
+            if #available(macOS 13, *) {
+                present()
+            } else {
+            }
         }
     }
 
@@ -75,6 +81,7 @@ public class Cookie {
     }
 }
 
+@available(macOS 13, *)
 extension Cookie: RequestInterceptorDelegate {
     func shouldFireRequest(urlRequest: URLRequest) -> Bool {
         return delegate?.shouldFireURLRequest(urlRequest) ?? true

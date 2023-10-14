@@ -8,6 +8,7 @@
 import Combine
 import Foundation
 
+@available(macOS 13, *)
 class RequestDetailRowViewModel: ObservableObject {
     let pair: KeyValuePair
     let searchText: String

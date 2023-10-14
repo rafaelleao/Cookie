@@ -1,11 +1,11 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.8
 import PackageDescription
 
 let package = Package(
     name: "Cookie",
     platforms: [
         .iOS(.v16),
-        .macOS(.v13)
+        .macOS(.v11)
     ],
     products: [
         .library(
