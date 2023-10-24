@@ -2,6 +2,7 @@ import Combine
 import Cookie
 import Foundation
 
+@MainActor
 class ContentViewModel: ObservableObject {
     @Published var enabled = true
     @Published var sendPeriodically = false

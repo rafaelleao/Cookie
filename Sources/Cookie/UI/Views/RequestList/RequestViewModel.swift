@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import SwiftUI
 
 @available(macOS 13, *)
 @MainActor
@@ -31,18 +30,15 @@ class RequestViewModel: ObservableObject {
         self.query = query
     }
 
-    var value: String {
-        var urlComponents = URLComponents(url: request.urlRequest.url!, resolvingAgainstBaseURL: false)!
-        urlComponents.query = nil
-        return "\(urlComponents)"
-    }
-
     var attributedValue: AttributedString {
-        var attributedString = NSAttributedString(string: "\(value)")
-//        if !query.isEmpty {
-//            attributedString = attributedString.highlight(query, highlightedTextColor: .orange)
-//        }
-        return AttributedString(attributedString)
+        let str = request.string ?? ""
+        var attStr = AttributedString(str)
+        if !query.isEmpty {
+            if let range = attStr.range(of: query) {
+                attStr[range].backgroundColor = .orange
+            }
+        }
+        return attStr
     }
 
     var key: String {
@@ -107,3 +103,13 @@ class RequestViewModel: ObservableObject {
 
 @available(macOS 13, *)
 extension RequestViewModel: Identifiable {}
+
+extension HTTPRequest {
+    var string: String? {
+        guard let url = urlRequest.url, var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        urlComponents.query = nil
+        return urlComponents.string
+    }
+}

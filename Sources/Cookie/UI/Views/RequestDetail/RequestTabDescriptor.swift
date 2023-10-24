@@ -31,7 +31,7 @@ class RequestTabDescriptor: TabDescriptor {
     }
 
     func action() -> Action? {
-        if canShowRequestBody(), let viewModel = textViewerViewModel() {
+        if canShowRequestBody(), let viewModel = textViewerViewModel {
             return Action(title: "View Request Body") {
                 viewModel
             }
@@ -43,7 +43,7 @@ class RequestTabDescriptor: TabDescriptor {
         return request.requestBodyString != nil
     }
 
-    private func textViewerViewModel() -> TextViewerViewModel? {
+    var textViewerViewModel: TextViewerViewModel? {
         guard let body = request.requestBodyString else {
             return nil
         }

@@ -13,6 +13,7 @@ import SwiftUI
 class MainCoordinator {
     private weak var presentingViewController: UIViewController?
 
+    @MainActor 
     func present(_ fullscreen: Bool) {
         if presentingViewController != nil {
             dismiss()
@@ -40,6 +41,7 @@ class MainCoordinator {
 class MainCoordinator {
     private weak var presentingViewController: NSViewController?
 
+    @MainActor 
     func present(_ fullscreen: Bool) {
         if presentingViewController != nil {
             dismiss()

@@ -6,13 +6,8 @@ struct RequestRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2, content: {
-            if #available(iOS 15.0, *) {
-                Text(viewModel.attributedValue)
-                    .font(.system(.caption, design: .monospaced))
-            } else {
-                Text(viewModel.value)
-                    .font(.system(.caption, design: .monospaced))
-            }
+            Text(viewModel.attributedValue)
+                .font(.system(.caption, design: .monospaced))
             HStack {
                 if viewModel.isLoading {
                     ProgressView()

@@ -25,12 +25,13 @@ public class Cookie {
         requests.removeAll()
     }
 
-    @available(macOS 13, *)
-    public func makeView() -> some View {
-        RequestList(viewModel: RequestListViewModelImpl())
-    }
+//    @available(macOS 13, *)
+//    public func makeView() -> some View {
+//        RequestList(viewModel: RequestListViewModelImpl())
+//    }
 
     @available(macOS 13, *)
+    @MainActor
     public func present() {
         #if os(iOS)
 
@@ -70,7 +71,7 @@ public class Cookie {
     internal func handleShake() {
         if settings.shakeGestureEnabled {
             if #available(macOS 13, *) {
-                present()
+//                present()
             } else {
             }
         }

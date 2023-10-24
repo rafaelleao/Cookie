@@ -28,7 +28,7 @@ class ResponseTabDescriptor: TabDescriptor {
     }
 
     func action() -> Action? {
-        if canShowResponse(), let viewModel = textViewerViewModel() {
+        if canShowResponse(), let viewModel = textViewerViewModel {
             return Action(title: "View Response") {
                 viewModel
             }
@@ -51,7 +51,7 @@ class ResponseTabDescriptor: TabDescriptor {
         responseString()?.isEmpty != nil
     }
 
-    private func textViewerViewModel() -> TextViewerViewModel? {
+    var textViewerViewModel: TextViewerViewModel? {
         guard let response = responseString() else {
             return nil
         }

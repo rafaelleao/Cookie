@@ -21,11 +21,17 @@ extension SectionData: Hashable {
 }
 
 @available(macOS 13, *)
+protocol RequestDetailTabViewModelDelegate: AnyObject {
+    func showText(viewModel: TextViewerViewModel)
+}
+
+@available(macOS 13, *)
 protocol TabDescriptor {
     init(request: HTTPRequest)
     var request: HTTPRequest { get }
     var title: String { get }
     var image: String { get }
+    var textViewerViewModel: TextViewerViewModel? { get }
     func sections() -> [SectionData]
     func action() -> Action?
 }
@@ -43,12 +49,14 @@ class Action {
 
 @available(macOS 13, *)
 class RequestDetailTabViewModel: ObservableObject {
+    weak var delegate: RequestDetailTabViewModelDelegate?
     @Published var data: [SectionData] = []
     @Published var searchText: String = ""
     @Published var action: Action?
     @Published var isLoading: Bool
     private(set) var title: String
     private(set) var image: String
+    private(set) var textViewerViewModel: TextViewerViewModel?
 
     private var sections: [SectionData]
     private var bindings: [AnyCancellable] = []
@@ -59,6 +67,7 @@ class RequestDetailTabViewModel: ObservableObject {
         self.title = descriptor.title
         self.image = descriptor.image
         self.isLoading = descriptor.request.response == nil
+        self.textViewerViewModel = descriptor.textViewerViewModel
         if isLoading {
             descriptor.request.$response
                 .receive(on: RunLoop.main)
@@ -74,6 +83,13 @@ class RequestDetailTabViewModel: ObservableObject {
             print(text)
             self.filter(searchString: text)
         }.store(in: &bindings)
+    }
+
+    func actionClicked() {
+        if let action, let delegate {
+            let viewModel = action.handler()
+            delegate.showText(viewModel: viewModel)
+        }
     }
 
     private func filter(searchString: String) {

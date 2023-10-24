@@ -6,7 +6,7 @@ struct TextViewer: View {
 
     var body: some View {
         contentView
-            .searchable(text: $viewModel.searchText, placement: .automatic)
+//            .searchable(text: $viewModel.searchText, placement: .automatic)
 //                .autocapitalization(.none)
 
     }
@@ -31,11 +31,7 @@ struct TextViewer: View {
     }
 
     private var text: Text {
-        if #available(iOS 15, *) {
-            return Text(viewModel.attributedText)
-        } else {
-            return Text(viewModel.text)
-        }
+        Text(viewModel.attributedText)
     }
 
     private var navigationBarItems: some View {

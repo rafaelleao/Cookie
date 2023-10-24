@@ -19,6 +19,10 @@ struct SummaryTabDescriptor: TabDescriptor {
         "network"
     }
     
+    var textViewerViewModel: TextViewerViewModel? {
+        nil
+    }
+
     func sections() -> [SectionData] {
         [SectionData(title: "", pairs: summary())]
     }

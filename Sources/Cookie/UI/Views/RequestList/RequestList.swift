@@ -1,91 +1,85 @@
 import SwiftUI
 
-extension View {
-  @inlinable
-  func modify<T: View>(@ViewBuilder modifier: ( Self ) -> T) -> T {
-      modifier(self)
-  }
-}
-
 @available(macOS 13, *)
 struct RequestList<ViewModel: RequestListViewModel>: View {
     @ObservedObject var viewModel: ViewModel
-    @State var searchString = ""
-
-    func textChanged() {
-        viewModel.searchString = searchString
-    }
-
-    func search() {}
-
-    func cancel() {
-        viewModel.searchString = ""
-    }
-
     @State private var selectedRequest: HTTPRequest?
+    @State private var columnVisibility = NavigationSplitViewVisibility.detailOnly
 
     var body: some View {
-        #if os(iOS)
+#if os(iOS)
         NavigationStack {
             list
+                .searchable(text: $viewModel.searchString, placement: .automatic)
+                .autocapitalization(.none)
+                .navigationDestination(isPresented: .constant(selectedRequest != nil), destination: {
+                    if let selectedRequest {
+                        let detailViewModel = RequestDetailViewModel(request: selectedRequest)
+                        RequestDetail(viewModel: detailViewModel)
+                    } else {
+                        EmptyView()
+                    }
+                })
         }
-        #else
+#else
         NavigationSplitView(
+            columnVisibility: $columnVisibility,
             sidebar: {
-                list
-                    .searchable(text: $viewModel.searchString, placement: .sidebar)
-        }
-        , content: {
-            EmptyView()
-        }
-        , detail: {
+            },
+            content: {
+                VStack {
+                    list
+                        .searchable(text: $viewModel.searchString, placement: .automatic)
+//                    SearchBar(placeholder: "Search", text: $viewModel.searchString)
+//                        .padding(.all, 8)
+                }
+                    .navigationSplitViewColumnWidth(min: 350, ideal: 450, max: 550)
+
+            },
+            detail: {
                 if let selectedRequest {
-                    RequestDetail(viewModel: RequestDetailViewModel(request: selectedRequest))
+                    let detailViewModel = RequestDetailViewModel(request: selectedRequest)
+                    RequestDetail(viewModel: detailViewModel)
                 } else {
                     EmptyView()
                 }
-        })
-        #endif
-
-//        .navigationViewStyle(StackNavigationViewStyle())
-//        .edgesIgnoringSafeArea(.top)
-//        .navigationTitle("Cookie")
+            }
+        )
+            .navigationSplitViewStyle(.prominentDetail)
+            .onAppear(perform: {
+                columnVisibility = selectedRequest != nil ? .all : .detailOnly
+            })
+#endif
     }
 
     private var list: some View {
         List(viewModel.source) { requestViewModel in
             RequestRow(viewModel: requestViewModel)
                 .onTapGesture {
-//                                                viewModel.sendUpdates = false
                     selectedRequest = requestViewModel.request
                 }
         }
-        /*
-        .modify {
-            #if os(iOS)
-            //                .autocapitalization(.none)
+    #if os(iOS)
+        .autocapitalization(.none)
+        .toolbar(content: {
+             ToolbarItemGroup(placement: .navigation) {
+                 Button(action: {
+                 viewModel.dismiss()
+                 }, label: {
+                 Image(systemName: "xmark")
+                 })
+             }
 
-            $0.toolbar(content: {
-                ToolbarItemGroup(placement: .navigation) {
-                    Button(action: {
-                        viewModel.dismiss()
-                    }, label: {
-                        Image(systemName: "xmark")
-                    })
-                }
-
-                ToolbarItemGroup(placement: .navigation) {
-                    Spacer(minLength: 20.0)
-                    Button(action: {
-                        viewModel.clearRequests()
-                    }, label: {
-                        Image(systemName: "trash")
-                    })
-                }
-            })
-            #endif
-        }
-         */
+            ToolbarItemGroup(placement: .navigation) {
+                Spacer(minLength: 20.0)
+                Button(action: {
+                    viewModel.clearRequests()
+                }, label: {
+                    Image(systemName: "trash")
+                })
+             }
+         })
+    #endif
     }
 }
 
@@ -93,6 +87,7 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
 class RequestListViewModelMock: RequestListViewModel {
     var source: [RequestViewModel]
     var searchString: String
+    var textViewModel: TextViewerViewModel?
 
     init(source: [RequestViewModel], searchString: String = "") {
         self.source = source
@@ -100,6 +95,8 @@ class RequestListViewModelMock: RequestListViewModel {
     }
 
     func clearRequests() {
+        source.removeAll()
+        objectWillChange.send()
     }
 
     func dismiss() {

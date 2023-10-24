@@ -10,10 +10,12 @@ protocol RequestListViewModel: ObservableObject {
 }
 
 @available(macOS 13, *)
+@MainActor
 class RequestListViewModelImpl: RequestListViewModel {
     @MainActor @Published var source: [RequestViewModel] = []
     @MainActor @Published var title = ""
     private var requests: [(HTTPRequest, RequestViewModel)] = []
+
     var sendUpdates = true {
         didSet {
             if sendUpdates == true {
@@ -72,7 +74,6 @@ class RequestListViewModelImpl: RequestListViewModel {
         }
     }
 
-    @MainActor
     private func publishUpdate(requests: [RequestViewModel], counter: String) {
         source = requests
         title = "Requests \(counter)"
@@ -101,7 +102,7 @@ class RequestListViewModelImpl: RequestListViewModel {
 @available(macOS 13, *)
 extension RequestListViewModelImpl: RequestDelegate {
     func shouldFireURLRequest(_ urlRequest: URLRequest) -> Bool {
-        return true
+        true
     }
 
     func willFireRequest(_ httpRequest: HTTPRequest) {

@@ -5,7 +5,6 @@ import SwiftUI
 struct RequestDetailTab: View, Identifiable {
     var id = UUID()
     @ObservedObject var viewModel: RequestDetailTabViewModel
-    @Binding var detailPresented: Bool
 
     var body: some View {
         VStack {
@@ -15,21 +14,6 @@ struct RequestDetailTab: View, Identifiable {
             }
 
             List {
-                if let action = viewModel.action {
-                    NavigationLink(destination:
-                        TextViewer(viewModel: action.handler())
-//                            .onAppear(perform: {
-//                                detailPresented = true
-//                            })
-//                            .onDisappear(perform: {
-//                                detailPresented = false
-//                            })
-                    ) {
-                        Text(action.title)
-                            .bold()
-                    }
-                }
-
                 ForEach(viewModel.data, id: \.self) { row in
                     Section(header: Text(row.title)) {
                         ForEach(row.pairs, id: \.key) { pair in
@@ -38,6 +22,10 @@ struct RequestDetailTab: View, Identifiable {
                         }
                     }
                 }
+            }
+
+            if let textViewerViewModel = viewModel.textViewerViewModel {
+                TextViewer(viewModel: textViewerViewModel)
             }
         }
 //        .searchable(text: $viewModel.searchText, prompt: "Search")
@@ -56,29 +44,35 @@ struct RequestDetailTab_Previews: PreviewProvider {
     private static func makeSummaryPreview() -> some View {
         let descriptor = SummaryTabDescriptor(request: request)
         let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
-        return RequestDetailTab(viewModel: viewModel, detailPresented: .constant(false))
+        return RequestDetailTab(viewModel: viewModel)
     }
 
     private static func makeRequestPreview() -> some View {
         let descriptor = RequestTabDescriptor(request: request)
         let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
-        return RequestDetailTab(viewModel: viewModel, detailPresented: .constant(false))
+        return RequestDetailTab(viewModel: viewModel)
     }
 
     private static func makeResponsePreview() -> some View {
         let descriptor = ResponseTabDescriptor(request: request)
         let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
-        return RequestDetailTab(viewModel: viewModel, detailPresented: .constant(false))
+        viewModel.action = Action(title: "Show Response", handler: {
+            TextViewerViewModel(text: "Test", filename: "Response")
+        })
+        return RequestDetailTab(viewModel: viewModel)
     }
 
     static var previews: some View {
         Group {
             makeSummaryPreview()
                 .previewLayout(.sizeThatFits)
+                .previewDisplayName("Summary")
             makeRequestPreview()
                 .previewLayout(.sizeThatFits)
+                .previewDisplayName("Request")
             makeResponsePreview()
                 .previewLayout(.sizeThatFits)
+                .previewDisplayName("Response")
         }
     }
 }
