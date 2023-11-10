@@ -34,7 +34,7 @@ extension NSWindow {
 //    }
 
     static var key: NSWindow? {
-        return NSApplication.shared.windows.first { $0.isKeyWindow }
+        NSApplication.shared.windows.first { $0.isKeyWindow }
     }
 }
 

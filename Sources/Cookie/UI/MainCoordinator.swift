@@ -39,25 +39,26 @@ class MainCoordinator {
 
 @available(macOS 13, *)
 class MainCoordinator {
-    private weak var presentingViewController: NSViewController?
+    private weak var window: NSWindow?
 
     @MainActor 
     func present(_ fullscreen: Bool) {
-        if presentingViewController != nil {
-            dismiss()
-            return
-        }
+        guard window == nil else { return }
         let view = RequestList(viewModel: RequestListViewModelImpl())
-        let viewController = NSHostingController(rootView: view)
-//        if fullscreen {
-//            viewController.modalPresentationStyle = .fullScreen
-//        }
-        NSViewController.top?.presentAsModalWindow(viewController)
-        presentingViewController = viewController
+        let hostingController = NSHostingController(rootView: view)
+        let window = NSPanel(
+        contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),
+        styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+        backing: .buffered, defer: false)
+        window.contentViewController = hostingController
+        window.setFrameAutosaveName("Cookie Window")
+        window.center()
+        window.makeKeyAndOrderFront(nil)
+        self.window = window
     }
 
     func dismiss() {
-        presentingViewController?.dismiss(true)
+        window?.close()
     }
 }
 

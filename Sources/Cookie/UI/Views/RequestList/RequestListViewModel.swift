@@ -1,6 +1,7 @@
 import Foundation
 
 @available(macOS 13, *)
+@MainActor
 protocol RequestListViewModel: ObservableObject {
     var source: [RequestViewModel] { get }
     var searchString: String { get set }
@@ -12,90 +13,47 @@ protocol RequestListViewModel: ObservableObject {
 @available(macOS 13, *)
 @MainActor
 class RequestListViewModelImpl: RequestListViewModel {
-    @MainActor @Published var source: [RequestViewModel] = []
-    @MainActor @Published var title = ""
-    private var requests: [(HTTPRequest, RequestViewModel)] = []
 
-    var sendUpdates = true {
+    @Published
+    private(set) var source: [RequestViewModel] = []
+
+    @Published
+    private(set) var title = ""
+
+    var searchString: String = "" {
         didSet {
-            if sendUpdates == true {
-                update()
+            Task {
+                await requestFilter.setSearchString(searchString)
             }
         }
     }
+
+    private let requestFilter: RequestFilter = .init()
 
     init() {
-        self.searchString = ""
-        loadRequests()
+        setupFilter()
         Cookie.shared.internalDelegate = self
-    }
-
-    func loadRequests() {
-        Task.init {
-            var viewModels = [RequestViewModel]()
-            requests = []
-            for request in Cookie.shared.requests {
-                let viewModel = await RequestViewModel(request: request)
-                requests.append((request, viewModel))
-                viewModels.append(viewModel)
-            }
-            await publishUpdate(requests: viewModels, counter: String(viewModels.count))
-        }
-    }
-
-    var searchString: String {
-        didSet {
-            update()
-        }
     }
 
     func clearRequests() {
         Cookie.shared.clearRequests()
-        loadRequests()
+        setupFilter()
     }
 
     func dismiss() {
         Cookie.shared.present()
     }
 
-    private func update() {
-        if !sendUpdates {
-            return
-        }
-        Task.init {
-            for (_, viewModel) in self.requests {
-                await viewModel.updateQuery(searchString)
-            }
-
-            let (filteredRequests, counter) = filteredResults(searchString)
-            let results = filteredRequests.map { $0.1 }
-
-            await publishUpdate(requests: results, counter: counter)
+    private func setupFilter() {
+        Task {
+            await self.requestFilter.setDelegate(delegate: self)
+            await self.requestFilter.setRequests(httpRequests: Cookie.shared.requests)
         }
     }
 
     private func publishUpdate(requests: [RequestViewModel], counter: String) {
         source = requests
         title = "Requests \(counter)"
-    }
-
-    private func filteredResults(_ query: String?) -> ([(HTTPRequest, RequestViewModel)], String) {
-        let totalCount = "\(requests.count)"
-        guard !searchString.isEmpty else {
-            return (requests, totalCount)
-        }
-
-        var results: [(HTTPRequest, RequestViewModel)] = []
-        for request in requests {
-            var urlComponents = URLComponents(url: request.0.urlRequest.url!, resolvingAgainstBaseURL: false)!
-            urlComponents.query = nil
-            let value = "\(urlComponents)"
-            if value.lowercased().range(of: searchString.lowercased()) != nil {
-                results.append(request)
-            }
-        }
-        let counter = "\(results.count) / " + totalCount
-        return (results, counter)
     }
 }
 
@@ -107,11 +65,73 @@ extension RequestListViewModelImpl: RequestDelegate {
 
     func willFireRequest(_ httpRequest: HTTPRequest) {
         Task.init {
-            let viewModel = await RequestViewModel(request: httpRequest, query: searchString)
-            requests.insert((httpRequest, viewModel), at: 0)
-            update()
+            await requestFilter.prepend(httpRequest: httpRequest)
         }
     }
 
     func didCompleteRequest(_ httpRequest: HTTPRequest) {}
+}
+
+@available(macOS 13, *)
+extension RequestListViewModelImpl: RequestFilterDelegate {
+    func didUpdateResults(_ viewModels: [RequestViewModel], filteredCount: Int) {
+        let totalCount = "\(viewModels.count + filteredCount)"
+        let counter = filteredCount == 0 ? totalCount : "\(viewModels.count) / " + totalCount
+        publishUpdate(requests: viewModels, counter: counter)
+    }
+}
+
+@available(macOS 13, *)
+@MainActor
+private protocol RequestFilterDelegate: AnyObject {
+    func didUpdateResults(_ viewModels: [RequestViewModel], filteredCount: Int)
+}
+
+@available(macOS 13, *)
+private actor RequestFilter {
+    private var requestMap: [(HTTPRequest, RequestViewModel)] = []
+    private(set) var searchString: String = ""
+    weak private(set) var delegate: RequestFilterDelegate?
+
+    func setDelegate(delegate: RequestFilterDelegate?) {
+        self.delegate = delegate
+    }
+
+    func setSearchString(_  searchString: String) async {
+        self.searchString = searchString
+        await filterResults()
+    }
+
+    func setRequests(httpRequests: [HTTPRequest]) async {
+        self.requestMap = []
+        for httpRequest in httpRequests {
+            let viewModel = await RequestViewModel(request: httpRequest)
+            self.requestMap.append((httpRequest, viewModel))
+        }
+        await filterResults()
+    }
+
+    func prepend(httpRequest: HTTPRequest) async {
+        let viewModel = await RequestViewModel(request: httpRequest, query: searchString)
+        requestMap.insert((httpRequest, viewModel), at: 0)
+        await filterResults()
+    }
+
+    private func filterResults() async {
+        guard !searchString.isEmpty else {
+            await delegate?.didUpdateResults(self.requestMap.map { $0.1 }, filteredCount: 0)
+            return
+        }
+
+        var results: [RequestViewModel] = []
+        for request in requestMap {
+            var urlComponents = URLComponents(url: request.0.urlRequest.url!, resolvingAgainstBaseURL: false)!
+            urlComponents.query = nil
+            let value = "\(urlComponents)"
+            if value.lowercased().range(of: searchString.lowercased()) != nil {
+                results.append(request.1)
+            }
+        }
+        await delegate?.didUpdateResults(results, filteredCount: requestMap.count - results.count)
+    }
 }

@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 @available(macOS 13, *)
+@MainActor
 public class Cookie {
     public static let shared = Cookie()
     public weak var delegate: RequestDelegate?
@@ -25,33 +26,8 @@ public class Cookie {
         requests.removeAll()
     }
 
-//    @available(macOS 13, *)
-//    public func makeView() -> some View {
-//        RequestList(viewModel: RequestListViewModelImpl())
-//    }
-
-    @available(macOS 13, *)
-    @MainActor
     public func present() {
-        #if os(iOS)
-
         coordinator.present(settings.fullscreen)
-
-        #elseif os(macOS)
-
-        let contentView = RequestList(viewModel: RequestListViewModelImpl())
-
-         let window = NSPanel(
-             contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),
-             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-             backing: .buffered, defer: false)
-//         window.isReleasedWhenClosed = false
-         window.center()
-         window.setFrameAutosaveName("Cookie Window")
-         window.contentView = NSHostingView(rootView: contentView)
-         window.makeKeyAndOrderFront(nil)
-
-        #endif
     }
 
     public func dimiss() {
@@ -68,12 +44,9 @@ public class Cookie {
         RequestInterceptor.shared.deactivate()
     }
 
-    internal func handleShake() {
+     internal func handleShake() {
         if settings.shakeGestureEnabled {
-            if #available(macOS 13, *) {
-//                present()
-            } else {
-            }
+            present()
         }
     }
 
@@ -85,7 +58,7 @@ public class Cookie {
 @available(macOS 13, *)
 extension Cookie: RequestInterceptorDelegate {
     func shouldFireRequest(urlRequest: URLRequest) -> Bool {
-        return delegate?.shouldFireURLRequest(urlRequest) ?? true
+        delegate?.shouldFireURLRequest(urlRequest) ?? true
     }
 
     func willFireRequest(urlRequest: URLRequest, hash: Int) {
