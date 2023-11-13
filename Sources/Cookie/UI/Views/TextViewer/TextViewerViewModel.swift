@@ -9,7 +9,7 @@ private enum FontSize {
 
 @available(macOS 13, *)
 class TextViewerViewModel: ObservableObject {
-    let charLimit = 15_000
+    let charLimit = 15000
     let text: String
     let originalText: String
     let filename: String
@@ -25,25 +25,17 @@ class TextViewerViewModel: ObservableObject {
 
     @Published var currentFontSize = FontSize.initial
 
-    @available(iOS 15, *)
     var attributedText: AttributedString {
-        let attributedTitle = NSAttributedString(string: text)//.highlight(searchText, highlightedTextColor: .orange)
-        return AttributedString(attributedTitle)
+        let attributedTitle = NSAttributedString(string: text) // .highlight(searchText, highlightedTextColor: .orange)
+        return AttributedString(string: text, highlightedString: searchText)
     }
 
     private func updateAttributedText() {
-        if #available(iOS 15, *) {
-            self.objectWillChange.send()
-        }
+        self.objectWillChange.send()
     }
 
     var font: Font {
-        let font = Font.system(size: CGFloat(currentFontSize))
-        if #available(iOS 15.0, *) {
-            return font.monospaced()
-        } else {
-            return font
-        }
+        .system(size: CGFloat(currentFontSize))
     }
 
     init(text: String, filename: String) {

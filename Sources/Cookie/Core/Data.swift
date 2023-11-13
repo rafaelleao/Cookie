@@ -40,10 +40,7 @@ extension Data {
     }
 
     private func prettyPrintedJSONObject(_ jsonObject: Any) -> String? {
-        var options: JSONSerialization.WritingOptions = .prettyPrinted
-        if #available(iOS 13.0, *) {
-            options.insert(.withoutEscapingSlashes)
-        }
+        let options: JSONSerialization.WritingOptions = [.prettyPrinted, .withoutEscapingSlashes]
         guard let prettyJsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: options),
               let jsonString = prettyJsonData.toString() else {
             return nil

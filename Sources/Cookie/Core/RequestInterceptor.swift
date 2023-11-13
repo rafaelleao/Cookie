@@ -4,8 +4,8 @@ class RequestInterceptor {
     static let shared = RequestInterceptor()
     let configuration: URLSessionConfiguration
     weak var delegate: RequestInterceptorDelegate?
-    internal static let protocolKey = "URLProtocol"
-    internal static let protocolValue = "CookieURLProtocol"
+    static let protocolKey = "URLProtocol"
+    static let protocolValue = "CookieURLProtocol"
 
     init() {
         self.configuration = URLSessionConfiguration.default

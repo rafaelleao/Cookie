@@ -48,7 +48,7 @@ public class Cookie {
         RequestInterceptor.shared.deactivate()
     }
 
-     internal func handleShake() {
+    func handleShake() {
         if settings.shakeGestureEnabled {
             present()
         }

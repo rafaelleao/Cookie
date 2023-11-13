@@ -10,7 +10,7 @@ class RequestViewModel: ObservableObject {
     private(set) var query: String {
         didSet {
             if query != oldValue {
-                self.objectWillChange.send()
+                objectWillChange.send()
             }
         }
     }
@@ -33,13 +33,7 @@ class RequestViewModel: ObservableObject {
 
     var attributedValue: AttributedString {
         let str = request.string ?? ""
-        var attStr = AttributedString(str)
-        if !query.isEmpty {
-            if let range = attStr.range(of: query) {
-                attStr[range].backgroundColor = .orange
-            }
-        }
-        return attStr
+        return AttributedString(string: str, highlightedString: query)
     }
 
     var key: String {

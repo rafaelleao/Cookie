@@ -5,36 +5,34 @@
 //  Created by Rafael Leão on 18.09.21.
 //
 
-import Foundation
+import SwiftUI
 
-extension String {
-    func ranges(of searchString: String) -> [NSRange]? {
-        let count = searchString.count
-        guard let indices = indices(of: searchString) else {
-            return nil
+@available(macOS 13.0, *)
+extension AttributedString {
+
+    init(
+        string: String,
+        highlightedString: String,
+        attributeContainer: AttributeContainer = AttributeContainer().backgroundColor(.orange)
+    ) {
+        let occurrences = string.lowercased().ranges(of: highlightedString.lowercased())
+        guard !occurrences.isEmpty else {
+            self.init(stringLiteral: string)
+            return
         }
-
-        let ranges = indices.map { index(startIndex, offsetBy: $0) ..< index(startIndex, offsetBy: $0 + count) }
-        return ranges.map { NSRange($0, in: self) }
-    }
-
-    func indices(of occurrence: String) -> [Int]? {
-        var indices = [Int]()
-        var position = startIndex
-        while let range = range(of: occurrence, range: position ..< endIndex) {
-            let dist = distance(from: startIndex, to: range.lowerBound)
-            indices.append(dist)
-            let offset = occurrence.distance(from: occurrence.startIndex, to: occurrence.endIndex) - 1
-            guard let after = index(range.lowerBound, offsetBy: offset, limitedBy: endIndex) else {
-                break
-            }
-            position = index(after: after)
+        self = AttributedString()
+        var previousHighlightEnd = string.startIndex
+        for occurrence in occurrences {
+            let unhighlightedChunk = string[previousHighlightEnd ..< occurrence.lowerBound]
+            self += AttributedString(unhighlightedChunk)
+            let highlightedChunk = string[occurrence]
+            self += AttributedString(highlightedChunk, attributes: attributeContainer)
+            previousHighlightEnd = occurrence.upperBound
         }
-
-        if indices.isEmpty {
-            return nil
+        if let lastOccurrence = occurrences.last {
+            let unhighlightedChunk = string[lastOccurrence.upperBound ..< string.endIndex]
+            let unhighlighted = AttributedString(unhighlightedChunk)
+            self += unhighlighted
         }
-
-        return indices
     }
 }
