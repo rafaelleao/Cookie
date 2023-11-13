@@ -23,7 +23,7 @@ class RequestInterceptor {
     }
 
     func shouldInterceptRequest(_ urlRequest: URLRequest) -> Bool {
-        return delegate?.shouldFireRequest(urlRequest: urlRequest) ?? false
+        delegate?.shouldFireRequest(urlRequest: urlRequest) ?? false
     }
 
     func willFireRequest(_ urlRequest: URLRequest, hash: Int) {
@@ -38,15 +38,23 @@ class RequestInterceptor {
         delegate?.didComplete(request: request, response: response, error: error, hash: hash)
     }
 
+    // swiftlint:disable force_unwrapping
     private func swizzleProtocolClasses() {
         let instance = URLSessionConfiguration.default
         let uRLSessionConfigurationClass: AnyClass = object_getClass(instance)!
 
-        let method1: Method = class_getInstanceMethod(uRLSessionConfigurationClass, #selector(getter: uRLSessionConfigurationClass.protocolClasses))!
-        let method2: Method = class_getInstanceMethod(URLSessionConfiguration.self, #selector(URLSessionConfiguration.fakeProtocolClasses))!
+        let method1: Method = class_getInstanceMethod(
+            uRLSessionConfigurationClass,
+            #selector(getter: uRLSessionConfigurationClass.protocolClasses)
+        )!
+        let method2: Method = class_getInstanceMethod(
+            URLSessionConfiguration.self,
+            #selector(URLSessionConfiguration.fakeProtocolClasses)
+        )!
 
         method_exchangeImplementations(method1, method2)
     }
+    // swiftlint:enable force_unwrapping
 }
 
 extension URLSessionConfiguration {

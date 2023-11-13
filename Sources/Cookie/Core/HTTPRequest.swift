@@ -47,6 +47,6 @@ public class HTTPRequest {
 
 extension HTTPRequest: Equatable {
     public static func == (lhs: HTTPRequest, rhs: HTTPRequest) -> Bool {
-        return lhs.urlRequest == rhs.urlRequest && lhs.requestDate == rhs.requestDate
+        lhs.urlRequest == rhs.urlRequest && lhs.requestDate == rhs.requestDate
     }
 }

@@ -37,12 +37,14 @@ class RequestDetailViewModel: ObservableObject {
             ResponseTabDescriptor(request: request)
         ]
         self.tabDescriptors = descriptors
+        // swiftlint:disable force_unwrapping
         self.segmentationSelection = descriptors.first!.title
         let viewModels = descriptors.map {
             RequestDetailTabViewModel(descriptor: $0)
         }
         self.childViewModels = viewModels
         self.childViewModel = viewModels.first!
+        // swiftlint:enable force_unwrapping
 
         viewModels.forEach { $0.delegate = self }
 

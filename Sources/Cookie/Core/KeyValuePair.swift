@@ -12,7 +12,7 @@ struct KeyValuePair {
 
 extension KeyValuePair: Equatable {
     public static func == (lhs: KeyValuePair, rhs: KeyValuePair) -> Bool {
-        return lhs.key == rhs.key && lhs.value == rhs.value
+        lhs.key == rhs.key && lhs.value == rhs.value
     }
 }
 

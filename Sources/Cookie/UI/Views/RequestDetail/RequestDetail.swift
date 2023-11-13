@@ -7,26 +7,18 @@ struct RequestDetail: View {
     var body: some View {
         VStack {
             Picker("", selection: $viewModel.segmentationSelection) {
-                ForEach(viewModel.tabDescriptors, id: \.title) { vm in
-                    Text(vm.title)
+                ForEach(viewModel.tabDescriptors, id: \.title) { descriptor in
+                    Text(descriptor.title)
                 }
             }
             .padding()
             .pickerStyle(.segmented)
 
-            let vm = viewModel.childViewModel
-            RequestDetailTab(viewModel: vm)
+            RequestDetailTab(viewModel: viewModel.childViewModel)
 //                .searchable(text: $viewModel.searchText, prompt: "Search")
         }
     }
 }
-
-//@available(macOS 13, *)
-//extension RequestDetail: Equatable {
-//    static func == (lhs: RequestDetail, rhs: RequestDetail) -> Bool {
-//        lhs.viewModel.request == rhs.viewModel.request
-//    }
-//}
 
 @available(macOS 13, *)
 struct RequestDetail_Previews: PreviewProvider {

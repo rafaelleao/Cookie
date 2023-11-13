@@ -10,7 +10,11 @@ public class Cookie {
     public var enabled = false {
         didSet {
             if oldValue != enabled {
-                enabled ? enable() : disable()
+                if enabled {
+                    enable()
+                } else {
+                    disable()
+                }
             }
         }
     }

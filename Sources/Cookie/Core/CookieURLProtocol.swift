@@ -25,11 +25,11 @@ class CookieURLProtocol: URLProtocol {
     }
 
     override class func canInit(with request: URLRequest) -> Bool {
-        return shouldIntercept(request: request)
+        shouldIntercept(request: request)
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-        return request
+        request
     }
 
     override func startLoading() {
@@ -47,14 +47,24 @@ class CookieURLProtocol: URLProtocol {
 extension CookieURLProtocol: URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
-            RequestInterceptor.shared.didComplete(request: request, response: task.response as? HTTPURLResponse, error: error, hash: hash)
+            RequestInterceptor.shared.didComplete(
+                request: request,
+                response: task.response as? HTTPURLResponse,
+                error: error,
+                hash: hash
+            )
             client?.urlProtocol(self, didFailWithError: error)
         } else {
             guard let response = task.response as? HTTPURLResponse else {
                 client?.urlProtocol(self, didFailWithError: NSError(domain: "CookieURLProtocol", code: -1))
                 return
             }
-            RequestInterceptor.shared.didReceiveResponse(urlRequest: request, response: response, data: internalResponseData, hash: hash)
+            RequestInterceptor.shared.didReceiveResponse(
+                urlRequest: request,
+                response: response,
+                data: internalResponseData,
+                hash: hash
+            )
             client?.urlProtocolDidFinishLoading(self)
         }
     }

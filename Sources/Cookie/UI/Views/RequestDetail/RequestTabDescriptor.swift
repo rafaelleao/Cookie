@@ -40,7 +40,7 @@ class RequestTabDescriptor: TabDescriptor {
     }
 
     private func canShowRequestBody() -> Bool {
-        return request.requestBodyString != nil
+        request.requestBodyString != nil
     }
 
     var textViewerViewModel: TextViewerViewModel? {

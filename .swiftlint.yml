@@ -1,7 +1,12 @@
 excluded:
-  - "Pods"
-disabled_rules:
-  - force_cast
-  - identifier_name
+  - "**/.build/"
+
+opt_in_rules:
+  - force_unwrapping
+  - implicit_return
+  
+force_unwrapping: error
+
 line_length:
-  warning: 180
+  warning: 160
+  error: 180

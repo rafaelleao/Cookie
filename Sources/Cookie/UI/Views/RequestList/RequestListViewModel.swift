@@ -125,7 +125,12 @@ private actor RequestFilter {
 
         var results: [RequestViewModel] = []
         for request in requestMap {
-            var urlComponents = URLComponents(url: request.0.urlRequest.url!, resolvingAgainstBaseURL: false)!
+            guard let url = request.0.urlRequest.url,
+                  var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            else {
+                continue
+            }
+
             urlComponents.query = nil
             let value = "\(urlComponents)"
             if value.lowercased().range(of: searchString.lowercased()) != nil {

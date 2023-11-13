@@ -43,8 +43,13 @@ struct TextViewer: View {
             })
             Spacer(minLength: 20.0)
 
-            Stepper("", value: .init(get: { viewModel.currentFontSize },
-                                     set: { viewModel.currentFontSize = $0 }), in: viewModel.minimumFontSize ... viewModel.maximumFontSize)
+            Stepper(
+                "",
+                value: .init(
+                    get: { viewModel.currentFontSize },
+                    set: { viewModel.currentFontSize = $0 }
+                ),
+                in: viewModel.minimumFontSize ... viewModel.maximumFontSize)
         }
     }
 }
@@ -57,7 +62,6 @@ struct TextViewer_Previews: PreviewProvider {
         }
     }
 
-    // swiftlint:disable:next function_body_length
     static func testViewModel() -> TextViewerViewModel {
         let text =
 """

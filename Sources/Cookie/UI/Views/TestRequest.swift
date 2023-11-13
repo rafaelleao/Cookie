@@ -7,6 +7,7 @@
 
 import Foundation
 
+// swiftlint:disable force_unwrapping
 struct TestRequest {
     static var testRequest: HTTPRequest {
         let url = URL(string: "https://jsonplaceholder.typicode.com/todosaiejfoisjefiajo?qwertyuiop=asdfghjkl&zxcvbnm=zxcvbnm")!
@@ -49,3 +50,4 @@ struct TestRequest {
         return httpOperation
     }
 }
+// swiftlint:enable force_unwrapping

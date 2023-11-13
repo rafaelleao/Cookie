@@ -38,7 +38,6 @@ extension NSWindow {
     }
 }
 
-
 extension NSViewController {
     static var top: NSViewController? {
         var topViewController = NSWindow.key?.contentViewController

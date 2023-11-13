@@ -18,7 +18,7 @@ struct SummaryTabDescriptor: TabDescriptor {
     var image: String {
         "network"
     }
-    
+
     var textViewerViewModel: TextViewerViewModel? {
         nil
     }
