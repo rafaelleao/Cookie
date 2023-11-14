@@ -9,12 +9,6 @@ struct RequestRow: View {
             Text(viewModel.attributedValue)
                 .font(.system(.caption, design: .monospaced))
             HStack {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .padding(.trailing, 3)
-                }
-
                 Text(viewModel.key)
                     .font(.system(.caption))
                     .italic()
@@ -24,18 +18,24 @@ struct RequestRow: View {
                     .bold()
                     .modifier(RoundedLabel(backgroundColor: .white))
 
-                if let (code, color) = viewModel.result {
-                    Text(code)
-                        .bold()
-                        .foregroundColor(.white)
-                        .modifier(RoundedLabel(backgroundColor: color))
-                }
-
-                if let contentType = viewModel.contentType {
-                    Text(contentType)
-                        .foregroundColor(.white)
-                        .bold()
-                        .modifier(RoundedLabel(backgroundColor: .gray))
+                if viewModel.isLoading {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .controlSize(.small)
+                        .padding(.trailing, 3)
+                } else {
+                    if let (code, color) = viewModel.result {
+                        Text(code)
+                            .bold()
+                            .foregroundColor(.white)
+                            .modifier(RoundedLabel(backgroundColor: color))
+                    }
+                    if let contentType = viewModel.contentType {
+                        Text(contentType)
+                            .foregroundColor(.white)
+                            .bold()
+                            .modifier(RoundedLabel(backgroundColor: .gray))
+                    }
                 }
             }
         })
