@@ -6,7 +6,7 @@ struct TextViewer: View {
 
     var body: some View {
         contentView
-            .searchable(text: $viewModel.searchText, placement: .automatic)
+//            .searchable(text: $viewModel.searchText, placement: .automatic)
 //                .autocapitalization(.none)
     }
 
@@ -24,6 +24,7 @@ struct TextViewer: View {
                 Text("Content clipped. File is too large.")
                     .italic()
             }
+            SearchBar(placeholder: "Search", text: $viewModel.searchText)
         })
         .padding()
 //        .navigationBarItems(trailing: navigationBarItems)
@@ -57,9 +58,7 @@ struct TextViewer: View {
 @available(macOS 13, *)
 struct TextViewer_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            TextViewer(viewModel: testViewModel())
-        }
+        TextViewer(viewModel: testViewModel())
     }
 
     static func testViewModel() -> TextViewerViewModel {

@@ -38,7 +38,7 @@ class MainCoordinator {
 #elseif os(macOS)
 
 @available(macOS 13, *)
-class MainCoordinator {
+class MainCoordinator: NSObject {
     private weak var window: NSWindow?
 
     @MainActor
@@ -46,19 +46,29 @@ class MainCoordinator {
         guard window == nil else { return }
         let view = RequestList(viewModel: RequestListViewModelImpl())
         let hostingController = NSHostingController(rootView: view)
-        let window = NSPanel(
-        contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),
-        styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
-        backing: .buffered, defer: false)
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+            backing: .buffered,
+            defer: false
+        )
         window.contentViewController = hostingController
         window.setFrameAutosaveName("Cookie Window")
         window.center()
         window.makeKeyAndOrderFront(nil)
+        window.delegate = self
         self.window = window
     }
 
     func dismiss() {
         window?.close()
+    }
+}
+
+@available(macOS 13, *)
+extension MainCoordinator: NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        window = nil
     }
 }
 

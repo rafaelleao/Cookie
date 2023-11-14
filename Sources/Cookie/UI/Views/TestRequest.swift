@@ -50,4 +50,5 @@ struct TestRequest {
         return httpOperation
     }
 }
+
 // swiftlint:enable force_unwrapping

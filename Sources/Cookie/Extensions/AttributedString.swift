@@ -1,5 +1,5 @@
 //
-//  StringExtensions.swift
+//  AttributedString.swift
 //
 //
 //  Created by Rafael Leão on 18.09.21.
@@ -9,17 +9,22 @@ import SwiftUI
 
 @available(macOS 13.0, *)
 extension AttributedString {
-
     init(
-        string: String,
+        _ string: String,
         highlightedString: String,
         attributeContainer: AttributeContainer = AttributeContainer().backgroundColor(.orange)
     ) {
+        guard !string.isEmpty, !highlightedString.isEmpty else {
+            self.init(stringLiteral: string)
+            return
+        }
+
         let occurrences = string.lowercased().ranges(of: highlightedString.lowercased())
         guard !occurrences.isEmpty else {
             self.init(stringLiteral: string)
             return
         }
+
         self = AttributedString()
         var previousHighlightEnd = string.startIndex
         for occurrence in occurrences {

@@ -1,5 +1,5 @@
-import SwiftUI
 import Cookie
+import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var viewModel = ContentViewModel()

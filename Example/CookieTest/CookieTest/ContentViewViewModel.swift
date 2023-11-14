@@ -98,7 +98,8 @@ struct TestRequests {
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue(
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-            forHTTPHeaderField: "Curabitur ut auctor lorem. Quisque sed sagittis dolor. Aenean quis ultricies ipsum.")
+            forHTTPHeaderField: "Curabitur ut auctor lorem. Quisque sed sagittis dolor. Aenean quis ultricies ipsum."
+        )
 
         request.httpMethod = "POST"
         let json: [String: Any] = ["foo": "bar",
@@ -188,4 +189,5 @@ struct TestRequests {
         return request
     }
 }
+
 // swiftlint:enable force_unwrapping

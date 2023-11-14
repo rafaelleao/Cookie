@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  
+//  SearchBar.swift
+//
 //
 //  Created by Rafael Leão on 23.10.23.
 //
@@ -25,20 +25,34 @@ struct SearchBar: View {
                 .textFieldStyle(.plain)
                 .frame(height: 22)
             if !text.isEmpty {
-                Button(action: { text = "" }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 11))
-                        .foregroundColor(.secondary)
-                        .frame(width: 20, height: 20)
+                Button {
+                    text = ""
+                } label: {
+                    clearButton
                 }
                 .buttonStyle(.plain)
             }
         }
         .cornerRadius(4)
-        .overlay(
-            RoundedRectangle(cornerRadius: 4)
-//                .stroke(.separator, lineWidth: 1)
-        )
+        #if os(iOS)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(.foreground, lineWidth: 1)
+            )
+
+        #elseif os(macOS)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(.separator, lineWidth: 1)
+            )
+        #endif
+    }
+
+    private var clearButton: some View {
+        Image(systemName: "xmark.circle.fill")
+            .font(.system(size: 11))
+            .foregroundColor(.secondary)
+            .frame(width: 20, height: 20)
     }
 }
 

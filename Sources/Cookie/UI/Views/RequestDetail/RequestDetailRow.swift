@@ -13,19 +13,12 @@ struct RequestDetailRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10, content: {
-            if #available(iOS 15, *) {
-                Text(viewModel.attributedTitle)
-                    .font(.system(.headline, design: .monospaced))
-                    .textSelection(.enabled)
-                Text(viewModel.attributedSubtitle)
-                    .font(.system(.subheadline, design: .monospaced))
-                    .textSelection(.enabled)
-            } else {
-                Text(viewModel.title)
-                    .font(.system(.headline, design: .monospaced))
-                Text(viewModel.subtitle)
-                    .font(.system(.subheadline, design: .monospaced))
-            }
+            Text(viewModel.attributedTitle)
+                .font(.system(.headline, design: .monospaced))
+                .textSelection(.enabled)
+            Text(viewModel.attributedSubtitle)
+                .font(.system(.subheadline, design: .monospaced))
+                .textSelection(.enabled)
         })
     }
 }

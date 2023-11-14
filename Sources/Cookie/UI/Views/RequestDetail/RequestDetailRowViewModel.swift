@@ -18,23 +18,19 @@ class RequestDetailRowViewModel: ObservableObject {
         self.searchText = searchText
     }
 
-    var title: String {
+    private var title: String {
         pair.key
     }
 
-    var subtitle: String {
+    private var subtitle: String {
         pair.value ?? ""
     }
 
-    @available(iOS 15, *)
     var attributedTitle: AttributedString {
-        let attributedTitle = NSAttributedString(string: title)//.highlight(searchText, highlightedTextColor: .orange)
-        return AttributedString(attributedTitle)
+        AttributedString(title, highlightedString: searchText)
     }
 
-    @available(iOS 15, *)
     var attributedSubtitle: AttributedString {
-        let attributedTitle = NSAttributedString(string: subtitle)//.highlight(searchText, highlightedTextColor: .orange)
-        return AttributedString(attributedTitle)
+        AttributedString(subtitle, highlightedString: searchText)
     }
 }

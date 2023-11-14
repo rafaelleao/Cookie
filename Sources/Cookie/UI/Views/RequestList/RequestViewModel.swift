@@ -33,7 +33,7 @@ class RequestViewModel: ObservableObject {
 
     var attributedValue: AttributedString {
         let str = request.string ?? ""
-        return AttributedString(string: str, highlightedString: query)
+        return AttributedString(str, highlightedString: query)
     }
 
     var key: String {

@@ -13,7 +13,6 @@ protocol RequestListViewModel: ObservableObject {
 @available(macOS 13, *)
 @MainActor
 class RequestListViewModelImpl: RequestListViewModel {
-
     @Published
     private(set) var source: [RequestViewModel] = []
 
@@ -91,22 +90,22 @@ private protocol RequestFilterDelegate: AnyObject {
 private actor RequestFilter {
     private var requestMap: [(HTTPRequest, RequestViewModel)] = []
     private(set) var searchString: String = ""
-    weak private(set) var delegate: RequestFilterDelegate?
+    private(set) weak var delegate: RequestFilterDelegate?
 
     func setDelegate(delegate: RequestFilterDelegate?) {
         self.delegate = delegate
     }
 
-    func setSearchString(_  searchString: String) async {
+    func setSearchString(_ searchString: String) async {
         self.searchString = searchString
         await filterResults()
     }
 
     func setRequests(httpRequests: [HTTPRequest]) async {
-        self.requestMap = []
+        requestMap = []
         for httpRequest in httpRequests {
             let viewModel = await RequestViewModel(request: httpRequest)
-            self.requestMap.append((httpRequest, viewModel))
+            requestMap.append((httpRequest, viewModel))
         }
         await filterResults()
     }
@@ -119,7 +118,7 @@ private actor RequestFilter {
 
     private func filterResults() async {
         guard !searchString.isEmpty else {
-            await delegate?.didUpdateResults(self.requestMap.map { $0.1 }, filteredCount: 0)
+            await delegate?.didUpdateResults(requestMap.map { $0.1 }, filteredCount: 0)
             return
         }
 
@@ -135,6 +134,7 @@ private actor RequestFilter {
             let value = "\(urlComponents)"
             if value.lowercased().range(of: searchString.lowercased()) != nil {
                 results.append(request.1)
+                await request.1.updateQuery(searchString)
             }
         }
         await delegate?.didUpdateResults(results, filteredCount: requestMap.count - results.count)

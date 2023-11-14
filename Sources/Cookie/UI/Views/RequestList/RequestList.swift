@@ -3,53 +3,56 @@ import SwiftUI
 @available(macOS 13, *)
 struct RequestList<ViewModel: RequestListViewModel>: View {
     @ObservedObject var viewModel: ViewModel
-    @State private var selectedRequest: HTTPRequest?
+    @State private var selectedRequest: HTTPRequest? {
+        didSet {
+            makeRequestDetailViewModelIfNeeded()
+        }
+    }
+
+    @State private var requestDetailViewModel: RequestDetailViewModel?
     @State private var columnVisibility = NavigationSplitViewVisibility.detailOnly
 
     var body: some View {
-#if os(iOS)
-        NavigationStack {
-            list
-                .searchable(text: $viewModel.searchString, placement: .automatic)
-                .autocapitalization(.none)
-                .navigationDestination(isPresented: .constant(selectedRequest != nil), destination: {
-                    if let selectedRequest {
-                        let detailViewModel = RequestDetailViewModel(request: selectedRequest)
-                        RequestDetail(viewModel: detailViewModel)
+        #if os(iOS)
+            NavigationStack {
+                list
+                    .searchable(text: $viewModel.searchString, placement: .automatic)
+                    .autocapitalization(.none)
+                    .navigationDestination(isPresented: .constant(selectedRequest != nil), destination: {
+                        if let selectedRequest {
+                            let detailViewModel = RequestDetailViewModel(request: selectedRequest)
+                            RequestDetail(viewModel: detailViewModel)
+                        } else {
+                            EmptyView()
+                        }
+                    })
+            }
+        #else
+            NavigationSplitView(
+                columnVisibility: $columnVisibility,
+                sidebar: {},
+                content: {
+                    VStack {
+                        list
+                            .searchable(text: $viewModel.searchString, placement: .automatic)
+//                      SearchBar(placeholder: "Search", text: $viewModel.searchString)
+//                        .padding(.all, 8)
+                    }
+                    .navigationSplitViewColumnWidth(min: 350, ideal: 450, max: 550)
+                },
+                detail: {
+                    if let requestDetailViewModel {
+                        RequestDetail(viewModel: requestDetailViewModel)
                     } else {
                         EmptyView()
                     }
-                })
-        }
-#else
-        NavigationSplitView(
-            columnVisibility: $columnVisibility,
-            sidebar: {
-            },
-            content: {
-                VStack {
-                    list
-                        .searchable(text: $viewModel.searchString, placement: .automatic)
-//                    SearchBar(placeholder: "Search", text: $viewModel.searchString)
-//                        .padding(.all, 8)
                 }
-                    .navigationSplitViewColumnWidth(min: 350, ideal: 450, max: 550)
-
-            },
-            detail: {
-                if let selectedRequest {
-                    let detailViewModel = RequestDetailViewModel(request: selectedRequest)
-                    RequestDetail(viewModel: detailViewModel)
-                } else {
-                    EmptyView()
-                }
-            }
-        )
+            )
             .navigationSplitViewStyle(.prominentDetail)
             .onAppear(perform: {
                 columnVisibility = selectedRequest != nil ? .all : .detailOnly
             })
-#endif
+        #endif
     }
 
     private var list: some View {
@@ -59,16 +62,16 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
                     selectedRequest = requestViewModel.request
                 }
         }
-    #if os(iOS)
+        #if os(iOS)
         .autocapitalization(.none)
         .toolbar(content: {
-             ToolbarItemGroup(placement: .navigation) {
-                 Button(action: {
-                 viewModel.dismiss()
-                 }, label: {
-                 Image(systemName: "xmark")
-                 })
-             }
+            ToolbarItemGroup(placement: .navigation) {
+                Button(action: {
+                    viewModel.dismiss()
+                }, label: {
+                    Image(systemName: "xmark")
+                })
+            }
 
             ToolbarItemGroup(placement: .navigation) {
                 Spacer(minLength: 20.0)
@@ -77,9 +80,19 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
                 }, label: {
                     Image(systemName: "trash")
                 })
-             }
-         })
-    #endif
+            }
+        })
+        #endif
+    }
+
+    private func makeRequestDetailViewModelIfNeeded() {
+        guard let selectedRequest else {
+            requestDetailViewModel = nil
+            return
+        }
+        if requestDetailViewModel?.request != selectedRequest {
+            requestDetailViewModel = RequestDetailViewModel(request: selectedRequest)
+        }
     }
 }
 
@@ -99,8 +112,7 @@ class RequestListViewModelMock: RequestListViewModel {
         objectWillChange.send()
     }
 
-    func dismiss() {
-    }
+    func dismiss() {}
 }
 
 @available(macOS 13, *)

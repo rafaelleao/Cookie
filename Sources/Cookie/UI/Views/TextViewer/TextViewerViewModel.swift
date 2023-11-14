@@ -26,12 +26,11 @@ class TextViewerViewModel: ObservableObject {
     @Published var currentFontSize = FontSize.initial
 
     var attributedText: AttributedString {
-        let attributedTitle = NSAttributedString(string: text) // .highlight(searchText, highlightedTextColor: .orange)
-        return AttributedString(string: text, highlightedString: searchText)
+        AttributedString(text, highlightedString: searchText)
     }
 
     private func updateAttributedText() {
-        self.objectWillChange.send()
+        objectWillChange.send()
     }
 
     var font: Font {

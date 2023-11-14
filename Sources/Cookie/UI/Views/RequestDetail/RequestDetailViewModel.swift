@@ -50,7 +50,7 @@ class RequestDetailViewModel: ObservableObject {
 
         $searchText.sink { newValue in
             self.childViewModels.forEach { viewModel in
-                viewModel.searchText =  newValue
+                viewModel.searchText = newValue
             }
         }.store(in: &bindings)
     }
@@ -62,6 +62,5 @@ class RequestDetailViewModel: ObservableObject {
 
 @available(macOS 13, *)
 extension RequestDetailViewModel: RequestDetailTabViewModelDelegate {
-    func showText(viewModel: TextViewerViewModel) {
-    }
+    func showText(viewModel: TextViewerViewModel) {}
 }
