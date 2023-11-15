@@ -1,10 +1,3 @@
-//
-//  RequestDetailRow.swift
-//  Cookie
-//
-//  Created by Rafael Leão on 10.09.21.
-//
-
 import SwiftUI
 
 @available(macOS 13, *)

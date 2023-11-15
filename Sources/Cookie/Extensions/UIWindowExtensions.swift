@@ -1,19 +1,13 @@
-//
-//  UIWindowExtensions.swift
-//
-//
-//  Created by Rafael Leão on 18.09.21.
-//
-
 #if os(iOS)
 
 import UIKit
 
 extension UIWindow {
-    override open func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        if let event = event,
+    open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if let event,
            event.type == .motion,
-           event.subtype == .motionShake {
+           event.subtype == .motionShake
+        {
             Cookie.shared.handleShake()
         }
         super.motionEnded(motion, with: event)

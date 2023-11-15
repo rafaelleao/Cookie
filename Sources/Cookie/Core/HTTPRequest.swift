@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 
+@available(macOS 13.0, *)
 public class HTTPRequest {
     public let urlRequest: URLRequest
     public let requestDate: Date
@@ -45,6 +46,7 @@ public class HTTPRequest {
     }
 }
 
+@available(macOS 13.0, *)
 extension HTTPRequest: Equatable {
     public static func == (lhs: HTTPRequest, rhs: HTTPRequest) -> Bool {
         lhs.urlRequest == rhs.urlRequest && lhs.requestDate == rhs.requestDate

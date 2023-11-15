@@ -10,7 +10,8 @@ class CookieURLProtocol: URLProtocol {
 
     private class func shouldIntercept(request: URLRequest) -> Bool {
         guard let scheme = request.url?.scheme,
-              ["http", "https"].contains(scheme) else {
+              ["http", "https"].contains(scheme)
+        else {
             return false
         }
 
@@ -38,15 +39,15 @@ class CookieURLProtocol: URLProtocol {
         sessionTask?.resume()
     }
 
-    override public func stopLoading() {
+    override func stopLoading() {
         sessionTask?.cancel()
         sessionTask = nil
     }
 }
 
 extension CookieURLProtocol: URLSessionDataDelegate {
-    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        if let error = error {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error {
             RequestInterceptor.shared.didComplete(
                 request: request,
                 response: task.response as? HTTPURLResponse,
@@ -69,15 +70,17 @@ extension CookieURLProtocol: URLSessionDataDelegate {
         }
     }
 
-    public func urlSession(_ session: URLSession,
-                           dataTask: URLSessionDataTask,
-                           didReceive response: URLResponse,
-                           completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
+    func urlSession(
+        _ session: URLSession,
+        dataTask: URLSessionDataTask,
+        didReceive response: URLResponse,
+        completionHandler: @escaping (URLSession.ResponseDisposition) -> Void
+    ) {
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         completionHandler(.allow)
     }
 
-    public func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         internalResponseData.append(data)
         client?.urlProtocol(self, didLoad: data)
     }

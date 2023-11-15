@@ -14,44 +14,44 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
 
     var body: some View {
         #if os(iOS)
-            NavigationStack {
-                list
-                    .searchable(text: $viewModel.searchString, placement: .automatic)
-                    .autocapitalization(.none)
-                    .navigationDestination(isPresented: .constant(selectedRequest != nil), destination: {
-                        if let selectedRequest {
-                            let detailViewModel = RequestDetailViewModel(request: selectedRequest)
-                            RequestDetail(viewModel: detailViewModel)
-                        } else {
-                            EmptyView()
-                        }
-                    })
-            }
-        #else
-            NavigationSplitView(
-                columnVisibility: $columnVisibility,
-                sidebar: {},
-                content: {
-                    VStack {
-                        list
-                            .searchable(text: $viewModel.searchString, placement: .automatic)
-//                      SearchBar(placeholder: "Search", text: $viewModel.searchString)
-//                        .padding(.all, 8)
-                    }
-                    .navigationSplitViewColumnWidth(min: 350, ideal: 450, max: 550)
-                },
-                detail: {
-                    if let requestDetailViewModel {
-                        RequestDetail(viewModel: requestDetailViewModel)
+        NavigationStack {
+            list
+                .searchable(text: $viewModel.searchString, placement: .automatic)
+                .autocapitalization(.none)
+                .navigationDestination(isPresented: .constant(selectedRequest != nil), destination: {
+                    if let selectedRequest {
+                        let detailViewModel = RequestDetailViewModel(request: selectedRequest)
+                        RequestDetail(viewModel: detailViewModel)
                     } else {
                         EmptyView()
                     }
+                })
+        }
+        #else
+        NavigationSplitView(
+            columnVisibility: $columnVisibility,
+            sidebar: {},
+            content: {
+                VStack {
+                    list
+                        .searchable(text: $viewModel.searchString, placement: .automatic)
+//                      SearchBar(placeholder: "Search", text: $viewModel.searchString)
+//                        .padding(.all, 8)
                 }
-            )
-            .navigationSplitViewStyle(.prominentDetail)
-            .onAppear(perform: {
-                columnVisibility = selectedRequest != nil ? .all : .detailOnly
-            })
+                .navigationSplitViewColumnWidth(min: 350, ideal: 450, max: 550)
+            },
+            detail: {
+                if let requestDetailViewModel {
+                    RequestDetail(viewModel: requestDetailViewModel)
+                } else {
+                    EmptyView()
+                }
+            }
+        )
+        .navigationSplitViewStyle(.prominentDetail)
+        .onAppear(perform: {
+            columnVisibility = selectedRequest != nil ? .all : .detailOnly
+        })
         #endif
     }
 
@@ -122,7 +122,7 @@ struct RequestList_Previews: PreviewProvider {
             TestRequest.testRequest,
             TestRequest.completedTestRequest,
             TestRequest.serverErrorRequest,
-            TestRequest.failedRequest
+            TestRequest.failedRequest,
         ].map { RequestViewModel(request: $0) }
         let viewModel = RequestListViewModelMock(
             source: source)

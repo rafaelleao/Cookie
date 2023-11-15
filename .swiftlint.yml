@@ -1,6 +1,9 @@
 excluded:
   - "**/.build/"
 
+disabled_rules:
+  - trailing_comma
+  - opening_brace
 opt_in_rules:
   - force_unwrapping
   - implicit_return

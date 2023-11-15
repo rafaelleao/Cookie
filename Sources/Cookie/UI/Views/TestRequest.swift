@@ -1,14 +1,8 @@
-//
-//  TestRequest.swift
-//  Cookie
-//
-//  Created by Rafael Leão on 13.09.21.
-//
-
 import Foundation
 
 // swiftlint:disable force_unwrapping
-struct TestRequest {
+@available(macOS 13.0, *)
+enum TestRequest {
     static var testRequest: HTTPRequest {
         let url = URL(string: "https://jsonplaceholder.typicode.com/todosaiejfoisjefiajo?qwertyuiop=asdfghjkl&zxcvbnm=zxcvbnm")!
         let request = URLRequest(url: url)

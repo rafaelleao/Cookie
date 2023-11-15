@@ -1,5 +1,6 @@
 import Foundation
 
+@available(macOS 13.0, *)
 public enum HTTPResponse {
     case success(response: HTTPURLResponse, data: Data?)
     case failure(response: HTTPURLResponse?, error: Error?)
@@ -22,7 +23,7 @@ public enum HTTPResponse {
     }
 
     public var responseString: String? {
-        guard let responseData = responseData else {
+        guard let responseData else {
             return nil
         }
         if let jsonString = responseData.toJsonString() {

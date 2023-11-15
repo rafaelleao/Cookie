@@ -43,6 +43,7 @@ struct RequestRow: View {
     }
 }
 
+@available(macOS 13, *)
 struct RoundedLabel: ViewModifier {
     let backgroundColor: Color
 

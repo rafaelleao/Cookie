@@ -1,10 +1,3 @@
-//
-//  MainCoordinator.swift
-//  Cookie
-//
-//  Created by Rafael Leao on 02.04.21.
-//
-
 import Foundation
 import SwiftUI
 

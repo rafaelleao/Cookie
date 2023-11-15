@@ -1,10 +1,3 @@
-//
-//  SummaryTabDescriptor.swift
-//  Cookie
-//
-//  Created by Rafael Leão on 14.09.21.
-//
-
 import Foundation
 
 @available(macOS 13, *)

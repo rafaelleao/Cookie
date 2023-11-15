@@ -1,8 +1,8 @@
 # Cookie
 
-A lightweight network traffic debugging tool for iOS apps.
+A lightweight network traffic debugging tool for iOS and MacOS apps.
 
-Written in SwiftUI, supports iOS 13+
+Written in SwiftUI, supports iOS 16+ and MacOS 13+
 
 ## Features
 

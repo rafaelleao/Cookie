@@ -55,7 +55,7 @@ class RequestViewModel: ObservableObject {
     }
 
     private var requestStatus: RequestStatus? {
-        if let statusCode = statusCode {
+        if let statusCode {
             return .completed(statusCode: statusCode)
         }
         if error != nil {
@@ -99,6 +99,7 @@ class RequestViewModel: ObservableObject {
 @available(macOS 13, *)
 extension RequestViewModel: Identifiable {}
 
+@available(macOS 13.0, *)
 extension HTTPRequest {
     var string: String? {
         guard let url = urlRequest.url, var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {

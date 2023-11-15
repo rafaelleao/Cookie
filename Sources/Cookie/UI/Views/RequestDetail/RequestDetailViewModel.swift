@@ -1,10 +1,3 @@
-//
-//  RequestDetailViewModel.swift
-//  Cookie
-//
-//  Created by Rafael Leão on 14.09.21.
-//
-
 import Combine
 
 @available(macOS 13, *)
@@ -34,7 +27,7 @@ class RequestDetailViewModel: ObservableObject {
         let descriptors: [TabDescriptor] = [
             SummaryTabDescriptor(request: request),
             RequestTabDescriptor(request: request),
-            ResponseTabDescriptor(request: request)
+            ResponseTabDescriptor(request: request),
         ]
         self.tabDescriptors = descriptors
         // swiftlint:disable force_unwrapping

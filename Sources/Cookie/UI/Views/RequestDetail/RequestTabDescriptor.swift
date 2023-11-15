@@ -1,10 +1,3 @@
-//
-//  RequestTabDescriptor.swift
-//  Cookie
-//
-//  Created by Rafael Leão on 13.09.21.
-//
-
 import Foundation
 
 @available(macOS 13, *)
@@ -26,7 +19,7 @@ class RequestTabDescriptor: TabDescriptor {
     func sections() -> [SectionData] {
         [
             SectionData(title: "Request Headers", pairs: headers()),
-            SectionData(title: "Query Parameters", pairs: queryParams())
+            SectionData(title: "Query Parameters", pairs: queryParams()),
         ]
     }
 
@@ -67,7 +60,8 @@ class RequestTabDescriptor: TabDescriptor {
 
         if let url = request.urlRequest.url,
            let urlComponents = NSURLComponents(url: url, resolvingAgainstBaseURL: true),
-           let queryItems = urlComponents.queryItems, !queryItems.isEmpty {
+           let queryItems = urlComponents.queryItems, !queryItems.isEmpty
+        {
             for param in queryItems {
                 pairs.append(KeyValuePair(param.name, param.value ?? ""))
             }

@@ -1,12 +1,6 @@
-//
-//  SearchBar.swift
-//
-//
-//  Created by Rafael Leão on 23.10.23.
-//
-
 import SwiftUI
 
+@available(macOS 13, *)
 struct SearchBar: View {
     private let placeholder: String
     @Binding private var text: String
@@ -56,12 +50,18 @@ struct SearchBar: View {
     }
 }
 
-#Preview("Empty") {
-    SearchBar(placeholder: "Search", text: .constant(""))
-        .padding()
-}
+@available(macOS 13, *)
+struct SearchBar_Previews: PreviewProvider {
 
-#Preview("Search keyword") {
-    SearchBar(placeholder: "Search", text: .constant("keyword"))
-        .padding()
+    static var previews: some View {
+        Group {
+            SearchBar(placeholder: "Search", text: .constant(""))
+                .previewDisplayName("Empty")
+                .padding()
+
+            SearchBar(placeholder: "Search", text: .constant("keyword"))
+                .previewDisplayName("Search keyword")
+                .padding()
+        }
+    }
 }

@@ -1,5 +1,6 @@
 import Foundation
 
+@available(macOS 13.0, *)
 extension Data {
     private static let bufferSize = 1024
 
@@ -42,7 +43,8 @@ extension Data {
     private func prettyPrintedJSONObject(_ jsonObject: Any) -> String? {
         let options: JSONSerialization.WritingOptions = [.prettyPrinted, .withoutEscapingSlashes]
         guard let prettyJsonData = try? JSONSerialization.data(withJSONObject: jsonObject, options: options),
-              let jsonString = prettyJsonData.toString() else {
+              let jsonString = prettyJsonData.toString()
+        else {
             return nil
         }
         return jsonString

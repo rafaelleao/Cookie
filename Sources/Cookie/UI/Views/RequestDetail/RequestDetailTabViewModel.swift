@@ -1,10 +1,3 @@
-//
-//  RequestDetailTabViewModel.swift
-//  Cookie
-//
-//  Created by Rafael Leão on 14.09.21.
-//
-
 import Combine
 import Foundation
 
@@ -81,7 +74,7 @@ class RequestDetailTabViewModel: ObservableObject {
         }
         $searchText.sink { [unowned self] text in
             print(text)
-            self.filter(searchString: text)
+            filter(searchString: text)
         }.store(in: &bindings)
     }
 

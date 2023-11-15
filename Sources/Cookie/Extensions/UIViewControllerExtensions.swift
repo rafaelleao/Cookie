@@ -1,10 +1,3 @@
-//
-//  UIViewControllerExtensions.swift
-//
-//
-//  Created by Rafael Leão on 18.09.21.
-//
-
 #if os(iOS)
 
 import UIKit

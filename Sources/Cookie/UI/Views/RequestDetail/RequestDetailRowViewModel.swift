@@ -1,10 +1,3 @@
-//
-//  RequestDetailRowViewModel.swift
-//  Cookie
-//
-//  Created by Rafael Leão on 19.09.21.
-//
-
 import Combine
 import Foundation
 
