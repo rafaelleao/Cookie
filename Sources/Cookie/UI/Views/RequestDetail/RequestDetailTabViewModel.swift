@@ -8,7 +8,7 @@ struct SectionData {
 }
 
 extension SectionData: Hashable {
-    public func hash(into hasher: inout Hasher) {
+    func hash(into hasher: inout Hasher) {
         hasher.combine(title)
     }
 }

@@ -58,8 +58,7 @@ class RequestInterceptor {
 }
 
 extension URLSessionConfiguration {
-    @objc
-    func fakeProtocolClasses() -> [AnyClass]? {
+    @objc func fakeProtocolClasses() -> [AnyClass]? {
         guard let fakeProtocolClasses = fakeProtocolClasses() else {
             return []
         }

@@ -58,6 +58,7 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
     private var list: some View {
         List(viewModel.source) { requestViewModel in
             RequestRow(viewModel: requestViewModel)
+                .listRowBackground(requestViewModel.request == selectedRequest ? Color.accentColor : nil)
                 .onTapGesture {
                     selectedRequest = requestViewModel.request
                 }

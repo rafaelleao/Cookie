@@ -45,7 +45,8 @@ class RequestDetailViewModel: ObservableObject {
             self.childViewModels.forEach { viewModel in
                 viewModel.searchText = newValue
             }
-        }.store(in: &bindings)
+        }
+        .store(in: &bindings)
     }
 
     func viewModel(title: String) -> RequestDetailTabViewModel? {

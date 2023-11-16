@@ -13,11 +13,9 @@ protocol RequestListViewModel: ObservableObject {
 @available(macOS 13, *)
 @MainActor
 class RequestListViewModelImpl: RequestListViewModel {
-    @Published
-    private(set) var source: [RequestViewModel] = []
+    @Published private(set) var source: [RequestViewModel] = []
 
-    @Published
-    private(set) var title = ""
+    @Published private(set) var title = ""
 
     var searchString: String = "" {
         didSet {
@@ -63,7 +61,7 @@ extension RequestListViewModelImpl: RequestDelegate {
     }
 
     func willFireRequest(_ httpRequest: HTTPRequest) {
-        Task.init {
+        Task {
             await requestFilter.prepend(httpRequest: httpRequest)
         }
     }
