@@ -16,15 +16,9 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
         #if os(iOS)
         NavigationStack {
             list
-                .searchable(text: $viewModel.searchString, placement: .automatic)
                 .autocapitalization(.none)
                 .navigationDestination(isPresented: .constant(selectedRequest != nil), destination: {
-                    if let selectedRequest {
-                        let detailViewModel = RequestDetailViewModel(request: selectedRequest)
-                        RequestDetail(viewModel: detailViewModel)
-                    } else {
-                        EmptyView()
-                    }
+                    detail
                 })
         }
         #else
@@ -32,20 +26,11 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
             columnVisibility: $columnVisibility,
             sidebar: {},
             content: {
-                VStack {
-                    list
-                        .searchable(text: $viewModel.searchString, placement: .automatic)
-//                      SearchBar(placeholder: "Search", text: $viewModel.searchString)
-//                        .padding(.all, 8)
-                }
-                .navigationSplitViewColumnWidth(min: 350, ideal: 450, max: 550)
+                list
+                    .navigationSplitViewColumnWidth(min: 350, ideal: 450, max: 550)
             },
             detail: {
-                if let requestDetailViewModel {
-                    RequestDetail(viewModel: requestDetailViewModel)
-                } else {
-                    EmptyView()
-                }
+                detail
             }
         )
         .navigationSplitViewStyle(.prominentDetail)
@@ -84,6 +69,17 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
             }
         })
         #endif
+        .searchable(text: $viewModel.searchString, placement: .automatic)
+    }
+
+    private var detail: some View {
+        Group {
+            if let requestDetailViewModel {
+                RequestDetail(viewModel: requestDetailViewModel)
+            } else {
+                EmptyView()
+            }
+        }
     }
 
     private func makeRequestDetailViewModelIfNeeded() {
