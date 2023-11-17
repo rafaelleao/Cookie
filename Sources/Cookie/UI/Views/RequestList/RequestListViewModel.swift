@@ -4,6 +4,9 @@ import Foundation
 @MainActor
 protocol RequestListViewModel: ObservableObject {
     var source: [RequestViewModel] { get }
+
+    var domains: [String] { get }
+    var selectedDomains: Set<String> { get set }
     var searchString: String { get set }
 
     func clearRequests()
@@ -15,6 +18,18 @@ protocol RequestListViewModel: ObservableObject {
 class RequestListViewModelImpl: RequestListViewModel {
     @Published private(set) var source: [RequestViewModel] = []
 
+    var selectedDomains: Set<String> = [] {
+        didSet {
+            Task {
+                let domain = selectedDomains.first
+                await requestFilter.setDomain(domain)
+            }
+        }
+    }
+    private var domainsSet: Set<String> = []
+    var domains: [String] {
+        Array(domainsSet).sorted(by: <)
+    }
     @Published private(set) var title = ""
 
     var searchString: String = "" {
@@ -49,6 +64,11 @@ class RequestListViewModelImpl: RequestListViewModel {
     }
 
     private func publishUpdate(requests: [RequestViewModel], counter: String) {
+        requests.forEach {
+            if let domain = $0.request.domain {
+                domainsSet.insert(domain)
+            }
+        }
         source = requests
         title = "Requests \(counter)"
     }
@@ -63,6 +83,10 @@ extension RequestListViewModelImpl: RequestDelegate {
     func willFireRequest(_ httpRequest: HTTPRequest) {
         Task {
             await requestFilter.prepend(httpRequest: httpRequest)
+            if let domain = httpRequest.domain {
+                assert(httpRequest.urlRequest.url?.host() == domain)
+                domainsSet.insert(domain)
+            }
         }
     }
 
@@ -88,6 +112,7 @@ private protocol RequestFilterDelegate: AnyObject {
 private actor RequestFilter {
     private var requestMap: [(HTTPRequest, RequestViewModel)] = []
     private(set) var searchString: String = ""
+    private(set) var domain: String?
     private(set) weak var delegate: RequestFilterDelegate?
 
     func setDelegate(delegate: RequestFilterDelegate?) {
@@ -96,6 +121,11 @@ private actor RequestFilter {
 
     func setSearchString(_ searchString: String) async {
         self.searchString = searchString
+        await filterResults()
+    }
+
+    func setDomain(_ domain: String?) async {
+        self.domain = domain
         await filterResults()
     }
 
@@ -115,7 +145,7 @@ private actor RequestFilter {
     }
 
     private func filterResults() async {
-        guard !searchString.isEmpty else {
+        guard !searchString.isEmpty || domain != nil else {
             await delegate?.didUpdateResults(requestMap.map { $0.1 }, filteredCount: 0)
             return
         }
@@ -128,12 +158,22 @@ private actor RequestFilter {
                 continue
             }
 
-            urlComponents.query = nil
-            let value = "\(urlComponents)"
-            if value.lowercased().range(of: searchString.lowercased()) != nil {
-                results.append(request.1)
-                await request.1.updateQuery(searchString)
+            if let domain {
+                if domain != request.0.domain {
+                    continue
+                }
             }
+
+            if !searchString.isEmpty {
+                urlComponents.query = nil
+                let value = "\(urlComponents)"
+                if value.lowercased().range(of: searchString.lowercased()) == nil {
+                    continue
+                }
+            }
+
+            results.append(request.1)
+            await request.1.updateQuery(searchString)
         }
         await delegate?.didUpdateResults(results, filteredCount: requestMap.count - results.count)
     }

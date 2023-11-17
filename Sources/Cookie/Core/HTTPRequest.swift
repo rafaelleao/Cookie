@@ -40,6 +40,18 @@ public class HTTPRequest {
         return type
     }
 
+    public var domain: String? {
+        urlComponents?.host
+    }
+
+    private var urlComponents: NSURLComponents? {
+        if let url = urlRequest.url {
+            return NSURLComponents(url: url, resolvingAgainstBaseURL: true)
+        } else {
+            return nil
+        }
+    }
+
     init(request: URLRequest, date: Date = Date()) {
         self.urlRequest = request
         self.requestDate = date

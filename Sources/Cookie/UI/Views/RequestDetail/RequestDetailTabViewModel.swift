@@ -2,7 +2,6 @@ import Combine
 import Foundation
 
 struct SectionData {
-    let id = UUID()
     let title: String
     let pairs: [KeyValuePair]
 }
