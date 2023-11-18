@@ -1,10 +1,10 @@
 import Foundation
 
-public enum HTTPResponse {
+enum HTTPResponse {
     case success(response: HTTPURLResponse, data: Data?)
     case failure(response: HTTPURLResponse?, error: Error?)
 
-    public var urlResponse: HTTPURLResponse? {
+    var urlResponse: HTTPURLResponse? {
         switch self {
         case let .success(response, _):
             return response
@@ -13,7 +13,7 @@ public enum HTTPResponse {
         }
     }
 
-    public var responseData: Data? {
+    var responseData: Data? {
         guard case let .success(_, data) = self else {
             return nil
         }
@@ -21,7 +21,7 @@ public enum HTTPResponse {
         return data
     }
 
-    public var responseString: String? {
+    var responseString: String? {
         guard let responseData else {
             return nil
         }

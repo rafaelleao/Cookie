@@ -1,12 +1,12 @@
 import Combine
 import Foundation
 
-public class HTTPRequest {
-    public let urlRequest: URLRequest
-    public let requestDate: Date
-    @Published public var response: HTTPResponse?
-    public var responseDate: Date?
-    public var requestBodyData: Data? {
+class HTTPRequest {
+    let urlRequest: URLRequest
+    let requestDate: Date
+    @Published var response: HTTPResponse?
+    var responseDate: Date?
+    var requestBodyData: Data? {
         if let httpBody = urlRequest.httpBody {
             return httpBody
         }
@@ -16,7 +16,7 @@ public class HTTPRequest {
         return nil
     }
 
-    public var requestBodyString: String? {
+    var requestBodyString: String? {
         guard let bodyData = requestBodyData else {
             return nil
         }
@@ -28,7 +28,7 @@ public class HTTPRequest {
         return bodyData.toString()
     }
 
-    public var contentType: String? {
+    var contentType: String? {
         guard let headers = response?.urlResponse?.allHeaderFields,
               let contentType = headers["Content-Type"] as? String,
               let type = contentType.components(separatedBy: ";").first, !type.isEmpty
@@ -39,11 +39,11 @@ public class HTTPRequest {
         return type
     }
 
-    public var domain: String? {
+    var domain: String? {
         urlComponents?.host
     }
 
-    private var urlComponents: NSURLComponents? {
+    var urlComponents: NSURLComponents? {
         if let url = urlRequest.url {
             return NSURLComponents(url: url, resolvingAgainstBaseURL: true)
         } else {
@@ -59,7 +59,7 @@ public class HTTPRequest {
 
 @available(macOS 13.0, *)
 extension HTTPRequest: Equatable {
-    public static func == (lhs: HTTPRequest, rhs: HTTPRequest) -> Bool {
+    static func == (lhs: HTTPRequest, rhs: HTTPRequest) -> Bool {
         lhs.urlRequest == rhs.urlRequest && lhs.requestDate == rhs.requestDate
     }
 }
