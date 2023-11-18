@@ -5,7 +5,6 @@ import SwiftUI
 @MainActor
 public class Cookie {
     public static let shared = Cookie()
-    public weak var delegate: RequestDelegate?
     public var settings = Settings()
     public var enabled = false {
         didSet {
@@ -19,19 +18,15 @@ public class Cookie {
         }
     }
 
-    public private(set) var requests = [HTTPRequest]()
-
-    private let queue = DispatchQueue(label: "Cookie")
-    private var openRequests = [Int: HTTPRequest]()
+    let requestRepository = RequestRepository()
     private let coordinator = MainCoordinator()
-    weak var internalDelegate: RequestDelegate?
 
-    public func clearRequests() {
-        requests.removeAll()
+    public func clearRequests() async {
+        await requestRepository.clearRequests()
     }
 
     public func present() {
-        coordinator.present(settings.fullscreen)
+        coordinator.present(settings.fullscreen, requestRepository: requestRepository)
     }
 
     public func dimiss() {
@@ -53,50 +48,60 @@ public class Cookie {
             present()
         }
     }
+}
 
-    private func requestFor(urlRequest: URLRequest, hash: Int) -> HTTPRequest? {
-        openRequests[hash]
+@available(macOS 13.0, *)
+protocol RequestRepositoryDelegate: AnyObject {
+    func requestRepository(_ requestRepository: RequestRepository, didAddRequest httpRequest: HTTPRequest)
+}
+
+@available(macOS 13.0, *)
+actor RequestRepository {
+    private(set) var requests = [HTTPRequest]()
+    private var openRequests = [Int: HTTPRequest]()
+    private weak var delegate: RequestRepositoryDelegate?
+
+    func clearRequests() {
+        requests.removeAll()
+    }
+
+    func setDelegate(_ delegate: RequestRepositoryDelegate) {
+        self.delegate = delegate
+    }
+
+    func addRequest(urlRequest: URLRequest, hash: Int) {
+        let request = HTTPRequest(request: urlRequest)
+        requests.insert(request, at: 0)
+        assert(openRequests[hash] == nil)
+        openRequests[hash] = request
+        delegate?.requestRepository(self, didAddRequest: request)
+    }
+
+    func setResponse(urlRequest: URLRequest, response: HTTPResponse?, hash: Int) {
+        guard let httpRequest = openRequests[hash] else {
+            return
+        }
+        httpRequest.responseDate = Date()
+        httpRequest.response = response
+        openRequests[hash] = nil
     }
 }
 
 @available(macOS 13, *)
 extension Cookie: RequestInterceptorDelegate {
     func shouldFireRequest(urlRequest: URLRequest) -> Bool {
-        delegate?.shouldFireURLRequest(urlRequest) ?? true
+        true
     }
 
     func willFireRequest(urlRequest: URLRequest, hash: Int) {
-        queue.sync {
-            let request = HTTPRequest(request: urlRequest)
-            requests.insert(request, at: 0)
-            assert(openRequests[hash] == nil)
-            openRequests[hash] = request
-            internalDelegate?.willFireRequest(request)
-            delegate?.willFireRequest(request)
+        Task {
+            await requestRepository.addRequest(urlRequest: urlRequest, hash: hash)
         }
     }
 
-    func didReceiveResponse(urlRequest: URLRequest, response: HTTPURLResponse, data: Data?, hash: Int) {
-        queue.sync {
-            if let httpRequest = requestFor(urlRequest: urlRequest, hash: hash) {
-                httpRequest.responseDate = Date()
-                httpRequest.response = HTTPResponse.success(response: response, data: data)
-                internalDelegate?.didCompleteRequest(httpRequest)
-                delegate?.didCompleteRequest(httpRequest)
-                openRequests[hash] = nil
-            }
-        }
-    }
-
-    func didComplete(request urlRequest: URLRequest, response: HTTPURLResponse?, error: Error?, hash: Int) {
-        queue.sync {
-            if let httpRequest = requestFor(urlRequest: urlRequest, hash: hash) {
-                httpRequest.response = HTTPResponse.failure(response: response, error: error)
-                httpRequest.responseDate = Date()
-                internalDelegate?.didCompleteRequest(httpRequest)
-                delegate?.didCompleteRequest(httpRequest)
-                openRequests[hash] = nil
-            }
+    func didComplete(request: URLRequest, response: HTTPResponse, hash: Int) {
+        Task {
+            await requestRepository.setResponse(urlRequest: request, response: response, hash: hash)
         }
     }
 }

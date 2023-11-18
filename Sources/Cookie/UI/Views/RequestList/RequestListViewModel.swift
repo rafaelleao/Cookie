@@ -9,15 +9,16 @@ protocol RequestListViewModel: ObservableObject {
     var selectedDomains: Set<String> { get set }
     var searchString: String { get set }
 
-    func clearRequests()
+    func clearRequests() async
     func dismiss()
 }
 
 @available(macOS 13, *)
 @MainActor
 class RequestListViewModelImpl: RequestListViewModel {
-    @Published private(set) var source: [RequestViewModel] = []
+    let requestRepository: RequestRepository
 
+    @Published private(set) var source: [RequestViewModel] = []
     var selectedDomains: Set<String> = [] {
         didSet {
             Task {
@@ -42,25 +43,26 @@ class RequestListViewModelImpl: RequestListViewModel {
 
     private let requestFilter: RequestFilter = .init()
 
-    init() {
-        setupFilter()
-        Cookie.shared.internalDelegate = self
+    init(requestRepository: RequestRepository) {
+        self.requestRepository = requestRepository
+        Task {
+            await setupFilter()
+        }
     }
 
-    func clearRequests() {
-        Cookie.shared.clearRequests()
-        setupFilter()
+    func clearRequests() async {
+        await requestRepository.clearRequests()
+        await setupFilter()
     }
 
     func dismiss() {
         Cookie.shared.present()
     }
 
-    private func setupFilter() {
-        Task {
-            await self.requestFilter.setDelegate(delegate: self)
-            await self.requestFilter.setRequests(httpRequests: Cookie.shared.requests)
-        }
+    private func setupFilter() async {
+        await self.requestRepository.setDelegate(self)
+        await self.requestFilter.setDelegate(delegate: self)
+        await self.requestFilter.setRequests(httpRequests: requestRepository.requests)
     }
 
     private func publishUpdate(requests: [RequestViewModel], counter: String) {
@@ -75,7 +77,17 @@ class RequestListViewModelImpl: RequestListViewModel {
 }
 
 @available(macOS 13, *)
-extension RequestListViewModelImpl: RequestDelegate {
+extension RequestListViewModelImpl: RequestRepositoryDelegate {
+    func requestRepository(_ requestRepository: RequestRepository, didAddRequest httpRequest: HTTPRequest) {
+        Task {
+            await requestFilter.prepend(httpRequest: httpRequest)
+            if let domain = httpRequest.domain {
+                assert(httpRequest.urlRequest.url?.host() == domain)
+                domainsSet.insert(domain)
+            }
+        }
+    }
+
     func shouldFireURLRequest(_ urlRequest: URLRequest) -> Bool {
         true
     }

@@ -7,12 +7,12 @@ class MainCoordinator {
     private weak var presentingViewController: UIViewController?
 
     @MainActor
-    func present(_ fullscreen: Bool) {
+    func present(_ fullscreen: Bool, requestRepository: RequestRepository) {
         if presentingViewController != nil {
             dismiss()
             return
         }
-        let view = RequestList(viewModel: RequestListViewModelImpl())
+        let view = RequestList(viewModel: RequestListViewModelImpl(requestRepository: requestRepository))
         let viewController = UIHostingController(rootView: view)
         if fullscreen {
             viewController.modalPresentationStyle = .fullScreen
@@ -35,9 +35,9 @@ class MainCoordinator: NSObject {
     private weak var window: NSWindow?
 
     @MainActor
-    func present(_ fullscreen: Bool) {
+    func present(_ fullscreen: Bool, requestRepository: RequestRepository) {
         guard window == nil else { return }
-        let view = RequestList(viewModel: RequestListViewModelImpl())
+        let view = RequestList(viewModel: RequestListViewModelImpl(requestRepository: requestRepository))
         let hostingController = NSHostingController(rootView: view)
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 480, height: 600),

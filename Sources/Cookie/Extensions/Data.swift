@@ -1,6 +1,5 @@
 import Foundation
 
-@available(macOS 13.0, *)
 extension Data {
     private static let bufferSize = 1024
 

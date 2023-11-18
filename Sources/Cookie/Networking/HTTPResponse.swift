@@ -1,6 +1,5 @@
 import Foundation
 
-@available(macOS 13.0, *)
 public enum HTTPResponse {
     case success(response: HTTPURLResponse, data: Data?)
     case failure(response: HTTPURLResponse?, error: Error?)

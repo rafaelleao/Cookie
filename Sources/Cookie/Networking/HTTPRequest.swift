@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 
-@available(macOS 13.0, *)
 public class HTTPRequest {
     public let urlRequest: URLRequest
     public let requestDate: Date

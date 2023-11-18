@@ -3,19 +3,18 @@ import Foundation
 class CookieURLProtocol: URLProtocol {
     private var sessionTask: URLSessionTask?
     private lazy var internalResponseData = Data()
+    private static var requestInterceptor = RequestInterceptor.shared
     private lazy var session: URLSession = {
-        let configuration = RequestInterceptor.shared.configuration
-        return URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
+        URLSession(configuration: Self.requestInterceptor.configuration, delegate: self, delegateQueue: nil)
     }()
 
     private class func shouldIntercept(request: URLRequest) -> Bool {
-        guard let scheme = request.url?.scheme,
-              ["http", "https"].contains(scheme)
+        guard let scheme = request.url?.scheme, ["http", "https"].contains(scheme)
         else {
             return false
         }
 
-        return RequestInterceptor.shared.shouldInterceptRequest(request)
+        return requestInterceptor.shouldInterceptRequest(request)
     }
 
     override class func canInit(with task: URLSessionTask) -> Bool {
@@ -35,7 +34,7 @@ class CookieURLProtocol: URLProtocol {
 
     override func startLoading() {
         sessionTask = session.dataTask(with: request)
-        RequestInterceptor.shared.willFireRequest(request, hash: hash)
+        Self.requestInterceptor.willFireRequest(request, hash: hash)
         sessionTask?.resume()
     }
 
@@ -48,7 +47,7 @@ class CookieURLProtocol: URLProtocol {
 extension CookieURLProtocol: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error {
-            RequestInterceptor.shared.didComplete(
+            Self.requestInterceptor.didComplete(
                 request: request,
                 response: task.response as? HTTPURLResponse,
                 error: error,
@@ -60,7 +59,7 @@ extension CookieURLProtocol: URLSessionDataDelegate {
                 client?.urlProtocol(self, didFailWithError: NSError(domain: "CookieURLProtocol", code: -1))
                 return
             }
-            RequestInterceptor.shared.didReceiveResponse(
+            Self.requestInterceptor.didReceiveResponse(
                 urlRequest: request,
                 response: response,
                 data: internalResponseData,

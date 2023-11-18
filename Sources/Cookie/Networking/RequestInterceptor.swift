@@ -1,5 +1,11 @@
 import Foundation
 
+protocol RequestInterceptorDelegate: AnyObject {
+    func shouldFireRequest(urlRequest: URLRequest) -> Bool
+    func willFireRequest(urlRequest: URLRequest, hash: Int)
+    func didComplete(request: URLRequest, response: HTTPResponse, hash: Int)
+}
+
 class RequestInterceptor {
     static let shared = RequestInterceptor()
     let configuration: URLSessionConfiguration
@@ -31,11 +37,11 @@ class RequestInterceptor {
     }
 
     func didReceiveResponse(urlRequest: URLRequest, response: HTTPURLResponse, data: Data, hash: Int) {
-        delegate?.didReceiveResponse(urlRequest: urlRequest, response: response, data: data, hash: hash)
+        delegate?.didComplete(request: urlRequest, response: .success(response: response, data: data), hash: hash)
     }
 
     func didComplete(request: URLRequest, response: HTTPURLResponse?, error: Error?, hash: Int) {
-        delegate?.didComplete(request: request, response: response, error: error, hash: hash)
+        delegate?.didComplete(request: request, response: .failure(response: response, error: error), hash: hash)
     }
 
     // swiftlint:disable force_unwrapping
