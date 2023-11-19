@@ -57,6 +57,12 @@ extension CookieURLProtocol: URLSessionDataDelegate {
         } else {
             guard let response = task.response as? HTTPURLResponse else {
                 client?.urlProtocol(self, didFailWithError: NSError(domain: "CookieURLProtocol", code: -1))
+                Self.requestInterceptor.didComplete(
+                    request: request,
+                    response: nil,
+                    error: nil,
+                    hash: hash
+                )
                 return
             }
             Self.requestInterceptor.didReceiveResponse(

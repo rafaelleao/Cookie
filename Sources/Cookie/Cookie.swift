@@ -20,6 +20,7 @@ public class Cookie {
 
     let requestRepository = RequestRepository()
     private let coordinator = MainCoordinator()
+    private let requestInterceptor = RequestInterceptor.shared
 
     public func clearRequests() async {
         await requestRepository.clearRequests()
@@ -34,13 +35,13 @@ public class Cookie {
     }
 
     private func enable() {
-        RequestInterceptor.shared.delegate = self
-        RequestInterceptor.shared.activate()
+        requestInterceptor.delegate = self
+        requestInterceptor.activate()
     }
 
     private func disable() {
-        RequestInterceptor.shared.delegate = nil
-        RequestInterceptor.shared.deactivate()
+        requestInterceptor.delegate = nil
+        requestInterceptor.deactivate()
     }
 
     func handleShake() {

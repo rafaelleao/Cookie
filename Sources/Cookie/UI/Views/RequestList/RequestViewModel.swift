@@ -2,6 +2,12 @@ import Combine
 import Foundation
 import SwiftUI
 
+enum RequestStatus {
+    case loading
+    case completed(statusCode: Int)
+    case error
+}
+
 @available(macOS 13, *)
 @MainActor
 class RequestViewModel: ObservableObject {
