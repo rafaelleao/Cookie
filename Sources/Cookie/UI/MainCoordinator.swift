@@ -8,7 +8,7 @@ class MainCoordinator {
     private weak var presentingViewController: UIViewController?
 
     @MainActor
-    func present(_ fullscreen: Bool, requestRepository: RequestRepositoryImpl) {
+    func present(_ fullscreen: Bool, requestRepository: RequestRepository) {
         if presentingViewController != nil {
             dismiss()
             return
@@ -37,7 +37,7 @@ class MainCoordinator: NSObject {
     private weak var window: NSWindow?
 
     @MainActor
-    func present(_ fullscreen: Bool, requestRepository: RequestRepositoryImpl) {
+    func present(_ fullscreen: Bool, requestRepository: RequestRepository) {
         guard window == nil else { return }
         let view = RequestList(viewModel: RequestListViewModelImpl(requestRepository: requestRepository))
         let hostingController = NSHostingController(rootView: view)

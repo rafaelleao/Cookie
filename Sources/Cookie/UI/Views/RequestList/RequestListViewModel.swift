@@ -191,7 +191,11 @@ private actor RequestFilter {
 
     private func filterResults() async {
         guard !searchString.isEmpty || domain != nil else {
-            await delegate?.didUpdateResults(requestMap.map { $0.1 }, filteredCount: 0)
+            let results = await requestMap.asyncMap {
+                await $0.1.updateQuery(searchString)
+                return $0.1
+            }
+            await delegate?.didUpdateResults(results, filteredCount: 0)
             return
         }
 
@@ -221,5 +225,17 @@ private actor RequestFilter {
             await request.1.updateQuery(searchString)
         }
         await delegate?.didUpdateResults(results, filteredCount: requestMap.count - results.count)
+    }
+}
+
+private extension Sequence {
+    func asyncMap<T>(_ transform: (Element) async throws -> T) async rethrows -> [T] {
+        var values = [T]()
+
+        for element in self {
+            try await values.append(transform(element))
+        }
+
+        return values
     }
 }

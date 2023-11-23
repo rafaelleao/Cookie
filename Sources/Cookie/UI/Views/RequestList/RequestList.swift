@@ -115,6 +115,8 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
     }
 }
 
+#if DEBUG
+
 @available(iOS 16.0, *)
 @available(macOS 13, *)
 class RequestListViewModelMock: RequestListViewModel {
@@ -153,20 +155,34 @@ final actor RequestRepositoryMock: RequestRepository {
 @available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestList_Previews: PreviewProvider {
+    static let requests = [
+        TestRequest.testRequest,
+        TestRequest.completedTestRequest,
+        TestRequest.serverErrorRequest,
+        TestRequest.failedRequest,
+    ]
+
+    @available(iOS 16.0, *)
     private static func makePreview() -> some View {
-        let requests = [
-            TestRequest.testRequest,
-            TestRequest.completedTestRequest,
-            TestRequest.serverErrorRequest,
-            TestRequest.failedRequest,
-        ]
+        RequestList(viewModel: makeViewModel())
+    }
+
+    private static func makeViewModel() -> some RequestListViewModel {
+        #if os(iOS)
+        let repository = RequestRepositoryMock()
+        let viewModel = RequestListViewModelImpl(requestRepository: repository)
+        Task {
+            await repository.setRequests(requests)
+        }
+        return viewModel
+        #else
         let source = requests.map { RequestViewModel(request: $0) }
-        let viewModel = RequestListViewModelMock(
-            source: source)
+        let viewModel = RequestListViewModelMock(source: source)
         requests.compactMap { $0.domain }.forEach {
             viewModel.requestToolbarViewModel.domainsSet.insert($0)
         }
-        return RequestList(viewModel: viewModel)
+        return viewModel
+        #endif
     }
 
     static var previews: some View {
@@ -178,3 +194,5 @@ struct RequestList_Previews: PreviewProvider {
         }
     }
 }
+
+#endif
