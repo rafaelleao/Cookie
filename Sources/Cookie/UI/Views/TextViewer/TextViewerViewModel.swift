@@ -35,7 +35,7 @@ class TextViewerViewModel: ObservableObject {
     }
 
     var font: Font {
-        .system(size: CGFloat(currentFontSize))
+        .system(size: CGFloat(currentFontSize), design: .monospaced)
     }
 
     init(text: String, filename: String) {

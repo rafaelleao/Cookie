@@ -7,8 +7,12 @@ struct TextViewer: View {
 
     var body: some View {
         contentView
-//            .searchable(text: $viewModel.searchText, placement: .automatic)
-//                .autocapitalization(.none)
+        #if os(iOS)
+        .searchable(text: $viewModel.searchText, placement: .automatic)
+        .autocapitalization(.none)
+        .navigationTitle(viewModel.filename)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
     }
 
     private var contentView: some View {
@@ -25,10 +29,14 @@ struct TextViewer: View {
                 Text("Content clipped. File is too large.")
                     .italic()
             }
+            #if os(macOS)
             SearchBar(placeholder: "Search", text: $viewModel.searchText)
+            #endif
         })
         .padding()
-//        .navigationBarItems(trailing: navigationBarItems)
+        #if os(iOS)
+            .navigationBarItems(trailing: navigationBarItems)
+        #endif
     }
 
     private var text: Text {
@@ -60,7 +68,9 @@ struct TextViewer: View {
 @available(macOS 13, *)
 struct TextViewer_Previews: PreviewProvider {
     static var previews: some View {
-        TextViewer(viewModel: testViewModel())
+        NavigationStack {
+            TextViewer(viewModel: testViewModel())
+        }
     }
 
     static func testViewModel() -> TextViewerViewModel {

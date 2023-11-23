@@ -25,16 +25,27 @@ struct RequestDetailTab: View, Identifiable {
                 }
             }
 
+            #if os(iOS)
+            if let action = viewModel.action {
+                NavigationLink(destination:
+                    TextViewer(viewModel: action.handler())
+                ) {
+                    Text(action.title)
+                        .bold()
+                }
+                .padding()
+                .searchable(text: $viewModel.searchText, prompt: "Search")
+            }
+            #else
             if let textViewerViewModel = viewModel.textViewerViewModel {
                 TextViewer(viewModel: textViewerViewModel)
             }
+            #endif
         }
-//        .searchable(text: $viewModel.searchText, prompt: "Search")
         .tabItem {
             Image(systemName: viewModel.image)
             Text(viewModel.title)
         }
-//        .listStyle(GroupedListStyle())
     }
 }
 
@@ -66,15 +77,23 @@ struct RequestDetailTab_Previews: PreviewProvider {
 
     static var previews: some View {
         Group {
-            makeSummaryPreview()
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Summary")
-            makeRequestPreview()
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Request")
-            makeResponsePreview()
-                .previewLayout(.sizeThatFits)
-                .previewDisplayName("Response")
+            NavigationStack {
+                makeSummaryPreview()
+            }
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Summary")
+
+            NavigationStack {
+                makeRequestPreview()
+            }
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Request")
+
+            NavigationStack {
+                makeResponsePreview()
+            }
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Response")
         }
     }
 }

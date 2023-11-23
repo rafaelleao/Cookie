@@ -16,7 +16,12 @@ struct RequestDetail: View {
             .pickerStyle(.segmented)
 
             RequestDetailTab(viewModel: viewModel.childViewModel)
-//                .searchable(text: $viewModel.searchText, prompt: "Search")
+            #if os(iOS)
+                .searchable(text: $viewModel.searchText, prompt: "Search")
+                .autocapitalization(.none)
+                .navigationTitle(viewModel.title)
+                .navigationBarTitleDisplayMode(.inline)
+            #endif
         }
     }
 }
@@ -25,6 +30,8 @@ struct RequestDetail: View {
 @available(macOS 13, *)
 struct RequestDetail_Previews: PreviewProvider {
     static var previews: some View {
-        RequestDetail(viewModel: RequestDetailViewModel(request: TestRequest.completedTestRequest))
+        NavigationStack {
+            RequestDetail(viewModel: RequestDetailViewModel(request: TestRequest.completedTestRequest))
+        }
     }
 }
