@@ -5,7 +5,7 @@ class CookieURLProtocol: URLProtocol {
     private var sessionTask: URLSessionTask?
     private lazy var internalResponseData = Data()
     private static var requestInterceptor = RequestInterceptor.shared
-    private lazy var session: URLSession = URLSession(configuration: Self.requestInterceptor.configuration, delegate: self, delegateQueue: nil)
+    private lazy var session: URLSession = .init(configuration: Self.requestInterceptor.configuration, delegate: self, delegateQueue: nil)
 
     private class func shouldIntercept(request: URLRequest) -> Bool {
         guard let scheme = request.url?.scheme, ["http", "https"].contains(scheme)

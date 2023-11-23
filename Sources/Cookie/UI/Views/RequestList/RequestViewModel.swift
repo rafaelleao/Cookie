@@ -8,6 +8,7 @@ enum RequestStatus {
     case error
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 @MainActor
 class RequestViewModel: ObservableObject {
@@ -102,9 +103,11 @@ class RequestViewModel: ObservableObject {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 extension RequestViewModel: Identifiable {}
 
+@available(iOS 16.0, *)
 @available(macOS 13.0, *)
 extension HTTPRequest {
     var string: String? {

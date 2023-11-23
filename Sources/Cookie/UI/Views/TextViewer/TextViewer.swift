@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct TextViewer: View {
     @ObservedObject var viewModel: TextViewerViewModel
@@ -55,6 +56,7 @@ struct TextViewer: View {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct TextViewer_Previews: PreviewProvider {
     static var previews: some View {

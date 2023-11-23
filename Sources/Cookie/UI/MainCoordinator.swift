@@ -3,6 +3,7 @@ import SwiftUI
 
 #if os(iOS)
 
+@available(iOS 16.0, *)
 class MainCoordinator {
     private weak var presentingViewController: UIViewController?
 
@@ -13,6 +14,7 @@ class MainCoordinator {
             return
         }
         let view = RequestList(viewModel: RequestListViewModelImpl(requestRepository: requestRepository))
+
         let viewController = UIHostingController(rootView: view)
         if fullscreen {
             viewController.modalPresentationStyle = .fullScreen

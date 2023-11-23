@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestRow: View {
     @ObservedObject var viewModel: RequestViewModel
@@ -43,6 +44,7 @@ struct RequestRow: View {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RoundedLabel: ViewModifier {
     let backgroundColor: Color
@@ -56,6 +58,7 @@ struct RoundedLabel: ViewModifier {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestRow_Previews: PreviewProvider {
     private static func makePreview() -> some View {

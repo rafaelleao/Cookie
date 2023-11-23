@@ -8,7 +8,9 @@ extension UIWindow {
            event.type == .motion,
            event.subtype == .motionShake
         {
-            Cookie.shared.handleShake()
+            if #available(iOS 16.0, *) {
+                Cookie.shared.handleShake()
+            }
         }
         super.motionEnded(motion, with: event)
     }

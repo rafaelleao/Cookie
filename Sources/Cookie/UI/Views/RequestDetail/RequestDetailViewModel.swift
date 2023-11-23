@@ -1,5 +1,6 @@
 import Combine
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 class RequestDetailViewModel: ObservableObject {
     let request: HTTPRequest
@@ -54,6 +55,7 @@ class RequestDetailViewModel: ObservableObject {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 extension RequestDetailViewModel: RequestDetailTabViewModelDelegate {
     func showText(viewModel: TextViewerViewModel) {}

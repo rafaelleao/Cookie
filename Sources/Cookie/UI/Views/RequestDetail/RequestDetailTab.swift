@@ -1,6 +1,7 @@
 import Combine
 import SwiftUI
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestDetailTab: View, Identifiable {
     var id = UUID()
@@ -37,6 +38,7 @@ struct RequestDetailTab: View, Identifiable {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestDetailTab_Previews: PreviewProvider {
     static let request = TestRequest.completedTestRequest

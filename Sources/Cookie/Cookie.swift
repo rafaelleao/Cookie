@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 @MainActor
 public class Cookie {

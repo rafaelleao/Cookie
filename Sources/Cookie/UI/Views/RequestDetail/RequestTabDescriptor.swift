@@ -1,5 +1,6 @@
 import Foundation
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 class RequestTabDescriptor: TabDescriptor {
     let request: HTTPRequest

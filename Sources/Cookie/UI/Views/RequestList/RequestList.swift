@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestList<ViewModel: RequestListViewModel>: View {
     @ObservedObject var viewModel: ViewModel
@@ -81,7 +82,9 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
             ToolbarItemGroup(placement: .navigation) {
                 Spacer(minLength: 20.0)
                 Button(action: {
-                    viewModel.clearRequests()
+                    Task {
+                        await viewModel.clearRequests()
+                    }
                 }, label: {
                     Image(systemName: "trash")
                 })
@@ -112,6 +115,7 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 class RequestListViewModelMock: RequestListViewModel {
     var requestToolbarViewModel: RequestToolbarViewModel = RequestToolbarViewModel()
@@ -132,6 +136,7 @@ class RequestListViewModelMock: RequestListViewModel {
     func dismiss() {}
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13.0, *)
 final actor RequestRepositoryMock: RequestRepository {
     var requests: [HTTPRequest] = []
@@ -145,6 +150,7 @@ final actor RequestRepositoryMock: RequestRepository {
     func clearRequests() {}
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestList_Previews: PreviewProvider {
     private static func makePreview() -> some View {

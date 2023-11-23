@@ -1,10 +1,12 @@
 import Foundation
 
+@available(iOS 16.0, *)
 @available(macOS 13.0, *)
 protocol RequestRepositoryDelegate: AnyObject {
     func requestRepository(_ requestRepository: RequestRepository, didAddRequest httpRequest: HTTPRequest)
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13.0, *)
 protocol RequestRepository: Actor {
     var requests: [HTTPRequest] { get }
@@ -12,6 +14,7 @@ protocol RequestRepository: Actor {
     func clearRequests()
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13.0, *)
 actor RequestRepositoryImpl: RequestRepository {
     private(set) var requests = [HTTPRequest]()
@@ -44,6 +47,7 @@ actor RequestRepositoryImpl: RequestRepository {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 extension Cookie: RequestInterceptorDelegate {
     func shouldFireRequest(urlRequest: URLRequest) -> Bool {

@@ -12,11 +12,13 @@ extension SectionData: Hashable {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 protocol RequestDetailTabViewModelDelegate: AnyObject {
     func showText(viewModel: TextViewerViewModel)
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 protocol TabDescriptor {
     init(request: HTTPRequest)
@@ -28,6 +30,7 @@ protocol TabDescriptor {
     func action() -> Action?
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 class Action {
     let title: String
@@ -39,6 +42,7 @@ class Action {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 class RequestDetailTabViewModel: ObservableObject {
     weak var delegate: RequestDetailTabViewModelDelegate?

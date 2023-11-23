@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestDetailRow: View {
     @ObservedObject var viewModel: RequestDetailRowViewModel
@@ -16,6 +17,7 @@ struct RequestDetailRow: View {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestDetailRow_Previews: PreviewProvider {
     static var previews: some View {

@@ -1,5 +1,6 @@
 import Foundation
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 @MainActor
 protocol RequestListViewModel: ObservableObject {
@@ -11,14 +12,17 @@ protocol RequestListViewModel: ObservableObject {
     func dismiss()
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 typealias Domain = AttributedString
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 protocol RequestToolbarViewModelDelegate: AnyObject {
     func requestToolbarViewModel(_ viewModel: RequestToolbarViewModel, didSelectDomain domain: String?)
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 @MainActor
 class RequestToolbarViewModel: ObservableObject {
@@ -53,6 +57,7 @@ class RequestToolbarViewModel: ObservableObject {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 @MainActor
 final class RequestListViewModelImpl: RequestListViewModel {
@@ -107,6 +112,7 @@ final class RequestListViewModelImpl: RequestListViewModel {
 }
 
 @available(macOS 13, *)
+@available(iOS 16.0, *)
 extension RequestListViewModelImpl: RequestRepositoryDelegate {
     func requestRepository(_ requestRepository: RequestRepository, didAddRequest httpRequest: HTTPRequest) {
         Task {
@@ -119,6 +125,7 @@ extension RequestListViewModelImpl: RequestRepositoryDelegate {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 extension RequestListViewModelImpl: RequestFilterDelegate {
     func didUpdateResults(_ viewModels: [RequestViewModel], filteredCount: Int) {
@@ -128,6 +135,7 @@ extension RequestListViewModelImpl: RequestFilterDelegate {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 extension RequestListViewModelImpl: RequestToolbarViewModelDelegate {
     func requestToolbarViewModel(_ viewModel: RequestToolbarViewModel, didSelectDomain domain: String?) {
@@ -137,12 +145,14 @@ extension RequestListViewModelImpl: RequestToolbarViewModelDelegate {
     }
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 @MainActor
 private protocol RequestFilterDelegate: AnyObject {
     func didUpdateResults(_ viewModels: [RequestViewModel], filteredCount: Int)
 }
 
+@available(iOS 16.0, *)
 @available(macOS 13, *)
 private actor RequestFilter {
     private var requestMap: [(HTTPRequest, RequestViewModel)] = []
