@@ -1,11 +1,13 @@
 import Foundation
 
+@available(macOS 10.15, *)
 protocol RequestInterceptorDelegate: AnyObject {
     func shouldFireRequest(urlRequest: URLRequest) -> Bool
     func willFireRequest(urlRequest: URLRequest, hash: Int)
     func didComplete(request: URLRequest, response: HTTPResponse, hash: Int)
 }
 
+@available(macOS 10.15, *)
 class RequestInterceptor {
     static let shared = RequestInterceptor()
     let configuration: URLSessionConfiguration
@@ -63,6 +65,7 @@ class RequestInterceptor {
     // swiftlint:enable force_unwrapping
 }
 
+@available(macOS 10.15, *)
 extension URLSessionConfiguration {
     @objc func fakeProtocolClasses() -> [AnyClass]? {
         guard let fakeProtocolClasses = fakeProtocolClasses() else {

@@ -52,7 +52,6 @@ struct SearchBar: View {
 
 @available(macOS 13, *)
 struct SearchBar_Previews: PreviewProvider {
-
     static var previews: some View {
         Group {
             SearchBar(placeholder: "Search", text: .constant(""))

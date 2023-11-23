@@ -4,9 +4,7 @@ import Foundation
 @MainActor
 protocol RequestListViewModel: ObservableObject {
     var source: [RequestViewModel] { get }
-
-    var domains: [String] { get }
-    var selectedDomains: Set<String> { get set }
+    var requestToolbarViewModel: RequestToolbarViewModel { get set }
     var searchString: String { get set }
 
     func clearRequests() async
@@ -14,24 +12,55 @@ protocol RequestListViewModel: ObservableObject {
 }
 
 @available(macOS 13, *)
+typealias Domain = AttributedString
+
+@available(macOS 13, *)
+protocol RequestToolbarViewModelDelegate: AnyObject {
+    func requestToolbarViewModel(_ viewModel: RequestToolbarViewModel, didSelectDomain domain: String?)
+}
+
+@available(macOS 13, *)
 @MainActor
-class RequestListViewModelImpl: RequestListViewModel {
+class RequestToolbarViewModel: ObservableObject {
+    var selectedDomains: Set<Domain> = [] {
+        didSet {
+            var domain: String?
+            if let selectedDomain = selectedDomains.first {
+                domain = String(selectedDomain.characters)
+            }
+            delegate?.requestToolbarViewModel(self, didSelectDomain: domain)
+        }
+    }
+
+    weak var delegate: RequestToolbarViewModelDelegate?
+    var domainsSet: Set<String> = []
+    var domains: [Domain] {
+        var container = AttributeContainer()
+        container.font = .boldSystemFont(ofSize: 14)
+        var items = Array(domainsSet)
+        if !toolbarFilter.isEmpty {
+            items = items.filter { $0.lowercased().range(of: toolbarFilter) != nil }
+        }
+        return items.sorted(by: <).map {
+            AttributedString($0, highlightedString: toolbarFilter, attributeContainer: container)
+        }
+    }
+
+    var toolbarFilter: String = "" {
+        didSet {
+            objectWillChange.send()
+        }
+    }
+}
+
+@available(macOS 13, *)
+@MainActor
+final class RequestListViewModelImpl: RequestListViewModel {
     let requestRepository: RequestRepository
 
     @Published private(set) var source: [RequestViewModel] = []
-    var selectedDomains: Set<String> = [] {
-        didSet {
-            Task {
-                let domain = selectedDomains.first
-                await requestFilter.setDomain(domain)
-            }
-        }
-    }
-    private var domainsSet: Set<String> = []
-    var domains: [String] {
-        Array(domainsSet).sorted(by: <)
-    }
     @Published private(set) var title = ""
+    @Published var requestToolbarViewModel: RequestToolbarViewModel = RequestToolbarViewModel()
 
     var searchString: String = "" {
         didSet {
@@ -45,6 +74,7 @@ class RequestListViewModelImpl: RequestListViewModel {
 
     init(requestRepository: RequestRepository) {
         self.requestRepository = requestRepository
+        requestToolbarViewModel.delegate = self
         Task {
             await setupFilter()
         }
@@ -60,15 +90,15 @@ class RequestListViewModelImpl: RequestListViewModel {
     }
 
     private func setupFilter() async {
-        await self.requestRepository.setDelegate(self)
-        await self.requestFilter.setDelegate(delegate: self)
-        await self.requestFilter.setRequests(httpRequests: requestRepository.requests)
+        await requestRepository.setDelegate(self)
+        await requestFilter.setDelegate(delegate: self)
+        await requestFilter.setRequests(httpRequests: requestRepository.requests)
     }
 
     private func publishUpdate(requests: [RequestViewModel], counter: String) {
         requests.forEach {
             if let domain = $0.request.domain {
-                domainsSet.insert(domain)
+                requestToolbarViewModel.domainsSet.insert(domain)
             }
         }
         source = requests
@@ -83,26 +113,10 @@ extension RequestListViewModelImpl: RequestRepositoryDelegate {
             await requestFilter.prepend(httpRequest: httpRequest)
             if let domain = httpRequest.domain {
                 assert(httpRequest.urlRequest.url?.host() == domain)
-                domainsSet.insert(domain)
+                requestToolbarViewModel.domainsSet.insert(domain)
             }
         }
     }
-
-    func shouldFireURLRequest(_ urlRequest: URLRequest) -> Bool {
-        true
-    }
-
-    func willFireRequest(_ httpRequest: HTTPRequest) {
-        Task {
-            await requestFilter.prepend(httpRequest: httpRequest)
-            if let domain = httpRequest.domain {
-                assert(httpRequest.urlRequest.url?.host() == domain)
-                domainsSet.insert(domain)
-            }
-        }
-    }
-
-    func didCompleteRequest(_ httpRequest: HTTPRequest) {}
 }
 
 @available(macOS 13, *)
@@ -111,6 +125,15 @@ extension RequestListViewModelImpl: RequestFilterDelegate {
         let totalCount = "\(viewModels.count + filteredCount)"
         let counter = filteredCount == 0 ? totalCount : "\(viewModels.count) / " + totalCount
         publishUpdate(requests: viewModels, counter: counter)
+    }
+}
+
+@available(macOS 13, *)
+extension RequestListViewModelImpl: RequestToolbarViewModelDelegate {
+    func requestToolbarViewModel(_ viewModel: RequestToolbarViewModel, didSelectDomain domain: String?) {
+        Task {
+            await requestFilter.setDomain(domain)
+        }
     }
 }
 

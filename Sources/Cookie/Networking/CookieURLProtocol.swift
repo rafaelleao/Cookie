@@ -1,12 +1,11 @@
 import Foundation
 
+@available(macOS 10.15, *)
 class CookieURLProtocol: URLProtocol {
     private var sessionTask: URLSessionTask?
     private lazy var internalResponseData = Data()
     private static var requestInterceptor = RequestInterceptor.shared
-    private lazy var session: URLSession = {
-        URLSession(configuration: Self.requestInterceptor.configuration, delegate: self, delegateQueue: nil)
-    }()
+    private lazy var session: URLSession = URLSession(configuration: Self.requestInterceptor.configuration, delegate: self, delegateQueue: nil)
 
     private class func shouldIntercept(request: URLRequest) -> Bool {
         guard let scheme = request.url?.scheme, ["http", "https"].contains(scheme)
@@ -44,6 +43,7 @@ class CookieURLProtocol: URLProtocol {
     }
 }
 
+@available(macOS 10.15, *)
 extension CookieURLProtocol: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error {

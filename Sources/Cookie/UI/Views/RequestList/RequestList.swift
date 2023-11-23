@@ -3,7 +3,6 @@ import SwiftUI
 @available(macOS 13, *)
 struct RequestList<ViewModel: RequestListViewModel>: View {
     @ObservedObject var viewModel: ViewModel
-    @State private var selectedDomains: Set<String> = []
     @State private var selectedRequest: HTTPRequest? {
         didSet {
             makeRequestDetailViewModelIfNeeded()
@@ -44,9 +43,20 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
     }
 
     private var sidebar: some View {
-        List(viewModel.domains, id: \.self, selection: $viewModel.selectedDomains) { domain in
-            Text(domain)
-        }
+        VStack(alignment: .leading, content: {
+            HStack {
+                Label("Domains", systemImage: "chevron.down")
+                Text("\(viewModel.requestToolbarViewModel.domains.count)")
+                    .bold()
+                    .foregroundColor(.white)
+                    .modifier(RoundedLabel(backgroundColor: .gray))
+            }
+            List(viewModel.requestToolbarViewModel.domains, id: \.self, selection: $viewModel.requestToolbarViewModel.selectedDomains) { domain in
+                Text(domain)
+            }
+            SearchBar(placeholder: "Filter", text: $viewModel.requestToolbarViewModel.toolbarFilter)
+        })
+        .padding(8)
     }
 
     private var list: some View {
@@ -104,16 +114,14 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
 
 @available(macOS 13, *)
 class RequestListViewModelMock: RequestListViewModel {
-    var selectedDomains: Set<String> = []
+    var requestToolbarViewModel: RequestToolbarViewModel = RequestToolbarViewModel()
     var source: [RequestViewModel]
-    var domains: [String]
     var searchString: String
     var textViewModel: TextViewerViewModel?
 
     init(source: [RequestViewModel], searchString: String = "") {
         self.source = source
         self.searchString = searchString
-        self.domains = Array(Set(source.compactMap { $0.request.domain }))
     }
 
     func clearRequests() {
@@ -124,17 +132,34 @@ class RequestListViewModelMock: RequestListViewModel {
     func dismiss() {}
 }
 
+@available(macOS 13.0, *)
+final actor RequestRepositoryMock: RequestRepository {
+    var requests: [HTTPRequest] = []
+
+    func setRequests(_ requests: [HTTPRequest]) async {
+        self.requests = requests
+    }
+
+    func setDelegate(_ delegate: RequestRepositoryDelegate) {}
+
+    func clearRequests() {}
+}
+
 @available(macOS 13, *)
 struct RequestList_Previews: PreviewProvider {
     private static func makePreview() -> some View {
-        let source = [
+        let requests = [
             TestRequest.testRequest,
             TestRequest.completedTestRequest,
             TestRequest.serverErrorRequest,
             TestRequest.failedRequest,
-        ].map { RequestViewModel(request: $0) }
+        ]
+        let source = requests.map { RequestViewModel(request: $0) }
         let viewModel = RequestListViewModelMock(
             source: source)
+        requests.compactMap { $0.domain }.forEach {
+            viewModel.requestToolbarViewModel.domainsSet.insert($0)
+        }
         return RequestList(viewModel: viewModel)
     }
 

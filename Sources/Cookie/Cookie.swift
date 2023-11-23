@@ -18,7 +18,7 @@ public class Cookie {
         }
     }
 
-    let requestRepository = RequestRepository()
+    let requestRepository = RequestRepositoryImpl()
     private let coordinator = MainCoordinator()
     private let requestInterceptor = RequestInterceptor.shared
 

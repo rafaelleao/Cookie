@@ -6,7 +6,14 @@ protocol RequestRepositoryDelegate: AnyObject {
 }
 
 @available(macOS 13.0, *)
-actor RequestRepository {
+protocol RequestRepository: Actor {
+    var requests: [HTTPRequest] { get }
+    func setDelegate(_ delegate: RequestRepositoryDelegate)
+    func clearRequests()
+}
+
+@available(macOS 13.0, *)
+actor RequestRepositoryImpl: RequestRepository {
     private(set) var requests = [HTTPRequest]()
     private var openRequests = [Int: HTTPRequest]()
     private weak var delegate: RequestRepositoryDelegate?
