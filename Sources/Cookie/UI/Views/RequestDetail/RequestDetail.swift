@@ -7,13 +7,20 @@ struct RequestDetail: View {
 
     var body: some View {
         VStack {
-            Picker("", selection: $viewModel.segmentationSelection) {
-                ForEach(viewModel.tabDescriptors, id: \.title) { descriptor in
-                    Text(descriptor.title)
+            HStack {
+                Picker("", selection: $viewModel.segmentationSelection) {
+                    ForEach(viewModel.tabDescriptors, id: \.title) { descriptor in
+                        Text(descriptor.title)
+                    }
                 }
+                .padding()
+                .pickerStyle(.segmented)
+
+                #if os(macOS)
+                    SearchBar(placeholder: "Search", text: $viewModel.searchText)
+                    .padding()
+                #endif
             }
-            .padding()
-            .pickerStyle(.segmented)
 
             RequestDetailTab(viewModel: viewModel.childViewModel)
             #if os(iOS)
