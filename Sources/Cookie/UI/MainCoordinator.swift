@@ -47,6 +47,7 @@ class MainCoordinator: NSObject {
             backing: .buffered,
             defer: false
         )
+        window.isReleasedWhenClosed = false
         window.contentViewController = hostingController
         window.setFrameAutosaveName("Cookie Window")
         window.center()
