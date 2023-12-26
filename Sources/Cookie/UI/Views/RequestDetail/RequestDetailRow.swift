@@ -7,10 +7,10 @@ struct RequestDetailRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10, content: {
-            Text(viewModel.attributedTitle)
+            Text(viewModel.title)
                 .font(.system(.headline, design: .monospaced))
                 .textSelection(.enabled)
-            Text(viewModel.attributedSubtitle)
+            Text(viewModel.subtitle)
                 .font(.system(.subheadline, design: .monospaced))
                 .textSelection(.enabled)
         })

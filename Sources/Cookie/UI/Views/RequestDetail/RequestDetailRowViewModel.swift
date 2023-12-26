@@ -12,19 +12,11 @@ class RequestDetailRowViewModel: ObservableObject {
         self.searchText = searchText
     }
 
-    private var title: String {
-        pair.key
+    var title: AttributedString {
+        AttributedString(pair.key, highlightedString: searchText)
     }
 
-    private var subtitle: String {
-        pair.value ?? ""
-    }
-
-    var attributedTitle: AttributedString {
-        AttributedString(title, highlightedString: searchText)
-    }
-
-    var attributedSubtitle: AttributedString {
-        AttributedString(subtitle, highlightedString: searchText)
+    var subtitle: AttributedString {
+        AttributedString(pair.value ?? "", highlightedString: searchText)
     }
 }

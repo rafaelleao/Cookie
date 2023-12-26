@@ -43,7 +43,7 @@ class RequestToolbarViewModel: ObservableObject {
         container.font = .boldSystemFont(ofSize: 14)
         var items = Array(domainsSet)
         if !toolbarFilter.isEmpty {
-            items = items.filter { $0.lowercased().range(of: toolbarFilter) != nil }
+            items = items.filter { $0.contains(toolbarFilter) }
         }
         return items.sorted(by: <).map {
             AttributedString($0, highlightedString: toolbarFilter, attributeContainer: container)
@@ -216,7 +216,7 @@ private actor RequestFilter {
             if !searchString.isEmpty {
                 urlComponents.query = nil
                 let value = "\(urlComponents)"
-                if value.lowercased().range(of: searchString.lowercased()) == nil {
+                if !value.contains(searchString) {
                     continue
                 }
             }

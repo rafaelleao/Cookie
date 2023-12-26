@@ -78,7 +78,8 @@ class RequestDetailTabViewModel: ObservableObject {
         $searchText.sink { [unowned self] text in
             print(text)
             filter(searchString: text)
-        }.store(in: &bindings)
+        }
+        .store(in: &bindings)
     }
 
     func actionClicked() {
@@ -97,7 +98,7 @@ class RequestDetailTabViewModel: ObservableObject {
         for section in sections {
             var pairs: [KeyValuePair] = []
             for pair in section.pairs {
-                if pair.key.lowercased().range(of: searchString.lowercased()) != nil || pair.value?.lowercased().range(of: searchString.lowercased()) != nil {
+                if pair.key.contains(searchString) || pair.value?.contains(searchString) ?? false {
                     pairs.append(pair)
                 }
             }
