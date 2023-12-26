@@ -43,18 +43,16 @@ class ContentViewModel: ObservableObject {
             .store(in: &bindings)
     }
 
-    private func setupTimer() {
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true, block: { [weak self] _ in
-            self?.sendTestRequests()
-        })
-    }
-
     func show() {
         Cookie.shared.present()
     }
 
-    func sendTestRequests() {
+    private func setupTimer() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(timeInterval: interval, target: self, selector: #selector(sendTestRequests), userInfo: nil, repeats: false)
+    }
+
+    @objc func sendTestRequests() {
         let requests = TestRequests().all()
         sendRequests(requests)
     }

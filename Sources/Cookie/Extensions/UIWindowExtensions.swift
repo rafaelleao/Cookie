@@ -16,7 +16,9 @@ extension UIWindow {
     }
 
     static var key: UIWindow? {
-        UIApplication.shared.windows.first { $0.isKeyWindow }
+        let allScenes = UIApplication.shared.connectedScenes
+        let scene = allScenes.first { $0.activationState == .foregroundActive }
+        return (scene as? UIWindowScene)?.keyWindow
     }
 }
 
