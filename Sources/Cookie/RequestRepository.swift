@@ -47,22 +47,3 @@ actor RequestRepositoryImpl: RequestRepository {
     }
 }
 
-@available(iOS 16.0, *)
-@available(macOS 13, *)
-extension Cookie: RequestInterceptorDelegate {
-    func shouldFireRequest(urlRequest: URLRequest) -> Bool {
-        true
-    }
-
-    func willFireRequest(urlRequest: URLRequest, hash: Int) {
-        Task {
-            await requestRepository.addRequest(urlRequest: urlRequest, hash: hash)
-        }
-    }
-
-    func didComplete(request: URLRequest, response: HTTPResponse, hash: Int) {
-        Task {
-            await requestRepository.setResponse(urlRequest: request, response: response, hash: hash)
-        }
-    }
-}
