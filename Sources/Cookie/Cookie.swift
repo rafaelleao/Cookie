@@ -21,7 +21,7 @@ public class Cookie {
 
     let requestRepository = RequestRepositoryImpl()
     private let coordinator = MainCoordinator()
-    private let requestInterceptor = RequestInterceptor.shared
+    private var requestInterceptor: RequestInterceptor = ProtocolClassesInterceptor.shared
 
     public func clearRequests() async {
         await requestRepository.clearRequests()
