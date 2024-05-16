@@ -20,6 +20,8 @@ struct ContentView: View {
             }
             Toggle("Enabled", isOn: $viewModel.enabled)
 
+            Toggle("Protocol classes swizzling", isOn: $viewModel.protocolClassesSwizzling)
+
             Toggle("Send periodically", isOn: $viewModel.sendPeriodically)
 
             Slider(value: $viewModel.interval, in: 0.1 ... 10, step: 0.1)

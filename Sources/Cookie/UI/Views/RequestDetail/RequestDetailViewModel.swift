@@ -29,7 +29,7 @@ class RequestDetailViewModel: ObservableObject {
             SummaryTabDescriptor(request: request),
             RequestTabDescriptor(request: request),
             ResponseTabDescriptor(request: request),
-            WebSocketTabDescriptor(request: request)
+            WebSocketTabDescriptor(request: request),
         ]
         self.tabDescriptors = descriptors
         // swiftlint:disable force_unwrapping

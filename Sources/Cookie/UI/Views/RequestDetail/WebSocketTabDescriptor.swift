@@ -36,5 +36,4 @@ class WebSocketTabDescriptor: TabDescriptor {
     var textViewerViewModel: TextViewerViewModel? {
         nil
     }
-
 }

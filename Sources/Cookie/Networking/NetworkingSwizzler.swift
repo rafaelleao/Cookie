@@ -10,18 +10,13 @@ protocol NetworkingSwizzlerDelegate: AnyObject {
     func webSocketTask(_ task: URLSessionTask, didReceiveMessage message: URLSessionWebSocketTask.Message)
 }
 
-private enum SwizzlingError: Error {
-    case classNotFound
-    case instancesDoesNotRespondToSelector
-}
-
+@available(macOS 10.15, *)
 class NetworkingSwizzler {
     static let shared = NetworkingSwizzler()
     weak var delegate: NetworkingSwizzlerDelegate?
     private static var requestInterceptor = ProtocolClassesInterceptor.shared//
 
     func activate() throws {
-
         //NSClassFromString("__NSCFURLSessionConnection")
         guard let sessionClass = NSClassFromString("__NSCFURLLocalSessionConnection") else {
             throw SwizzlingError.classNotFound
@@ -66,13 +61,14 @@ class NetworkingSwizzler {
         let selector = NSSelectorFromString("_didReceiveData:")
         let originalMethod = try originalMethod(baseClass: baseClass, selector: selector)
 
-        typealias Function =  @convention(c) (AnyObject, Selector, AnyObject) -> Void
+        typealias Function = @convention(c) (AnyObject, Selector, AnyObject) -> Void
         let originalImp = method_getImplementation(originalMethod)
         let block: @convention(block) (AnyObject, AnyObject) -> Void = { [weak self] sessionConnection, data in
             unsafeBitCast(originalImp, to: Function.self)(sessionConnection, selector, data)
 
             if let task = sessionConnection.value(forKey: "task") as? URLSessionTask,
-               let data = data as? Data {
+               let data = data as? Data
+            {
                 self?.delegate?.task(task, didReceiveData: data)
             }
         }
@@ -84,7 +80,7 @@ class NetworkingSwizzler {
         let selector = NSSelectorFromString("_didReceiveResponse:sniff:")
         let originalMethod = try originalMethod(baseClass: baseClass, selector: selector)
 
-        typealias Function =  @convention(c) (AnyObject, Selector, AnyObject, Bool) -> Void
+        typealias Function = @convention(c) (AnyObject, Selector, AnyObject, Bool) -> Void
         let originalImp = method_getImplementation(originalMethod)
         let block: @convention(block) (AnyObject, AnyObject, Bool) -> Void = { [weak self] sessionConnection, response, sniff in
 
@@ -104,7 +100,7 @@ class NetworkingSwizzler {
         let selector = NSSelectorFromString("_didFinishWithError:")
         let originalMethod = try originalMethod(baseClass: baseClass, selector: selector)
 
-        typealias Function =  @convention(c) (AnyObject, Selector, AnyObject?) -> Void
+        typealias Function = @convention(c) (AnyObject, Selector, AnyObject?) -> Void
         let originalImp = method_getImplementation(originalMethod)
         let block: @convention(block) (AnyObject, AnyObject?) -> Void = { [weak self] sessionConnection, error in
 
@@ -123,11 +119,11 @@ class NetworkingSwizzler {
         let selector = NSSelectorFromString("sendMessage:completionHandler:")
         let originalMethod = try originalMethod(baseClass: baseClass, selector: selector)
 
-        typealias Function =  @convention(c) (AnyObject, Selector, AnyObject, AnyObject) -> Void
+        typealias Function = @convention(c) (AnyObject, Selector, AnyObject, AnyObject) -> Void
         let originalImp = method_getImplementation(originalMethod)
 
         let block: @convention(block) (URLSessionTask, AnyObject, AnyObject) -> Void = { [weak self] task, message, block in
-           unsafeBitCast(originalImp, to: Function.self)(task, selector, message, block)
+            unsafeBitCast(originalImp, to: Function.self)(task, selector, message, block)
 
             if let wsMessage = URLSessionWebSocketTask.Message(object: message) {
                 self?.delegate?.webSocketTask(task, didSendMessage: wsMessage)
@@ -140,16 +136,16 @@ class NetworkingSwizzler {
     private func swizzleURLSessionWebSocketReceiveMessageSelector(_ baseClass: AnyClass) throws {
         let selector = NSSelectorFromString("receiveMessageWithCompletionHandler:")
         guard let method = class_getInstanceMethod(baseClass, selector),
-            baseClass.instancesRespond(to: selector) else
-        {
+              baseClass.instancesRespond(to: selector)
+        else {
             throw SwizzlingError.instancesDoesNotRespondToSelector
         }
 
-        typealias NewClosureType =  @convention(c) (AnyObject, Selector, AnyObject) -> Void
+        typealias NewClosureType = @convention(c) (AnyObject, Selector, AnyObject) -> Void
         let originalImp: IMP = method_getImplementation(method)
-        let block: @convention(block) (URLSessionTask, AnyObject) -> Void = { [weak self] (task, handler) in
+        let block: @convention(block) (URLSessionTask, AnyObject) -> Void = { [weak self] task, handler in
 
-            let wrapperHandler = NetworkingSwizzlerHelper.swizzleWebSocketReceiveMessage(withCompleteHandler: handler, responseHandler: { [weak self] str, data, error in
+            let wrapperHandler = NetworkingSwizzlerHelper.swizzleWebSocketReceiveMessage(withCompleteHandler: handler, responseHandler: { [weak self] str, data, _ in
                 var message: URLSessionWebSocketTask.Message?
                 if let str {
                     message = .string(str)
@@ -170,6 +166,7 @@ class NetworkingSwizzler {
     }
 }
 
+@available(macOS 10.15, *)
 private extension URLSessionWebSocketTask.Message {
     init?(object: AnyObject) {
         if let strValue = object.value(forKey: "string") as? String {
@@ -184,13 +181,11 @@ private extension URLSessionWebSocketTask.Message {
     }
 }
 
-@objc(NetworkingSwizzlerHelper)
-class NetworkingSwizzlerHelper: NSObject {
+@objc(NetworkingSwizzlerHelper) class NetworkingSwizzlerHelper: NSObject {
     static let dataSelector: String = "data"
     static let stringSelector: String = "string"
 
-    @objc
-    static func swizzleWebSocketReceiveMessage(
+    @objc static func swizzleWebSocketReceiveMessage(
         withCompleteHandler handler: AnyObject,
         responseHandler: ((String?, Data?, Error?) -> Void)?
     ) -> AnyObject? {
@@ -199,8 +194,8 @@ class NetworkingSwizzlerHelper: NSObject {
         let originalHandler = unsafeBitCast(handler, to: WebSocketHandler.self)
 
         let wrapperHandler: WebSocketHandler = { message, error in
-            if let message = message, NSStringFromClass(type(of: message)) == "NSURLSessionWebSocketMessage" {
-                if let responseHandler = responseHandler {
+            if let message, NSStringFromClass(type(of: message)) == "NSURLSessionWebSocketMessage" {
+                if let responseHandler {
                     let body: (string: String?, data: Data?) = {
                         // Basically "switch message as? URLSessionWebSocketTask.Message"
                         if let data = message.perform(

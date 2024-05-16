@@ -14,14 +14,14 @@ class ProtocolClassesInterceptor: RequestInterceptor {
         configuration.httpAdditionalHeaders = [ProtocolClassesInterceptor.protocolKey: ProtocolClassesInterceptor.protocolValue]
     }
 
-    func activate() {
+    func activate() throws {
         URLProtocol.registerClass(Self.protocolClass)
-        swizzleProtocolClasses()
+        try swizzleProtocolClasses()
     }
 
-    func deactivate() {
+    func deactivate() throws {
         URLProtocol.unregisterClass(Self.protocolClass)
-        swizzleProtocolClasses()
+        try swizzleProtocolClasses()
     }
 
     func shouldInterceptRequest(_ urlRequest: URLRequest) -> Bool {
@@ -40,31 +40,26 @@ class ProtocolClassesInterceptor: RequestInterceptor {
         delegate?.didComplete(request: request, response: .failure(response: response, error: error), hash: hash)
     }
 
-//    func webSocketDidSendMessage(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
-//        delegate?.webSocketDidSendMessage(task: task, message: message)
-//    }
-//
-//    func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
-//        delegate?.webSocketDidReceive(task: task, message: message)
-//    }
-
-    // swiftlint:disable force_unwrapping
-    private func swizzleProtocolClasses() {
+    private func swizzleProtocolClasses() throws {
         let instance = URLSessionConfiguration.default
-        let uRLSessionConfigurationClass: AnyClass = object_getClass(instance)!
+        guard let uRLSessionConfigurationClass = object_getClass(instance) else {
+            throw SwizzlingError.classNotFound
+        }
 
-        let method1: Method = class_getInstanceMethod(
+        guard let method1: Method = class_getInstanceMethod(
             uRLSessionConfigurationClass,
             #selector(getter: uRLSessionConfigurationClass.protocolClasses)
-        )!
-        let method2: Method = class_getInstanceMethod(
-            URLSessionConfiguration.self,
-            #selector(URLSessionConfiguration.fakeProtocolClasses)
-        )!
+        ),
+            let method2: Method = class_getInstanceMethod(
+                URLSessionConfiguration.self,
+                #selector(URLSessionConfiguration.fakeProtocolClasses)
+            )
+        else {
+            throw SwizzlingError.methodNotFound
+        }
 
         method_exchangeImplementations(method1, method2)
     }
-    // swiftlint:enable force_unwrapping
 }
 
 @available(macOS 10.15, *)

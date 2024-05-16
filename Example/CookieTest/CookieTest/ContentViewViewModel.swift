@@ -1,18 +1,22 @@
 import Combine
 import Cookie
 import Foundation
+import SwiftUI
 
 @MainActor
 class ContentViewModel: ObservableObject {
     @Published var enabled = true
     @Published var sendPeriodically = false
     @Published var interval = 5.0
+    @AppStorage("ProtocolClassesSwizzling")
+    var protocolClassesSwizzling = false
 
     private var bindings: [AnyCancellable] = []
     private var timer: Timer?
     private let testRequestService = TestRequestService()
 
     init() {
+        Cookie.shared.swizzlingMethod = protocolClassesSwizzling ? .protocolClasses : .NSURLSwizzling
         Cookie.shared.enabled = true
 
         $enabled

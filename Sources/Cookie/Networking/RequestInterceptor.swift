@@ -10,8 +10,16 @@ protocol RequestInterceptorDelegate: AnyObject {
     func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message)
 }
 
+@available(macOS 10.15, *)
+enum SwizzlingError: Error {
+    case classNotFound
+    case methodNotFound
+    case instancesDoesNotRespondToSelector
+}
+
+@available(macOS 10.15, *)
 protocol RequestInterceptor {
     var delegate: RequestInterceptorDelegate? { get set }
-    func activate()
-    func deactivate()
+    func activate() throws
+    func deactivate() throws
 }

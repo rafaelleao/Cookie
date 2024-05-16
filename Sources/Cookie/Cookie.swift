@@ -5,6 +5,12 @@ import SwiftUI
 @available(macOS 13, *)
 @MainActor
 public class Cookie {
+    public enum SwizzlingMethod: String {
+        case protocolClasses
+        case NSURLSwizzling
+    }
+    public var swizzlingMethod: SwizzlingMethod = .NSURLSwizzling
+
     public static let shared = Cookie()
     public var settings = Settings()
     public var enabled = false {
@@ -20,8 +26,14 @@ public class Cookie {
     }
 
     let requestRepository = RequestRepositoryImpl()
+
     private let coordinator = MainCoordinator()
-    private var requestInterceptor: RequestInterceptor = SwizzlingRequestInterceptor()
+    private lazy var requestInterceptor: RequestInterceptor = {
+        if swizzlingMethod == .protocolClasses {
+            return ProtocolClassesInterceptor.shared
+        }
+        return SwizzlingRequestInterceptor()
+    }()
 
     public func clearRequests() async {
         await requestRepository.clearRequests()
@@ -37,12 +49,14 @@ public class Cookie {
 
     private func enable() {
         requestInterceptor.delegate = self
-        requestInterceptor.activate()
+        try? requestInterceptor.activate()
+        enabled = true
     }
 
     private func disable() {
         requestInterceptor.delegate = nil
-        requestInterceptor.deactivate()
+        try? requestInterceptor.deactivate()
+        enabled = false
     }
 
     func handleShake() {

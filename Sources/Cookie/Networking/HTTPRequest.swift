@@ -26,6 +26,7 @@ class HTTPRequest {
         }
         return nil
     }
+
     var webSockedMessages: [WebsocketMessage] = []
 
     var requestBodyString: String? {

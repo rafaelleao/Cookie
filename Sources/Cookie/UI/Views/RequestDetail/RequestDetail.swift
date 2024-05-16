@@ -17,7 +17,7 @@ struct RequestDetail: View {
                 .pickerStyle(.segmented)
 
                 #if os(macOS)
-                    SearchBar(placeholder: "Search", text: $viewModel.searchText)
+                SearchBar(placeholder: "Search", text: $viewModel.searchText)
                     .padding()
                 #endif
             }
