@@ -3,6 +3,16 @@ import Foundation
 
 @available(macOS 10.15, *)
 class HTTPRequest {
+    struct WebsocketMessage {
+        var date: Date
+        var message: URLSessionWebSocketTask.Message
+
+        init(message: URLSessionWebSocketTask.Message) {
+            self.date = .init()
+            self.message = message
+        }
+    }
+
     let urlRequest: URLRequest
     let requestDate: Date
     @Published var response: HTTPResponse?
@@ -16,6 +26,7 @@ class HTTPRequest {
         }
         return nil
     }
+    var webSockedMessages: [WebsocketMessage] = []
 
     var requestBodyString: String? {
         guard let bodyData = requestBodyData else {

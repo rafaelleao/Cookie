@@ -75,4 +75,16 @@ extension Cookie: RequestInterceptorDelegate {
             await requestRepository.setResponse(urlRequest: request, response: response, hash: hash)
         }
     }
+
+    func webSocketDidSendMessage(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
+        Task {
+            await requestRepository.messageSent(task: task, message: message)
+        }
+    }
+
+    func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
+        Task {
+            await requestRepository.messageReceived(task: task, message: message)
+        }
+    }
 }

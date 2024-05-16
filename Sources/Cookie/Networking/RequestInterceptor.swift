@@ -5,6 +5,9 @@ protocol RequestInterceptorDelegate: AnyObject {
     func shouldFireRequest(urlRequest: URLRequest) -> Bool
     func willFireRequest(urlRequest: URLRequest, hash: Int)
     func didComplete(request: URLRequest, response: HTTPResponse, hash: Int)
+
+    func webSocketDidSendMessage(task: URLSessionTask, message: URLSessionWebSocketTask.Message)
+    func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message)
 }
 
 protocol RequestInterceptor {

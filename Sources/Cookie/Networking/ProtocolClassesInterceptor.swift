@@ -40,13 +40,13 @@ class ProtocolClassesInterceptor: RequestInterceptor {
         delegate?.didComplete(request: request, response: .failure(response: response, error: error), hash: hash)
     }
 
-    func webSocketDidSendMessage(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
-        delegate?.webSocketDidSendMessage(task: task, message: message)
-    }
-
-    func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
-        delegate?.webSocketDidReceive(task: task, message: message)
-    }
+//    func webSocketDidSendMessage(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
+//        delegate?.webSocketDidSendMessage(task: task, message: message)
+//    }
+//
+//    func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
+//        delegate?.webSocketDidReceive(task: task, message: message)
+//    }
 
     // swiftlint:disable force_unwrapping
     private func swizzleProtocolClasses() {

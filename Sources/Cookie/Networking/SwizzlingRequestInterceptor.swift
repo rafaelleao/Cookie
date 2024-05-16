@@ -19,6 +19,8 @@ private enum SwizzlingRequestInterceptorError: Error {
 }
 
 extension SwizzlingRequestInterceptor: NetworkingSwizzlerDelegate {
+
+    
     func taskDidResume(_ task: URLSessionTask) {
         guard let urlRequest = task.originalRequest else { return }
         delegate?.willFireRequest(urlRequest: urlRequest, hash: urlRequest.hashValue)
@@ -54,5 +56,13 @@ extension SwizzlingRequestInterceptor: NetworkingSwizzlerDelegate {
             return
         }
         delegate?.didComplete(request: urlRequest, response: .success(response: response, data: requests[task]), hash: urlRequest.hashValue)
+    }
+
+    func webSocketTask(_ task: URLSessionTask, didSendMessage message: URLSessionWebSocketTask.Message) {
+        delegate?.webSocketDidSendMessage(task: task, message: message)
+    }
+
+    func webSocketTask(_ task: URLSessionTask, didReceiveMessage message: URLSessionWebSocketTask.Message) {
+        delegate?.webSocketDidReceive(task: task, message: message)
     }
 }
