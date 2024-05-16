@@ -10,6 +10,7 @@ class ContentViewModel: ObservableObject {
 
     private var bindings: [AnyCancellable] = []
     private var timer: Timer?
+    private let testRequestService = TestRequestService()
 
     init() {
         Cookie.shared.enabled = true
@@ -55,19 +56,82 @@ class ContentViewModel: ObservableObject {
     @objc func sendTestRequests() {
         let requests = TestRequests().all()
         sendRequests(requests)
+        testRequestService.startWebSocket()
     }
 
     private func sendRequests(_ requests: [URLRequest]) {
         if let request = requests.first {
-            let task = URLSession.shared.dataTask(with: request)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
-                task.resume()
+                testRequestService.sendRequest(request)
                 var new = requests
                 new.remove(at: 0)
                 sendRequests(new)
             }
         }
     }
+}
+
+class TestRequestService: NSObject {
+    private var wsTask: URLSessionWebSocketTask?
+
+    func sendRequest(_ request: URLRequest) {
+        let task = URLSession.shared.dataTask(with: request)
+        task.delegate = self
+        task.resume()
+    }
+
+    func startWebSocket() {
+        guard let url = URL(string: "wss://echo.websocket.org") else {
+            return
+        }
+
+        if wsTask == nil {
+            wsTask = URLSession.shared.webSocketTask(with: url)
+            wsTask?.delegate = self
+            wsTask?.resume()
+
+            wsTask?.receive { result in
+              switch result {
+              case .failure(let error):
+                print("Error in receiving message: \(error)")
+              case .success(let message):
+                switch message {
+                case .string(let text):
+                  print("Received string: \(text)")
+                case .data(let data):
+                  print("Received data: \(data)")
+                }
+              }
+            }
+        }
+
+        wsTask?.send(.string("hi")) { error in
+            print("Sent string: \(error)")
+        }
+        wsTask?.sendPing { error in
+            print("ping")
+        }
+    }
+}
+
+extension TestRequestService: URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: (any Error)?) {
+        print("TestRequestService didCompleteWithError \(error)")
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didReceiveInformationalResponse response: HTTPURLResponse) {
+        print("TestRequestService didReceiveInformationalResponse \(response)")
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse) async -> URLSession.ResponseDisposition {
+        print("TestRequestService didReceiveResponse \(response)")
+        return .allow
+    }
+
+    func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+        print("TestRequestService didReceiveData \(data.count)")
+    }
+
 }
 
 // swiftlint:disable force_unwrapping
