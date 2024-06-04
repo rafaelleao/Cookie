@@ -4,8 +4,28 @@ import SwiftUI
 @available(iOS 16.0, *)
 @available(macOS 13, *)
 struct RequestDetailTab: View, Identifiable {
-    var id = UUID()
+    private(set) var id = UUID()
     @ObservedObject var viewModel: RequestDetailTabViewModel
+    @State private var selection: WebsocketListItemViewModel? {
+        didSet {
+            fatalError()
+            print("selection")
+//            textViewerViewModel = .init(text: "{}", filename: "")
+        }
+    }
+
+    var textViewerViewModel: TextViewerViewModel? {
+        if let selection {
+            return .init(text: selection.header, filename: "")
+        }
+        return nil
+    }
+
+    init(viewModel: RequestDetailTabViewModel) {
+        print("init")
+        self.viewModel = viewModel
+    }
+
 
     var body: some View {
         VStack {
@@ -14,12 +34,26 @@ struct RequestDetailTab: View, Identifiable {
                     .progressViewStyle(CircularProgressViewStyle())
             }
 
-            List {
-                ForEach(viewModel.data, id: \.self) { row in
-                    Section(header: Text(row.title)) {
-                        ForEach(row.pairs, id: \.key) { pair in
-                            let viewModel = RequestDetailRowViewModel(pair: pair, searchText: viewModel.searchText)
-                            RequestDetailRow(viewModel: viewModel)
+            if let websocketListItems = viewModel.websocketListItems {
+                Text(selection?.header ?? "nono")
+                List(selection: $selection, content: {
+                    ForEach(websocketListItems, id: \.self) { viewModel in
+//                        let viewModel = WebsocketListItemViewModel(message: item)
+                        HStack {
+                            Image(systemName: viewModel.imageName)
+                            Text(viewModel.date)
+                            Text(viewModel.header)
+                        }
+                    }
+                })
+            } else {
+                List {
+                    ForEach(viewModel.data, id: \.self) { row in
+                        Section(header: Text(row.title)) {
+                            ForEach(row.pairs, id: \.key) { pair in
+                                let viewModel = RequestDetailRowViewModel(pair: pair, searchText: viewModel.searchText)
+                                RequestDetailRow(viewModel: viewModel)
+                            }
                         }
                     }
                 }
@@ -38,6 +72,9 @@ struct RequestDetailTab: View, Identifiable {
             }
             #else
             if let textViewerViewModel = viewModel.textViewerViewModel {
+                TextViewer(viewModel: textViewerViewModel)
+            } 
+            else if let textViewerViewModel {
                 TextViewer(viewModel: textViewerViewModel)
             }
             #endif
@@ -75,6 +112,18 @@ struct RequestDetailTab_Previews: PreviewProvider {
         return RequestDetailTab(viewModel: viewModel)
     }
 
+    private static func makeWebSocketPreview() -> some View {
+        request.webSockedMessages = [
+            .init(message: .string("bla"), taskIdentifier: 1),
+            .init(message: .string("bla"), taskIdentifier: 2),
+            .init(message: .string("bla"), taskIdentifier: 3)
+
+        ]
+        let descriptor = WebSocketTabDescriptor(request: request)
+        let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
+        return RequestDetailTab(viewModel: viewModel)
+    }
+
     static var previews: some View {
         Group {
             NavigationStack {
@@ -94,6 +143,12 @@ struct RequestDetailTab_Previews: PreviewProvider {
             }
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Response")
+
+            NavigationStack {
+                makeWebSocketPreview()
+            }
+            .previewLayout(.sizeThatFits)
+            .previewDisplayName("Web Socket")
         }
     }
 }

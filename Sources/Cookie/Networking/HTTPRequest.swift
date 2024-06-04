@@ -6,10 +6,12 @@ class HTTPRequest {
     struct WebsocketMessage {
         var date: Date
         var message: URLSessionWebSocketTask.Message
+        var taskIdentifier: Int
 
-        init(message: URLSessionWebSocketTask.Message) {
+        init(message: URLSessionWebSocketTask.Message, taskIdentifier: Int) {
             self.date = .init()
             self.message = message
+            self.taskIdentifier = taskIdentifier
         }
     }
 

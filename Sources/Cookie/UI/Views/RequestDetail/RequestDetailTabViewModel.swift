@@ -28,6 +28,15 @@ protocol TabDescriptor {
     var textViewerViewModel: TextViewerViewModel? { get }
     func sections() -> [SectionData]
     func action() -> Action?
+    func websocketList() -> [WebsocketListItemViewModel]?
+}
+
+@available(iOS 16.0, *)
+@available(macOS 13, *)
+extension TabDescriptor {
+    func websocketList() -> [WebsocketListItemViewModel]? {
+        nil
+    }
 }
 
 @available(iOS 16.0, *)
@@ -57,7 +66,10 @@ class RequestDetailTabViewModel: ObservableObject {
     private var sections: [SectionData]
     private var bindings: [AnyCancellable] = []
 
+    @Published var websocketListItems: [WebsocketListItemViewModel]?
+
     init(descriptor: TabDescriptor) {
+        self.websocketListItems = descriptor.websocketList()
         self.sections = descriptor.sections()
         self.action = descriptor.action()
         self.title = descriptor.title
