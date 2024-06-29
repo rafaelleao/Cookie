@@ -144,13 +144,13 @@ private extension TextViewerViewModel {
             "dict": [
                 "param3": 10,
                 "param1": "a",
-                "param2": true
+                "param2": true,
             ],
             "dict2": [
                 "param3": 10,
                 "param1": "a",
-                "param2": true
-            ]
+                "param2": true,
+            ],
         ] as [String: Any]).toJsonString()
         return TextViewerViewModel(text: text, filename: "Filename")
     }

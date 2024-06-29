@@ -71,18 +71,18 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
                 }
         }
         #if os(iOS)
-            .autocapitalization(.none)
+        .autocapitalization(.none)
         #endif
 
         .toolbar(content: {
             #if os(iOS)
-                ToolbarItemGroup(placement: .navigation) {
-                    Button(action: {
-                        viewModel.dismiss()
-                    }, label: {
-                        Image(systemName: "xmark")
-                    })
-                }
+            ToolbarItemGroup(placement: .navigation) {
+                Button(action: {
+                    viewModel.dismiss()
+                }, label: {
+                    Image(systemName: "xmark")
+                })
+            }
             #endif
 
             ToolbarItemGroup(placement: .navigation) {

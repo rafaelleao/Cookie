@@ -13,6 +13,8 @@ struct RequestDetailTab: View, Identifiable {
             let data = selection.header.data(using: .utf8)
             if let text = data?.toJsonString() {
                 return .init(text: text, filename: "")
+            } else {
+                return .init(text: selection.header, filename: "")
             }
         }
         return nil
@@ -114,14 +116,14 @@ struct RequestDetailTab_Previews: PreviewProvider {
             "dict": [
                 "param3": 10,
                 "param1": "a",
-                "param2": true
-            ]
+                "param2": true,
+            ],
         ].toJsonString()
 
         request.webSockedMessages = [
             .init(message: .string(testJsonString)),
             .init(message: .string("test")),
-            .init(message: .string(testJsonString))
+            .init(message: .string(testJsonString)),
         ]
         let descriptor = WebSocketTabDescriptor(request: request)
         let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
