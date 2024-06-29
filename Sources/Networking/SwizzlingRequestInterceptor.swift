@@ -1,16 +1,18 @@
 import Foundation
 
 @available(macOS 10.15, *)
-class SwizzlingRequestInterceptor: RequestInterceptor {
-    var delegate: (any RequestInterceptorDelegate)?
+public  class SwizzlingRequestInterceptor: RequestInterceptor {
+    public var delegate: (any RequestInterceptorDelegate)?
     private var requests: [URLSessionTask: Data] = [:]
 
-    func activate() {
+    public init() {}
+
+    public func activate() {
         NetworkingSwizzler.shared.delegate = self
         try? NetworkingSwizzler.shared.activate()
     }
 
-    func deactivate() {}
+    public func deactivate() {}
 }
 
 @available(macOS 10.15, *)

@@ -1,24 +1,25 @@
 import Combine
 import Foundation
+import Extensions
 
 @available(macOS 10.15, *)
-class HTTPRequest {
-    struct WebsocketMessage {
-        var date: Date
-        var message: URLSessionWebSocketTask.Message
-        private(set) var id = UUID()
+public class HTTPRequest: Equatable {
+    public struct WebsocketMessage {
+        public var date: Date
+        public var message: URLSessionWebSocketTask.Message
+        public private(set) var id = UUID()
 
-        init(message: URLSessionWebSocketTask.Message) {
+        public init(message: URLSessionWebSocketTask.Message) {
             self.date = .init()
             self.message = message
         }
     }
 
-    let urlRequest: URLRequest
-    let requestDate: Date
-    @Published var response: HTTPResponse?
-    var responseDate: Date?
-    var requestBodyData: Data? {
+    public let urlRequest: URLRequest
+    public let requestDate: Date
+    @Published public var response: HTTPResponse?
+    public var responseDate: Date?
+    public var requestBodyData: Data? {
         if let httpBody = urlRequest.httpBody {
             return httpBody
         }
@@ -28,9 +29,9 @@ class HTTPRequest {
         return nil
     }
 
-    var webSockedMessages: [WebsocketMessage] = []
+    public var webSockedMessages: [WebsocketMessage] = []
 
-    var requestBodyString: String? {
+    public var requestBodyString: String? {
         guard let bodyData = requestBodyData else {
             return nil
         }
@@ -42,7 +43,7 @@ class HTTPRequest {
         return bodyData.toString()
     }
 
-    var contentType: String? {
+    public var contentType: String? {
         guard let headers = response?.urlResponse?.allHeaderFields,
               let contentType = headers["Content-Type"] as? String,
               let type = contentType.components(separatedBy: ";").first, !type.isEmpty
@@ -53,11 +54,11 @@ class HTTPRequest {
         return type
     }
 
-    var domain: String? {
+    public var domain: String? {
         urlComponents?.host
     }
 
-    var urlComponents: NSURLComponents? {
+    public var urlComponents: NSURLComponents? {
         if let url = urlRequest.url {
             return NSURLComponents(url: url, resolvingAgainstBaseURL: true)
         } else {
@@ -65,14 +66,14 @@ class HTTPRequest {
         }
     }
 
-    init(request: URLRequest, date: Date = Date()) {
+    public init(request: URLRequest, date: Date = Date()) {
         self.urlRequest = request
         self.requestDate = date
     }
 }
 
-@available(macOS 13.0, *)
-extension HTTPRequest: Equatable {
+@available(macOS 10.15, *)
+public extension HTTPRequest  { //Equatable
     static func == (lhs: HTTPRequest, rhs: HTTPRequest) -> Bool {
         lhs.urlRequest == rhs.urlRequest && lhs.requestDate == rhs.requestDate
     }

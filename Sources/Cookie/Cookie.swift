@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import Networking
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
@@ -75,29 +76,29 @@ public class Settings {
 @available(iOS 16.0, *)
 @available(macOS 13, *)
 extension Cookie: RequestInterceptorDelegate {
-    func shouldFireRequest(urlRequest: URLRequest) -> Bool {
+    public func shouldFireRequest(urlRequest: URLRequest) -> Bool {
         true
     }
 
-    func willFireRequest(urlRequest: URLRequest, hash: Int) {
+    public func willFireRequest(urlRequest: URLRequest, hash: Int) {
         Task {
             await requestRepository.addRequest(urlRequest: urlRequest, hash: hash)
         }
     }
 
-    func didComplete(request: URLRequest, response: HTTPResponse, hash: Int) {
+    public func didComplete(request: URLRequest, response: HTTPResponse, hash: Int) {
         Task {
             await requestRepository.setResponse(urlRequest: request, response: response, hash: hash)
         }
     }
 
-    func webSocketDidSendMessage(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
+    public func webSocketDidSendMessage(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
         Task {
             await requestRepository.messageSent(task: task, message: message)
         }
     }
 
-    func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
+    public func webSocketDidReceive(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
         Task {
             await requestRepository.messageReceived(task: task, message: message)
         }

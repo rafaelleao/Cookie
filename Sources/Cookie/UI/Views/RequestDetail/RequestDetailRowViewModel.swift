@@ -1,10 +1,12 @@
 import Combine
 import Foundation
+import Networking
+import Extensions
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
 class RequestDetailRowViewModel: ObservableObject {
-    let pair: KeyValuePair
+    let pair: Networking.KeyValuePair
     let searchText: String
 
     init(pair: KeyValuePair, searchText: String) {

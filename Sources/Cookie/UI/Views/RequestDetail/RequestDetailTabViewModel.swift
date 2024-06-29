@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import Networking
 
 struct SectionData {
     let title: String

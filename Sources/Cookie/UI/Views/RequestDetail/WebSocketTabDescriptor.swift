@@ -1,4 +1,5 @@
 import Foundation
+import Networking
 
 //struct WebsocketListItem: Hashable {
 //    enum Kind {

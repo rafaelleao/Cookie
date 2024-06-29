@@ -1,10 +1,10 @@
 import Foundation
 
 @available(macOS 10.15, *)
-class ProtocolClassesInterceptor: RequestInterceptor {
-    static let shared = ProtocolClassesInterceptor()
+public class ProtocolClassesInterceptor: RequestInterceptor {
+    public static let shared = ProtocolClassesInterceptor()
     let configuration: URLSessionConfiguration
-    weak var delegate: RequestInterceptorDelegate?
+    weak public var delegate: RequestInterceptorDelegate?
     static let protocolKey = "URLProtocol"
     static let protocolValue = "CookieURLProtocol"
     static let protocolClass = CookieURLProtocol.self
@@ -14,12 +14,12 @@ class ProtocolClassesInterceptor: RequestInterceptor {
         configuration.httpAdditionalHeaders = [ProtocolClassesInterceptor.protocolKey: ProtocolClassesInterceptor.protocolValue]
     }
 
-    func activate() throws {
+    public func activate() throws {
         URLProtocol.registerClass(Self.protocolClass)
         try swizzleProtocolClasses()
     }
 
-    func deactivate() throws {
+    public func deactivate() throws {
         URLProtocol.unregisterClass(Self.protocolClass)
         try swizzleProtocolClasses()
     }

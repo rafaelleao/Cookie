@@ -1,7 +1,7 @@
 import Foundation
 
 @available(macOS 10.15, *)
-protocol RequestInterceptorDelegate: AnyObject {
+public protocol RequestInterceptorDelegate: AnyObject {
     func shouldFireRequest(urlRequest: URLRequest) -> Bool
     func willFireRequest(urlRequest: URLRequest, hash: Int)
     func didComplete(request: URLRequest, response: HTTPResponse, hash: Int)
@@ -18,7 +18,7 @@ enum SwizzlingError: Error {
 }
 
 @available(macOS 10.15, *)
-protocol RequestInterceptor {
+public protocol RequestInterceptor {
     var delegate: RequestInterceptorDelegate? { get set }
     func activate() throws
     func deactivate() throws

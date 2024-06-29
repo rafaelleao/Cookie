@@ -1,7 +1,7 @@
 import Foundation
 
 @available(macOS 10.15, *)
-extension Data {
+public extension Data {
     private static let bufferSize = 1024
 
     init(reading input: InputStream) {

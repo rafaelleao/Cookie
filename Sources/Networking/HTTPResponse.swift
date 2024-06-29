@@ -1,11 +1,11 @@
 import Foundation
 
 @available(macOS 10.15, *)
-enum HTTPResponse {
+public enum HTTPResponse {
     case success(response: HTTPURLResponse, data: Data?)
     case failure(response: HTTPURLResponse?, error: Error?)
 
-    var urlResponse: HTTPURLResponse? {
+    public var urlResponse: HTTPURLResponse? {
         switch self {
         case let .success(response, _):
             return response
@@ -14,7 +14,7 @@ enum HTTPResponse {
         }
     }
 
-    var responseData: Data? {
+    public var responseData: Data? {
         guard case let .success(_, data) = self else {
             return nil
         }
@@ -22,7 +22,7 @@ enum HTTPResponse {
         return data
     }
 
-    var responseString: String? {
+    public var responseString: String? {
         guard let responseData else {
             return nil
         }

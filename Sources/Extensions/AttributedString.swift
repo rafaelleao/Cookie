@@ -2,7 +2,7 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 @available(macOS 13.0, *)
-extension AttributedString {
+public extension AttributedString {
     init(
         _ string: String,
         highlightedString: String,

@@ -1,4 +1,5 @@
 import Foundation
+import Networking
 
 // swiftlint:disable force_unwrapping
 @available(macOS 13.0, *)
