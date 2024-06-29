@@ -18,9 +18,11 @@ struct TextViewer: View {
     private var contentView: some View {
         VStack(alignment: .leading, spacing: 0, content: {
             ScrollView(.vertical, showsIndicators: true, content: {
-                text
+                TextEditor(text: .constant(viewModel.text))
+                    .scrollContentBackground(.hidden)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .lineSpacing(5.0)
                     .font(viewModel.font)
-                    .multilineTextAlignment(.leading)
             })
 
             Divider()
@@ -68,12 +70,23 @@ struct TextViewer: View {
 @available(macOS 13, *)
 struct TextViewer_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            TextViewer(viewModel: testViewModel())
+        Group {
+            NavigationStack {
+                TextViewer(viewModel: .longSourceCode)
+            }
+            .previewDisplayName("longSourceCode")
+
+            NavigationStack {
+                TextViewer(viewModel: .jsonText)
+            }
+            .previewDisplayName("jsonText")
         }
     }
+}
 
-    static func testViewModel() -> TextViewerViewModel {
+@available(macOS 13, *)
+private extension TextViewerViewModel {
+    static var longSourceCode: TextViewerViewModel {
         let text =
             """
             [ This program prints "Hello World!" and a newline to the screen, its
@@ -120,6 +133,25 @@ struct TextViewer_Previews: PreviewProvider {
             >>+.                    Add 1 to Cell #5 gives us an exclamation point
             >++.                    And finally a newline from Cell #6
             """
+        return TextViewerViewModel(text: text, filename: "Filename")
+    }
+
+    static var jsonText: TextViewerViewModel {
+        let text = ([
+            "param3": 10,
+            "param1": "a",
+            "param2": true,
+            "dict": [
+                "param3": 10,
+                "param1": "a",
+                "param2": true
+            ],
+            "dict2": [
+                "param3": 10,
+                "param1": "a",
+                "param2": true
+            ]
+        ] as [String: Any]).toJsonString()
         return TextViewerViewModel(text: text, filename: "Filename")
     }
 }

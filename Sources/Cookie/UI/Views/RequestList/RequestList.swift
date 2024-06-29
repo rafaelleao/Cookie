@@ -71,15 +71,19 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
                 }
         }
         #if os(iOS)
-        .autocapitalization(.none)
+            .autocapitalization(.none)
+        #endif
+
         .toolbar(content: {
-            ToolbarItemGroup(placement: .navigation) {
-                Button(action: {
-                    viewModel.dismiss()
-                }, label: {
-                    Image(systemName: "xmark")
-                })
-            }
+            #if os(iOS)
+                ToolbarItemGroup(placement: .navigation) {
+                    Button(action: {
+                        viewModel.dismiss()
+                    }, label: {
+                        Image(systemName: "xmark")
+                    })
+                }
+            #endif
 
             ToolbarItemGroup(placement: .navigation) {
                 Spacer(minLength: 20.0)
@@ -92,7 +96,6 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
                 })
             }
         })
-        #endif
         .searchable(text: $viewModel.searchString, placement: .automatic)
     }
 
