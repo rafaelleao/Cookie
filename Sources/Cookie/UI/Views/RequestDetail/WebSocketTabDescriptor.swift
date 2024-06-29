@@ -11,13 +11,15 @@ import Foundation
 //    let date: Date
 //}
 
+@available(iOS 16.0, *)
+@available(macOS 10.15, *)
 struct WebsocketListItemViewModel: Hashable {
     static func == (lhs: WebsocketListItemViewModel, rhs: WebsocketListItemViewModel) -> Bool {
-        lhs.message.taskIdentifier == rhs.message.taskIdentifier
+        lhs.message.id == rhs.message.id
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(message.taskIdentifier)
+        hasher.combine(message.id)
     }
 
     let message: HTTPRequest.WebsocketMessage

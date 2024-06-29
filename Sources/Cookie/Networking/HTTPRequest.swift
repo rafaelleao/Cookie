@@ -6,12 +6,11 @@ class HTTPRequest {
     struct WebsocketMessage {
         var date: Date
         var message: URLSessionWebSocketTask.Message
-        var taskIdentifier: Int
+        private(set) var id = UUID()
 
-        init(message: URLSessionWebSocketTask.Message, taskIdentifier: Int) {
+        init(message: URLSessionWebSocketTask.Message) {
             self.date = .init()
             self.message = message
-            self.taskIdentifier = taskIdentifier
         }
     }
 

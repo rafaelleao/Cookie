@@ -9,6 +9,7 @@ public class Cookie {
         case protocolClasses
         case NSURLSwizzling
     }
+
     public var swizzlingMethod: SwizzlingMethod = .NSURLSwizzling
 
     public static let shared = Cookie()

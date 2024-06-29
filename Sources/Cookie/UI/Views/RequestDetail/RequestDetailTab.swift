@@ -6,17 +6,14 @@ import SwiftUI
 struct RequestDetailTab: View, Identifiable {
     private(set) var id = UUID()
     @ObservedObject var viewModel: RequestDetailTabViewModel
-    @State private var selection: WebsocketListItemViewModel? {
-        didSet {
-            fatalError()
-            print("selection")
-//            textViewerViewModel = .init(text: "{}", filename: "")
-        }
-    }
+    @State private var selection: WebsocketListItemViewModel?
 
     var textViewerViewModel: TextViewerViewModel? {
         if let selection {
-            return .init(text: selection.header, filename: "")
+            let data = selection.header.data(using: .utf8)
+            if let text = data?.toJsonString() {
+                return .init(text: text, filename: "")
+            }
         }
         return nil
     }
@@ -26,7 +23,6 @@ struct RequestDetailTab: View, Identifiable {
         self.viewModel = viewModel
     }
 
-
     var body: some View {
         VStack {
             if viewModel.isLoading {
@@ -35,14 +31,13 @@ struct RequestDetailTab: View, Identifiable {
             }
 
             if let websocketListItems = viewModel.websocketListItems {
-                Text(selection?.header ?? "nono")
                 List(selection: $selection, content: {
                     ForEach(websocketListItems, id: \.self) { viewModel in
-//                        let viewModel = WebsocketListItemViewModel(message: item)
                         HStack {
                             Image(systemName: viewModel.imageName)
                             Text(viewModel.date)
                             Text(viewModel.header)
+                                .lineLimit(1)
                         }
                     }
                 })
@@ -73,8 +68,7 @@ struct RequestDetailTab: View, Identifiable {
             #else
             if let textViewerViewModel = viewModel.textViewerViewModel {
                 TextViewer(viewModel: textViewerViewModel)
-            } 
-            else if let textViewerViewModel {
+            } else if let textViewerViewModel {
                 TextViewer(viewModel: textViewerViewModel)
             }
             #endif
@@ -113,11 +107,21 @@ struct RequestDetailTab_Previews: PreviewProvider {
     }
 
     private static func makeWebSocketPreview() -> some View {
-        request.webSockedMessages = [
-            .init(message: .string("bla"), taskIdentifier: 1),
-            .init(message: .string("bla"), taskIdentifier: 2),
-            .init(message: .string("bla"), taskIdentifier: 3)
+        let testJsonString = [
+            "param3": 10,
+            "param1": "a",
+            "param2": true,
+            "dict": [
+                "param3": 10,
+                "param1": "a",
+                "param2": true
+            ]
+        ].toJsonString()
 
+        request.webSockedMessages = [
+            .init(message: .string(testJsonString)),
+            .init(message: .string("test")),
+            .init(message: .string(testJsonString))
         ]
         let descriptor = WebSocketTabDescriptor(request: request)
         let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
@@ -150,5 +154,17 @@ struct RequestDetailTab_Previews: PreviewProvider {
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Web Socket")
         }
+    }
+}
+
+@available(macOS 10.15, *)
+extension Dictionary {
+    func toJsonString() -> String {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: self, options: .fragmentsAllowed),
+              let jsonString = jsonData.toJsonString()
+        else {
+            fatalError("Cannot convert dictionary to data")
+        }
+        return jsonString
     }
 }

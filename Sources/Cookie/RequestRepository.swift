@@ -50,13 +50,13 @@ actor RequestRepositoryImpl: RequestRepository {
         guard let request = requests.first(where: { task.originalRequest == $0.urlRequest }) else {
             return
         }
-        request.webSockedMessages.append(.init(message: message, taskIdentifier: task.taskIdentifier))
+        request.webSockedMessages.append(.init(message: message))
     }
 
     func messageReceived(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
         guard let request = requests.first(where: { task.originalRequest == $0.urlRequest }) else {
             return
         }
-        request.webSockedMessages.append(.init(message: message, taskIdentifier: task.taskIdentifier))
+        request.webSockedMessages.append(.init(message: message))
     }
 }
