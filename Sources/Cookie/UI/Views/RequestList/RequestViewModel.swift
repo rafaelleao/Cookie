@@ -1,7 +1,7 @@
 import Combine
 import Foundation
-import SwiftUI
 import Networking
+import SwiftUI
 
 enum RequestStatus {
     case loading

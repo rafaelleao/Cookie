@@ -1,6 +1,6 @@
 import Foundation
-import SwiftUI
 import Networking
+import SwiftUI
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)

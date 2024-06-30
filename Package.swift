@@ -15,12 +15,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Extensions",
-            dependencies: []
-        ),
-        .target(
             name: "Networking",
-            dependencies: ["Extensions"]
+            dependencies: []
         ),
         .target(
             name: "Cookie",

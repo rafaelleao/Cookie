@@ -1,7 +1,7 @@
 import Foundation
 
 @available(macOS 10.15, *)
-public extension Data {
+extension Data {
     private static let bufferSize = 1024
 
     init(reading input: InputStream) {
@@ -22,8 +22,11 @@ public extension Data {
             append(buffer, count: read)
         }
     }
+}
 
-    func toJson() -> Any? {
+@available(macOS 10.15, *)
+public extension Data {
+    private func toJson() -> Any? {
         let jsonObject = try? JSONSerialization.jsonObject(with: self, options: .allowFragments)
         return jsonObject
     }

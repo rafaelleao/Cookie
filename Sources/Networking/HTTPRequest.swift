@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Extensions
 
 @available(macOS 10.15, *)
 public class HTTPRequest: Equatable {
@@ -73,7 +72,7 @@ public class HTTPRequest: Equatable {
 }
 
 @available(macOS 10.15, *)
-public extension HTTPRequest  { //Equatable
+public extension HTTPRequest { //Equatable
     static func == (lhs: HTTPRequest, rhs: HTTPRequest) -> Bool {
         lhs.urlRequest == rhs.urlRequest && lhs.requestDate == rhs.requestDate
     }

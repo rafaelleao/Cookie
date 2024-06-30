@@ -4,7 +4,7 @@ import Foundation
 public class ProtocolClassesInterceptor: RequestInterceptor {
     public static let shared = ProtocolClassesInterceptor()
     let configuration: URLSessionConfiguration
-    weak public var delegate: RequestInterceptorDelegate?
+    public weak var delegate: RequestInterceptorDelegate?
     static let protocolKey = "URLProtocol"
     static let protocolValue = "CookieURLProtocol"
     static let protocolClass = CookieURLProtocol.self

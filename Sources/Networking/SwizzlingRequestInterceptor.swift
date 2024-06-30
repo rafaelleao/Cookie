@@ -1,7 +1,7 @@
 import Foundation
 
 @available(macOS 10.15, *)
-public  class SwizzlingRequestInterceptor: RequestInterceptor {
+public class SwizzlingRequestInterceptor: RequestInterceptor {
     public var delegate: (any RequestInterceptorDelegate)?
     private var requests: [URLSessionTask: Data] = [:]
 
