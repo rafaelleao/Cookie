@@ -26,8 +26,7 @@ struct WebsocketListItemViewModel: Hashable {
     let message: HTTPRequest.WebsocketMessage
 
     var imageName: String {
-        "arrow.up.circle.fill"
-//        message.kind == .sent ? "arrow.up.circle.fill" : "arrow.down.circle.fill"
+        message.type == .sent ? "arrow.up.circle.fill" : "arrow.down.circle.fill"
     }
 
     var header: String {

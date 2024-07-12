@@ -20,7 +20,7 @@ enum TestRequest {
         let jsonData = try? JSONSerialization.data(withJSONObject: response, options: .prettyPrinted)
 
         let httpResponse = HTTPURLResponse(url: url, statusCode: 201, httpVersion: nil, headerFields: ["header": "value"])
-        httpOperation.response = HTTPResponse.success(response: httpResponse!, data: jsonData)
+        httpOperation.setResponse(HTTPResponse.success(response: httpResponse!, data: jsonData))
         return httpOperation
     }
 
@@ -31,7 +31,7 @@ enum TestRequest {
 
         let httpResponse = HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: ["header": "value"])
         let error = NSError(domain: "domain", code: 999, userInfo: nil)
-        httpOperation.response = HTTPResponse.failure(response: httpResponse, error: error)
+        httpOperation.setResponse(HTTPResponse.failure(response: httpResponse, error: error))
         return httpOperation
     }
 
@@ -41,7 +41,7 @@ enum TestRequest {
         let httpOperation = HTTPRequest(request: request)
 
         let error = NSError(domain: "domain", code: 999, userInfo: nil)
-        httpOperation.response = HTTPResponse.failure(response: nil, error: error)
+        httpOperation.setResponse(HTTPResponse.failure(response: nil, error: error))
         return httpOperation
     }
 }

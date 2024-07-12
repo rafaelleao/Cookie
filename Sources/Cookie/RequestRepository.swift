@@ -38,12 +38,11 @@ actor RequestRepositoryImpl: RequestRepository {
         delegate?.requestRepository(self, didAddRequest: request)
     }
 
-    func setResponse(urlRequest: URLRequest, response: HTTPResponse?, hash: Int) {
+    func setResponse(urlRequest: URLRequest, response: HTTPResponse, hash: Int) {
         guard let httpRequest = openRequests[hash] else {
             return
         }
-        httpRequest.responseDate = Date()
-        httpRequest.response = response
+        httpRequest.setResponse(response)
         openRequests[hash] = nil
     }
 
@@ -51,13 +50,13 @@ actor RequestRepositoryImpl: RequestRepository {
         guard let request = requests.first(where: { task.originalRequest == $0.urlRequest }) else {
             return
         }
-        request.webSockedMessages.append(.init(message: message))
+        request.apprendWebSockedMessage(.init(message: message, type: .sent))
     }
 
     func messageReceived(task: URLSessionTask, message: URLSessionWebSocketTask.Message) {
         guard let request = requests.first(where: { task.originalRequest == $0.urlRequest }) else {
             return
         }
-        request.webSockedMessages.append(.init(message: message))
+        request.apprendWebSockedMessage(.init(message: message, type: .received))
     }
 }

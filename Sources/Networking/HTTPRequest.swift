@@ -3,21 +3,27 @@ import Foundation
 
 @available(macOS 10.15, *)
 public class HTTPRequest: Equatable {
-    public struct WebsocketMessage {
-        public var date: Date
-        public var message: URLSessionWebSocketTask.Message
-        public private(set) var id = UUID()
+    public enum WebsocketMessageType {
+        case sent, received
+    }
 
-        public init(message: URLSessionWebSocketTask.Message) {
+    public struct WebsocketMessage {
+        public let date: Date
+        public let message: URLSessionWebSocketTask.Message
+        public let id = UUID()
+        public let type: WebsocketMessageType
+
+        public init(message: URLSessionWebSocketTask.Message, type: WebsocketMessageType) {
             self.date = .init()
             self.message = message
+            self.type = type
         }
     }
 
     public let urlRequest: URLRequest
     public let requestDate: Date
-    @Published public var response: HTTPResponse?
-    public var responseDate: Date?
+    @Published public private(set) var response: HTTPResponse?
+    public private(set) var responseDate: Date?
     public var requestBodyData: Data? {
         if let httpBody = urlRequest.httpBody {
             return httpBody
@@ -28,7 +34,7 @@ public class HTTPRequest: Equatable {
         return nil
     }
 
-    public var webSockedMessages: [WebsocketMessage] = []
+    public private(set) var webSockedMessages: [WebsocketMessage] = []
 
     public var requestBodyString: String? {
         guard let bodyData = requestBodyData else {
@@ -68,6 +74,15 @@ public class HTTPRequest: Equatable {
     public init(request: URLRequest, date: Date = Date()) {
         self.urlRequest = request
         self.requestDate = date
+    }
+
+    public func setResponse(_ response: HTTPResponse) {
+        self.response = response
+        responseDate = Date()
+    }
+
+    public func apprendWebSockedMessage(_ message: WebsocketMessage) {
+        webSockedMessages.append(message)
     }
 }
 

@@ -78,7 +78,13 @@ class RequestViewModel: ObservableObject {
 
     var result: (String, Color)? {
         if let code = statusCode {
-            let color = (code >= 200 && code < 300) ? Color.green : Color.red
+            var color = Color.red
+            if code >= 100, code < 200 {
+                color = Color.blue
+            }
+            if code >= 200, code < 300 {
+                color = Color.green
+            }
             return ("\(code)", color)
         }
         if error != nil {

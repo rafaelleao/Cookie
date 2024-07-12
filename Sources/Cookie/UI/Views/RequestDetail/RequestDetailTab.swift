@@ -1,4 +1,5 @@
 import Combine
+import Networking
 import SwiftUI
 
 @available(iOS 16.0, *)
@@ -120,11 +121,13 @@ struct RequestDetailTab_Previews: PreviewProvider {
             ],
         ].toJsonString()
 
-        request.webSockedMessages = [
-            .init(message: .string(testJsonString)),
-            .init(message: .string("test")),
-            .init(message: .string(testJsonString)),
-        ]
+        ([
+            .init(message: .string(testJsonString), type: .sent),
+            .init(message: .string("test"), type: .received),
+            .init(message: .string(testJsonString), type: .sent),
+        ] as [HTTPRequest.WebsocketMessage]).forEach {
+            request.apprendWebSockedMessage($0)
+        }
         let descriptor = WebSocketTabDescriptor(request: request)
         let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
         return RequestDetailTab(viewModel: viewModel)
