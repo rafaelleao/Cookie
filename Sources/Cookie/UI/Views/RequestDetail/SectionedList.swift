@@ -4,9 +4,9 @@ import SwiftUI
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-struct RequestDetailTab: View, Identifiable {
+struct SectionedList: View, Identifiable {
     private(set) var id = UUID()
-    @ObservedObject var viewModel: RequestDetailTabViewModel
+    @ObservedObject var viewModel: SectionedListViewModel
     @State private var selection: WebsocketListItemViewModel?
 
     var textViewerViewModel: TextViewerViewModel? {
@@ -21,8 +21,7 @@ struct RequestDetailTab: View, Identifiable {
         return nil
     }
 
-    init(viewModel: RequestDetailTabViewModel) {
-        print("init")
+    init(viewModel: SectionedListViewModel) {
         self.viewModel = viewModel
     }
 
@@ -90,23 +89,23 @@ struct RequestDetailTab_Previews: PreviewProvider {
 
     private static func makeSummaryPreview() -> some View {
         let descriptor = SummaryTabDescriptor(request: request)
-        let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
-        return RequestDetailTab(viewModel: viewModel)
+        let viewModel = SectionedListViewModel(descriptor: descriptor)
+        return SectionedList(viewModel: viewModel)
     }
 
     private static func makeRequestPreview() -> some View {
         let descriptor = RequestTabDescriptor(request: request)
-        let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
-        return RequestDetailTab(viewModel: viewModel)
+        let viewModel = SectionedListViewModel(descriptor: descriptor)
+        return SectionedList(viewModel: viewModel)
     }
 
     private static func makeResponsePreview() -> some View {
         let descriptor = ResponseTabDescriptor(request: request)
-        let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
+        let viewModel = SectionedListViewModel(descriptor: descriptor)
         viewModel.action = Action(title: "Show Response", handler: {
             TextViewerViewModel(text: "Test", filename: "Response")
         })
-        return RequestDetailTab(viewModel: viewModel)
+        return SectionedList(viewModel: viewModel)
     }
 
     private static func makeWebSocketPreview() -> some View {
@@ -129,8 +128,8 @@ struct RequestDetailTab_Previews: PreviewProvider {
             request.apprendWebSockedMessage($0)
         }
         let descriptor = WebSocketTabDescriptor(request: request)
-        let viewModel = RequestDetailTabViewModel(descriptor: descriptor)
-        return RequestDetailTab(viewModel: viewModel)
+        let viewModel = SectionedListViewModel(descriptor: descriptor)
+        return SectionedList(viewModel: viewModel)
     }
 
     static var previews: some View {

@@ -52,6 +52,8 @@ struct RequestList<ViewModel: RequestListViewModel>: View {
                     .bold()
                     .foregroundColor(.white)
                     .modifier(RoundedLabel(backgroundColor: .gray))
+            }.onTapGesture {
+                viewModel.requestToolbarViewModel.selectedDomains = []
             }
             List(viewModel.requestToolbarViewModel.domains, id: \.self, selection: $viewModel.requestToolbarViewModel.selectedDomains) { domain in
                 Text(domain)

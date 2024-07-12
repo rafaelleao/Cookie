@@ -4,7 +4,8 @@ import Foundation
 @available(macOS 10.15, *)
 public class HTTPRequest: Equatable {
     public enum WebsocketMessageType {
-        case sent, received
+        case sent
+        case received
     }
 
     public struct WebsocketMessage {
@@ -34,7 +35,7 @@ public class HTTPRequest: Equatable {
         return nil
     }
 
-    public private(set) var webSockedMessages: [WebsocketMessage] = []
+    @Published public private(set) var webSockedMessages: [WebsocketMessage] = []
 
     public var requestBodyString: String? {
         guard let bodyData = requestBodyData else {

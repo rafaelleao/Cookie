@@ -1,5 +1,105 @@
 import Combine
 import Networking
+import SwiftUI
+
+struct TabDescriptor: Identifiable {
+    let name: String
+    let image: String
+    var id: String { name }
+}
+
+@available(iOS 16.0, *)
+@available(macOS 13, *)
+private protocol TabViewModel {
+    associatedtype SomeView: View
+
+    var tabDescriptor: TabDescriptor { get }
+    var view: SomeView { get }
+}
+
+@available(iOS 16.0, *)
+@available(macOS 13, *)
+private struct SummaryTabViewModel: TabViewModel {
+    let request: HTTPRequest
+
+    var tabDescriptor: TabDescriptor {
+        .init(
+            name: "Summary",
+            image: "network"
+        )
+    }
+
+    var view: SectionedList {
+        .init(
+            viewModel: .init(
+                descriptor: SummaryTabDescriptor(request: request)
+            )
+        )
+    }
+}
+
+@available(iOS 16.0, *)
+@available(macOS 13, *)
+private struct RequestTabViewModel: TabViewModel {
+    let request: HTTPRequest
+
+    var tabDescriptor: TabDescriptor {
+        .init(
+            name: "Request",
+            image: "icloud.and.arrow.up"
+        )
+    }
+
+    var view: SectionedList {
+        .init(
+            viewModel: .init(
+                descriptor: RequestTabDescriptor(request: request)
+            )
+        )
+    }
+}
+
+@available(iOS 16.0, *)
+@available(macOS 13, *)
+private struct ResponseTabViewModel: TabViewModel {
+    let request: HTTPRequest
+
+    var tabDescriptor: TabDescriptor {
+        .init(
+            name: "Response",
+            image: "icloud.and.arrow.down"
+        )
+    }
+
+    var view: SectionedList {
+        .init(
+            viewModel: .init(
+                descriptor: ResponseTabDescriptor(request: request)
+            )
+        )
+    }
+}
+
+@available(iOS 16.0, *)
+@available(macOS 13, *)
+struct WebSocketTabViewModel: TabViewModel {
+    let request: HTTPRequest
+
+    var tabDescriptor: TabDescriptor {
+        .init(
+            name: "WebSocket",
+            image: "app.connected.to.app.below.fill"
+        )
+    }
+
+    var view: SectionedList {
+        SectionedList(
+            viewModel: SectionedListViewModel(
+                descriptor: WebSocketTabDescriptor(request: request)
+            )
+        )
+    }
+}
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
@@ -12,49 +112,54 @@ class RequestDetailViewModel: ObservableObject {
         request.urlRequest.url?.host ?? "Request Details"
     }
 
-    let tabDescriptors: [TabDescriptor]
-    var childViewModels: [RequestDetailTabViewModel]
-    var childViewModel: RequestDetailTabViewModel
+    private let viewModels: [any TabViewModel]
+    private var selectedViewModel: any TabViewModel
+
     var segmentationSelection: String {
         didSet {
-            if let viewModel = viewModel(title: segmentationSelection) {
-                childViewModel = viewModel
+            if let newSelection = viewModels.first { $0.tabDescriptor.name == segmentationSelection } {
+                selectedViewModel = newSelection
                 objectWillChange.send()
             }
         }
     }
 
+    var contentView: some View {
+        AnyView(selectedViewModel.view)
+    }
+
+    var tabDescriptors: [TabDescriptor] {
+        viewModels.map { $0.tabDescriptor }
+    }
+
     init(request: HTTPRequest) {
         self.request = request
-        let descriptors: [TabDescriptor] = [
-            SummaryTabDescriptor(request: request),
-            RequestTabDescriptor(request: request),
-            ResponseTabDescriptor(request: request),
-            WebSocketTabDescriptor(request: request),
-        ]
-        self.tabDescriptors = descriptors
+
         // swiftlint:disable force_unwrapping
-        self.segmentationSelection = descriptors.first!.title
-        let viewModels = descriptors.map {
-            RequestDetailTabViewModel(descriptor: $0)
-        }
-        self.childViewModels = viewModels
-        self.childViewModel = viewModels.first!
-        // swiftlint:enable force_unwrapping
+        let viewModels = [
+            SummaryTabViewModel(request: request),
+            RequestTabViewModel(request: request),
+            ResponseTabViewModel(request: request),
+            WebSocketTabViewModel(request: request)
+        ] as [any TabViewModel]
+        self.viewModels = viewModels
+        self.selectedViewModel = viewModels.first!
+        self.segmentationSelection = viewModels.first!.tabDescriptor.name
 
-        viewModels.forEach { $0.delegate = self }
+//        viewModels.forEach { $0.delegate = self }
 
-        $searchText.sink { newValue in
-            self.childViewModels.forEach { viewModel in
-                viewModel.searchText = newValue
-            }
-        }
-        .store(in: &bindings)
+//        $searchText.sink { newValue in
+//            self.childViewModels.forEach { viewModel in
+//                viewModel.searchText = newValue
+//            }
+//        }
+//        .store(in: &bindings)
     }
 
-    func viewModel(title: String) -> RequestDetailTabViewModel? {
-        childViewModels.first { $0.title == title }
-    }
+//    func viewModel(title: String) -> SectionedListViewModel? {
+//        nil
+////        childViewModels.first { $0.title == title }
+//    }
 }
 
 @available(iOS 16.0, *)

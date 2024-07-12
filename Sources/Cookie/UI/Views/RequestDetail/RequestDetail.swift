@@ -9,8 +9,8 @@ struct RequestDetail: View {
         VStack {
             HStack {
                 Picker("", selection: $viewModel.segmentationSelection) {
-                    ForEach(viewModel.tabDescriptors, id: \.title) { descriptor in
-                        Text(descriptor.title)
+                    ForEach(viewModel.tabDescriptors) { descriptor in
+                        Text(descriptor.name)
                     }
                 }
                 .padding()
@@ -22,7 +22,8 @@ struct RequestDetail: View {
                 #endif
             }
 
-            RequestDetailTab(viewModel: viewModel.childViewModel)
+            viewModel.contentView
+
             #if os(iOS)
                 .searchable(text: $viewModel.searchText, prompt: "Search")
                 .autocapitalization(.none)

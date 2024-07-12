@@ -3,7 +3,7 @@ import Networking
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-class ResponseTabDescriptor: TabDescriptor {
+class ResponseTabDescriptor: SectionedListDescriptor {
     let request: HTTPRequest
 
     required init(request: HTTPRequest) {

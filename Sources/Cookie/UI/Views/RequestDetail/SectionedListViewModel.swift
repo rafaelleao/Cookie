@@ -21,7 +21,7 @@ protocol RequestDetailTabViewModelDelegate: AnyObject {
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-protocol TabDescriptor {
+protocol SectionedListDescriptor {
     init(request: HTTPRequest)
     var request: HTTPRequest { get }
     var title: String { get }
@@ -34,7 +34,7 @@ protocol TabDescriptor {
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-extension TabDescriptor {
+extension SectionedListDescriptor {
     func websocketList() -> [WebsocketListItemViewModel]? {
         nil
     }
@@ -54,7 +54,7 @@ class Action {
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-class RequestDetailTabViewModel: ObservableObject {
+class SectionedListViewModel: ObservableObject {
     weak var delegate: RequestDetailTabViewModelDelegate?
     @Published var data: [SectionData] = []
     @Published var searchText: String = ""
@@ -69,7 +69,7 @@ class RequestDetailTabViewModel: ObservableObject {
 
     @Published var websocketListItems: [WebsocketListItemViewModel]?
 
-    init(descriptor: TabDescriptor) {
+    init(descriptor: SectionedListDescriptor) {
         self.websocketListItems = descriptor.websocketList()
         self.sections = descriptor.sections()
         self.action = descriptor.action()
