@@ -82,7 +82,7 @@ private struct ResponseTabViewModel: TabViewModel {
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-struct WebSocketTabViewModel: TabViewModel {
+private struct WebSocketTabViewModel: TabViewModel {
     let request: HTTPRequest
 
     var tabDescriptor: TabDescriptor {
@@ -92,11 +92,9 @@ struct WebSocketTabViewModel: TabViewModel {
         )
     }
 
-    var view: SectionedList {
-        SectionedList(
-            viewModel: SectionedListViewModel(
-                descriptor: WebSocketTabDescriptor(request: request)
-            )
+    var view: some View {
+        WebSocketTab(
+            viewModel: .init(request: request)
         )
     }
 }

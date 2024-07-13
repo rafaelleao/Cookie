@@ -29,15 +29,6 @@ protocol SectionedListDescriptor {
     var textViewerViewModel: TextViewerViewModel? { get }
     func sections() -> [SectionData]
     func action() -> Action?
-    func websocketList() -> [WebsocketListItemViewModel]?
-}
-
-@available(iOS 16.0, *)
-@available(macOS 13, *)
-extension SectionedListDescriptor {
-    func websocketList() -> [WebsocketListItemViewModel]? {
-        nil
-    }
 }
 
 @available(iOS 16.0, *)
@@ -67,10 +58,7 @@ class SectionedListViewModel: ObservableObject {
     private var sections: [SectionData]
     private var bindings: [AnyCancellable] = []
 
-    @Published var websocketListItems: [WebsocketListItemViewModel]?
-
     init(descriptor: SectionedListDescriptor) {
-        self.websocketListItems = descriptor.websocketList()
         self.sections = descriptor.sections()
         self.action = descriptor.action()
         self.title = descriptor.title

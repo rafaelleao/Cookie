@@ -7,19 +7,6 @@ import SwiftUI
 struct SectionedList: View, Identifiable {
     private(set) var id = UUID()
     @ObservedObject var viewModel: SectionedListViewModel
-    @State private var selection: WebsocketListItemViewModel?
-
-    var textViewerViewModel: TextViewerViewModel? {
-        if let selection {
-            let data = selection.header.data(using: .utf8)
-            if let text = data?.toJsonString() {
-                return .init(text: text, filename: "")
-            } else {
-                return .init(text: selection.header, filename: "")
-            }
-        }
-        return nil
-    }
 
     init(viewModel: SectionedListViewModel) {
         self.viewModel = viewModel
@@ -32,25 +19,12 @@ struct SectionedList: View, Identifiable {
                     .progressViewStyle(CircularProgressViewStyle())
             }
 
-            if let websocketListItems = viewModel.websocketListItems {
-                List(selection: $selection, content: {
-                    ForEach(websocketListItems, id: \.self) { viewModel in
-                        HStack {
-                            Image(systemName: viewModel.imageName)
-                            Text(viewModel.date)
-                            Text(viewModel.header)
-                                .lineLimit(1)
-                        }
-                    }
-                })
-            } else {
-                List {
-                    ForEach(viewModel.data, id: \.self) { row in
-                        Section(header: Text(row.title)) {
-                            ForEach(row.pairs, id: \.key) { pair in
-                                let viewModel = RequestDetailRowViewModel(pair: pair, searchText: viewModel.searchText)
-                                RequestDetailRow(viewModel: viewModel)
-                            }
+            List {
+                ForEach(viewModel.data, id: \.self) { row in
+                    Section(header: Text(row.title)) {
+                        ForEach(row.pairs, id: \.key) { pair in
+                            let viewModel = RequestDetailRowViewModel(pair: pair, searchText: viewModel.searchText)
+                            RequestDetailRow(viewModel: viewModel)
                         }
                     }
                 }
@@ -69,8 +43,6 @@ struct SectionedList: View, Identifiable {
             }
             #else
             if let textViewerViewModel = viewModel.textViewerViewModel {
-                TextViewer(viewModel: textViewerViewModel)
-            } else if let textViewerViewModel {
                 TextViewer(viewModel: textViewerViewModel)
             }
             #endif
@@ -108,30 +80,6 @@ struct RequestDetailTab_Previews: PreviewProvider {
         return SectionedList(viewModel: viewModel)
     }
 
-    private static func makeWebSocketPreview() -> some View {
-        let testJsonString = [
-            "param3": 10,
-            "param1": "a",
-            "param2": true,
-            "dict": [
-                "param3": 10,
-                "param1": "a",
-                "param2": true,
-            ],
-        ].toJsonString()
-
-        ([
-            .init(message: .string(testJsonString), type: .sent),
-            .init(message: .string("test"), type: .received),
-            .init(message: .string(testJsonString), type: .sent),
-        ] as [HTTPRequest.WebsocketMessage]).forEach {
-            request.apprendWebSockedMessage($0)
-        }
-        let descriptor = WebSocketTabDescriptor(request: request)
-        let viewModel = SectionedListViewModel(descriptor: descriptor)
-        return SectionedList(viewModel: viewModel)
-    }
-
     static var previews: some View {
         Group {
             NavigationStack {
@@ -151,12 +99,6 @@ struct RequestDetailTab_Previews: PreviewProvider {
             }
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Response")
-
-            NavigationStack {
-                makeWebSocketPreview()
-            }
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("Web Socket")
         }
     }
 }
