@@ -39,7 +39,9 @@ struct RequestDetail: View {
 struct RequestDetail_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            RequestDetail(viewModel: RequestDetailViewModel(request: TestRequest.completedTestRequest))
+            RequestDetail(
+                viewModel: .init(request: TestRequest.completedTestRequest)
+            )
         }
     }
 }

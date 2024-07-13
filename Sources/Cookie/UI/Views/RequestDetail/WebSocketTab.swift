@@ -41,7 +41,13 @@ class WebSocketViewModel: ObservableObject {//
      //@Published
     var websocketListItems: [WebsocketListItemViewModel]
     let request: HTTPRequest
-    var selection: WebsocketListItemViewModel?
+    var selection: WebsocketListItemViewModel? {
+        didSet {
+            showSheet = true
+        }
+    }
+    @Published var searchText: String = ""
+    @Published var showSheet: Bool = false
 
     init(request: HTTPRequest) {
         self.request = request
@@ -66,6 +72,7 @@ class WebSocketViewModel: ObservableObject {//
 struct WebSocketTab: View, Identifiable {
     @ObservedObject var viewModel: WebSocketViewModel
     private(set) var id = UUID()
+    @State private var showingSheet = false
 
     init(viewModel: WebSocketViewModel) {
         self.viewModel = viewModel
@@ -78,26 +85,29 @@ struct WebSocketTab: View, Identifiable {
                     HStack {
                         Image(systemName: viewModel.imageName)
                         Text(viewModel.date)
+                            .font(.footnote)
                         Text(viewModel.header)
+                            .font(.system(.subheadline, design: .monospaced))
                             .lineLimit(1)
                     }
                 }
             })
 
-            #if os(iOS)
-//            if let action = viewModel.action {
-//                NavigationLink(destination:
-//                    TextViewer(viewModel: action.handler())
-//                ) {
-//                    Text(action.title)
-//                        .bold()
-//                }
-//                .padding()
-//                .searchable(text: $viewModel.searchText, prompt: "Search")
-//            }
-            #else
+            #if os(macOS)
             if let textViewerViewModel = viewModel.textViewerViewModel {
                 TextViewer(viewModel: textViewerViewModel)
+            }
+            #endif
+        }.apply {
+            #if os(iOS)
+            $0.sheet(isPresented: $viewModel.showSheet) {
+                TextViewer(viewModel: viewModel.textViewerViewModel ?? TextViewerViewModel(text: "", filename: ""))
+                    .presentationDetents([.fraction(0.25), .medium, .large])
+                    .apply {
+                        if #available(iOS 16.4, *) {
+                            $0.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+                        }
+                    }
             }
             #endif
         }
@@ -107,9 +117,8 @@ struct WebSocketTab: View, Identifiable {
 @available(iOS 16.0, *)
 @available(macOS 13, *)
 struct WebSocketTab_Previews: PreviewProvider {
-    static let request = TestRequest.completedTestRequest
-
     private static func makeWebSocketPreview() -> some View {
+        let request = TestRequest.completedTestRequest
         let testJsonString = [
             "param3": 10,
             "param1": "a",

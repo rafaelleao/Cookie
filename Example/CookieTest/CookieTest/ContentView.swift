@@ -9,11 +9,7 @@ struct ContentView: View {
         VStack(alignment: .center, spacing: 30, content: {
             Button("Show") {
                 viewModel.show()
-//                isPresented.toggle()
             }
-//            .sheet(isPresented: $isPresented) {
-//                Cookie.shared.makeView()
-//            }
 
             Button("Send Requests") {
                 viewModel.sendTestRequests()

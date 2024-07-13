@@ -15,12 +15,6 @@ extension SectionData: Hashable {
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-protocol RequestDetailTabViewModelDelegate: AnyObject {
-    func showText(viewModel: TextViewerViewModel)
-}
-
-@available(iOS 16.0, *)
-@available(macOS 13, *)
 protocol SectionedListDescriptor {
     init(request: HTTPRequest)
     var request: HTTPRequest { get }
@@ -44,7 +38,6 @@ class Action {
 @available(iOS 16.0, *)
 @available(macOS 13, *)
 class SectionedListViewModel: ObservableObject {
-    weak var delegate: RequestDetailTabViewModelDelegate?
     @Published var data: [SectionData] = []
     @Published var searchText: String = ""
     @Published var action: Action?
@@ -71,17 +64,9 @@ class SectionedListViewModel: ObservableObject {
                 .store(in: &bindings)
         }
         $searchText.sink { [unowned self] text in
-            print(text)
             filter(searchString: text)
         }
         .store(in: &bindings)
-    }
-
-    func actionClicked() {
-        if let action, let delegate {
-            let viewModel = action.handler()
-            delegate.showText(viewModel: viewModel)
-        }
     }
 
     private func filter(searchString: String) {

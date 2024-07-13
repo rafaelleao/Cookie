@@ -15,12 +15,18 @@ private protocol TabViewModel {
 
     var tabDescriptor: TabDescriptor { get }
     var view: SomeView { get }
+    var searchText: String { get set }
 }
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-private struct SummaryTabViewModel: TabViewModel {
+private class SummaryTabViewModel: TabViewModel {
     let request: HTTPRequest
+    private lazy var viewModel: SectionedListViewModel = .init(descriptor: SummaryTabDescriptor(request: request))
+
+    init(request: HTTPRequest) {
+        self.request = request
+    }
 
     var tabDescriptor: TabDescriptor {
         .init(
@@ -31,17 +37,26 @@ private struct SummaryTabViewModel: TabViewModel {
 
     var view: SectionedList {
         .init(
-            viewModel: .init(
-                descriptor: SummaryTabDescriptor(request: request)
-            )
+            viewModel: viewModel
         )
+    }
+
+    var searchText: String = "" {
+        didSet {
+            viewModel.searchText = searchText
+        }
     }
 }
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-private struct RequestTabViewModel: TabViewModel {
+private class RequestTabViewModel: TabViewModel {
     let request: HTTPRequest
+    private lazy var viewModel: SectionedListViewModel = .init(descriptor: RequestTabDescriptor(request: request))
+
+    init(request: HTTPRequest) {
+        self.request = request
+    }
 
     var tabDescriptor: TabDescriptor {
         .init(
@@ -52,17 +67,26 @@ private struct RequestTabViewModel: TabViewModel {
 
     var view: SectionedList {
         .init(
-            viewModel: .init(
-                descriptor: RequestTabDescriptor(request: request)
-            )
+            viewModel: viewModel
         )
+    }
+
+    var searchText: String = "" {
+        didSet {
+            viewModel.searchText = searchText
+        }
     }
 }
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-private struct ResponseTabViewModel: TabViewModel {
+private class ResponseTabViewModel: TabViewModel {
     let request: HTTPRequest
+    private lazy var viewModel: SectionedListViewModel = .init(descriptor: ResponseTabDescriptor(request: request))
+
+    init(request: HTTPRequest) {
+        self.request = request
+    }
 
     var tabDescriptor: TabDescriptor {
         .init(
@@ -73,17 +97,26 @@ private struct ResponseTabViewModel: TabViewModel {
 
     var view: SectionedList {
         .init(
-            viewModel: .init(
-                descriptor: ResponseTabDescriptor(request: request)
-            )
+            viewModel: viewModel
         )
+    }
+
+    var searchText: String = "" {
+        didSet {
+            viewModel.searchText = searchText
+        }
     }
 }
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-private struct WebSocketTabViewModel: TabViewModel {
+private class WebSocketTabViewModel: TabViewModel {
     let request: HTTPRequest
+    private lazy var viewModel: WebSocketViewModel = .init(request: request)
+
+    init(request: HTTPRequest) {
+        self.request = request
+    }
 
     var tabDescriptor: TabDescriptor {
         .init(
@@ -93,9 +126,13 @@ private struct WebSocketTabViewModel: TabViewModel {
     }
 
     var view: some View {
-        WebSocketTab(
-            viewModel: .init(request: request)
-        )
+        WebSocketTab(viewModel: viewModel)
+    }
+
+    var searchText: String = "" {
+        didSet {
+            viewModel.searchText = searchText
+        }
     }
 }
 
@@ -115,8 +152,9 @@ class RequestDetailViewModel: ObservableObject {
 
     var segmentationSelection: String {
         didSet {
-            if let newSelection = viewModels.first { $0.tabDescriptor.name == segmentationSelection } {
+            if let newSelection = viewModels.first(where: { $0.tabDescriptor.name == segmentationSelection }) {
                 selectedViewModel = newSelection
+                selectedViewModel.searchText = searchText
                 objectWillChange.send()
             }
         }
@@ -133,7 +171,6 @@ class RequestDetailViewModel: ObservableObject {
     init(request: HTTPRequest) {
         self.request = request
 
-        // swiftlint:disable force_unwrapping
         let viewModels = [
             SummaryTabViewModel(request: request),
             RequestTabViewModel(request: request),
@@ -141,27 +178,15 @@ class RequestDetailViewModel: ObservableObject {
             WebSocketTabViewModel(request: request)
         ] as [any TabViewModel]
         self.viewModels = viewModels
-        self.selectedViewModel = viewModels.first!
-        self.segmentationSelection = viewModels.first!.tabDescriptor.name
+        guard let viewModel = viewModels.first else {
+            fatalError("Unexpected empty array")
+        }
+        self.selectedViewModel = viewModel
+        self.segmentationSelection = viewModel.tabDescriptor.name
 
-//        viewModels.forEach { $0.delegate = self }
-
-//        $searchText.sink { newValue in
-//            self.childViewModels.forEach { viewModel in
-//                viewModel.searchText = newValue
-//            }
-//        }
-//        .store(in: &bindings)
+        $searchText.sink { [weak self] newValue in
+            self?.selectedViewModel.searchText = newValue
+        }
+        .store(in: &bindings)
     }
-
-//    func viewModel(title: String) -> SectionedListViewModel? {
-//        nil
-////        childViewModels.first { $0.title == title }
-//    }
-}
-
-@available(iOS 16.0, *)
-@available(macOS 13, *)
-extension RequestDetailViewModel: RequestDetailTabViewModelDelegate {
-    func showText(viewModel: TextViewerViewModel) {}
 }

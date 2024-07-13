@@ -25,7 +25,6 @@
 		53424A602AD214BA00AA7330 /* Cookie */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Cookie; path = ../..; sourceTree = "<group>"; };
 		53424A612AD2152900AA7330 /* ContentViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentViewViewModel.swift; sourceTree = "<group>"; };
 		53B84BA02B025D360011D3DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		53EC099D2C41EE91001FDFEF /* WebSocketTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WebSocketTab.swift; path = ../../Sources/Cookie/UI/Views/RequestDetail/WebSocketTab.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,7 +42,6 @@
 		53424A452AD214AA00AA7330 = {
 			isa = PBXGroup;
 			children = (
-				53EC099D2C41EE91001FDFEF /* WebSocketTab.swift */,
 				53424A602AD214BA00AA7330 /* Cookie */,
 				53424A502AD214AA00AA7330 /* CookieTest */,
 				53424A4F2AD214AA00AA7330 /* Products */,
