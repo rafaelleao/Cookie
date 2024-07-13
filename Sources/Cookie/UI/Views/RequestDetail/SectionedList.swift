@@ -47,10 +47,6 @@ struct SectionedList: View, Identifiable {
             }
             #endif
         }
-        .tabItem {
-            Image(systemName: viewModel.image)
-            Text(viewModel.title)
-        }
     }
 }
 

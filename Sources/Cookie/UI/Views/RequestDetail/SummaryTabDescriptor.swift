@@ -6,14 +6,6 @@ import Networking
 struct SummaryTabDescriptor: SectionedListDescriptor {
     let request: HTTPRequest
 
-    var title: String {
-        "Summary"
-    }
-
-    var image: String {
-        "network"
-    }
-
     var textViewerViewModel: TextViewerViewModel? {
         nil
     }

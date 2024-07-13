@@ -10,14 +10,6 @@ class RequestTabDescriptor: SectionedListDescriptor {
         self.request = request
     }
 
-    var title: String {
-        "Request"
-    }
-
-    var image: String {
-        "icloud.and.arrow.up"
-    }
-
     func sections() -> [SectionData] {
         [
             SectionData(title: "Request Headers", pairs: headers()),

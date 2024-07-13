@@ -24,8 +24,6 @@ protocol RequestDetailTabViewModelDelegate: AnyObject {
 protocol SectionedListDescriptor {
     init(request: HTTPRequest)
     var request: HTTPRequest { get }
-    var title: String { get }
-    var image: String { get }
     var textViewerViewModel: TextViewerViewModel? { get }
     func sections() -> [SectionData]
     func action() -> Action?
@@ -51,8 +49,6 @@ class SectionedListViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var action: Action?
     @Published var isLoading: Bool
-    private(set) var title: String
-    private(set) var image: String
     private(set) var textViewerViewModel: TextViewerViewModel?
 
     private var sections: [SectionData]
@@ -61,8 +57,6 @@ class SectionedListViewModel: ObservableObject {
     init(descriptor: SectionedListDescriptor) {
         self.sections = descriptor.sections()
         self.action = descriptor.action()
-        self.title = descriptor.title
-        self.image = descriptor.image
         self.isLoading = descriptor.request.response == nil
         self.textViewerViewModel = descriptor.textViewerViewModel
         if isLoading {
