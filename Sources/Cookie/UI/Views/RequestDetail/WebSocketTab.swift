@@ -37,8 +37,8 @@ struct WebsocketListItemViewModel: Hashable {
 
 @available(iOS 16.0, *)
 @available(macOS 13, *)
-class WebSocketViewModel: ObservableObject {//
-     //@Published
+class WebSocketViewModel: ObservableObject { //
+    //@Published
     var websocketListItems: [WebsocketListItemViewModel]
     let request: HTTPRequest
     var selection: WebsocketListItemViewModel? {
@@ -46,6 +46,7 @@ class WebSocketViewModel: ObservableObject {//
             showSheet = true
         }
     }
+
     @Published var searchText: String = ""
     @Published var showSheet: Bool = false
 
@@ -98,7 +99,7 @@ struct WebSocketTab: View, Identifiable {
                 TextViewer(viewModel: textViewerViewModel)
             }
             #endif
-        }.apply {
+        }.modify {
             #if os(iOS)
             $0.sheet(isPresented: $viewModel.showSheet) {
                 TextViewer(viewModel: viewModel.textViewerViewModel ?? TextViewerViewModel(text: "", filename: ""))
@@ -118,25 +119,7 @@ struct WebSocketTab: View, Identifiable {
 @available(macOS 13, *)
 struct WebSocketTab_Previews: PreviewProvider {
     private static func makeWebSocketPreview() -> some View {
-        let request = TestRequest.completedTestRequest
-        let testJsonString = [
-            "param3": 10,
-            "param1": "a",
-            "param2": true,
-            "dict": [
-                "param3": 10,
-                "param1": "a",
-                "param2": true,
-            ],
-        ].toJsonString()
-
-        ([
-            .init(message: .string(testJsonString), type: .sent),
-            .init(message: .string("test"), type: .received),
-            .init(message: .string(testJsonString), type: .sent),
-        ] as [HTTPRequest.WebsocketMessage]).forEach {
-            request.apprendWebSockedMessage($0)
-        }
+        let request = TestRequest.webSocket
         let viewModel = WebSocketViewModel(request: request)
         return WebSocketTab(viewModel: viewModel)
     }

@@ -38,10 +38,27 @@ struct RequestDetail: View {
 @available(macOS 13, *)
 struct RequestDetail_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
-            RequestDetail(
-                viewModel: .init(request: TestRequest.completedTestRequest)
-            )
+        Group {
+            NavigationStack {
+                RequestDetail(
+                    viewModel: .init(request: TestRequest.webSocket)
+                )
+            }
+            .previewDisplayName("WebSocket")
+
+            NavigationStack {
+                RequestDetail(
+                    viewModel: .init(request: TestRequest.completedTestRequest)
+                )
+            }
+            .previewDisplayName("Completed")
+
+            NavigationStack {
+                RequestDetail(
+                    viewModel: .init(request: TestRequest.testRequest)
+                )
+            }
+            .previewDisplayName("In progress")
         }
     }
 }

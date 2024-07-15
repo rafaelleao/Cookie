@@ -24,6 +24,29 @@ enum TestRequest {
         return httpOperation
     }
 
+    static var webSocket: HTTPRequest {
+        let request = TestRequest.completedTestRequest
+        let testJsonString = [
+            "param3": 10,
+            "param1": "a",
+            "param2": true,
+            "dict": [
+                "param3": 10,
+                "param1": "a",
+                "param2": true,
+            ],
+        ].toJsonString()
+
+        ([
+            .init(message: .string(testJsonString), type: .sent),
+            .init(message: .string("test"), type: .received),
+            .init(message: .string(testJsonString), type: .sent),
+        ] as [HTTPRequest.WebsocketMessage]).forEach {
+            request.apprendWebSockedMessage($0)
+        }
+        return request
+    }
+
     static var serverErrorRequest: HTTPRequest {
         let url = URL(string: "https://example.com/404")!
         let request = URLRequest(url: url)

@@ -175,7 +175,7 @@ class RequestDetailViewModel: ObservableObject {
             SummaryTabViewModel(request: request),
             RequestTabViewModel(request: request),
             ResponseTabViewModel(request: request),
-            WebSocketTabViewModel(request: request)
+            WebSocketTabViewModel(request: request),
         ] as [any TabViewModel]
         self.viewModels = viewModels
         guard let viewModel = viewModels.first else {
